@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Eye } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { GradientText } from '../ui/GradientText';
 import { HeroOrbs } from '../decorative/GradientOrb';
@@ -72,10 +72,6 @@ export function Hero() {
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
-            <Button variant="secondary" size="lg" className="group min-w-[200px]">
-              <Eye className="inline-block mr-2 w-5 h-5" />
-              See How We Work
-            </Button>
           </motion.div>
         </motion.div>
 

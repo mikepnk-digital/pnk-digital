@@ -87,7 +87,7 @@ export function PrivacyPolicy() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-neon-cyan" />
-                    <span>Email: privacy@pnkdigital.com</span>
+                    <span>Email: privacy@pnk-digital.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin size={18} className="text-neon-cyan" />
@@ -258,7 +258,7 @@ export function PrivacyPolicy() {
                   </li>
                 </ul>
                 <p className="mt-4 leading-relaxed">
-                  To exercise any of these rights, please contact us at <a href="mailto:privacy@pnkdigital.com" className="text-neon-cyan hover:underline">privacy@pnkdigital.com</a>. We will respond to your request within one month. There is no fee for making a request unless it is manifestly unfounded or excessive.
+                  To exercise any of these rights, please contact us at <a href="mailto:privacy@pnk-digital.com" className="text-neon-cyan hover:underline">privacy@pnk-digital.com</a>. We will respond to your request within one month. There is no fee for making a request unless it is manifestly unfounded or excessive.
                 </p>
               </section>
 

@@ -102,7 +102,7 @@ export function TermsOfService() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-neon-purple" />
-                    <span>Email: hello@pnkdigital.com</span>
+                    <span>Email: hello@pnk-digital.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin size={18} className="text-neon-purple" />

@@ -1,0 +1,88 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-2
+  NODE_VERSION: '20'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Production
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install CDK dependencies
+        run: cd cdk && npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build React app
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.PROD_API_URL }}
+          VITE_ENVIRONMENT: prod
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: CDK Diff
+        run: |
+          cd cdk
+          npx cdk diff --context environment=prod
+
+      - name: Deploy to Production
+        run: |
+          cd cdk
+          npx cdk deploy --all --context environment=prod --require-approval never
+
+      - name: Get deployment outputs
+        id: outputs
+        run: |
+          WEBSITE_URL=$(aws cloudformation describe-stacks --stack-name PnkDigital-prod-Website --query "Stacks[0].Outputs[?OutputKey=='WebsiteUrl'].OutputValue" --output text)
+          API_URL=$(aws cloudformation describe-stacks --stack-name PnkDigital-prod-Api --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" --output text)
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name PnkDigital-prod-Website --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" --output text)
+          echo "website_url=$WEBSITE_URL" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "distribution_id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.outputs.outputs.distribution_id }} \
+            --paths "/*"
+
+      - name: Summary
+        run: |
+          echo "## Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Resource | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| Website | ${{ steps.outputs.outputs.website_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ steps.outputs.outputs.api_url }}/api/health |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "CloudFront cache invalidation initiated for distribution: ${{ steps.outputs.outputs.distribution_id }}" >> $GITHUB_STEP_SUMMARY

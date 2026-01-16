@@ -7,7 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cdk:install": "cd cdk && npm install",
+    "cdk:synth": "cd cdk && npm run synth",
+    "cdk:deploy:dev": "npm run build && cd cdk && npm run deploy:dev",
+    "cdk:deploy:prod": "npm run build && cd cdk && npm run deploy:prod",
+    "cdk:diff:dev": "cd cdk && npm run diff:dev",
+    "cdk:diff:prod": "cd cdk && npm run diff:prod",
+    "cdk:destroy:dev": "cd cdk && npm run destroy:dev"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

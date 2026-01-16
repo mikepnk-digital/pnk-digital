@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { Section, orbPresets } from '../ui/Section';
 import { Button } from '../ui/Button';
@@ -7,24 +8,19 @@ import { Input, Textarea, Select } from '../ui/Input';
 import { IconBox } from '../ui/IconBox';
 import { useFormState } from '../../hooks';
 import { staggerContainer, fadeInUp, fadeInRight, viewportWithMargin } from '../../utils/animations';
+import { submitContactForm, ApiError } from '../../utils/api';
 
 const contactInfo = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'hello@pnkdigital.com',
-    href: 'mailto:hello@pnkdigital.com',
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: '+44 20 7946 0958',
-    href: 'tel:+442079460958',
+    value: 'hello@pnk-digital.com',
+    href: 'mailto:hello@pnk-digital.com',
   },
   {
     icon: MapPin,
     label: 'Location',
-    value: 'London, UK',
+    value: 'Surrey, UK',
     href: '#',
   },
 ];
@@ -66,13 +62,30 @@ export function Contact() {
     createSubmitHandler,
   } = useFormState(initialFormState);
 
+  // Submission feedback state
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [submitMessage, setSubmitMessage] = useState('');
+
   // Create the submit handler
   const handleSubmit = createSubmitHandler(
     async (data) => {
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log('Form submitted:', data);
-      // In production, this would send to an API
+      setSubmitStatus(null);
+      setSubmitMessage('');
+
+      try {
+        const response = await submitContactForm(data);
+        setSubmitStatus('success');
+        setSubmitMessage(response.message || 'Thank you for your enquiry. We will be in touch shortly.');
+      } catch (error) {
+        console.error('Form submission error:', error);
+        setSubmitStatus('error');
+        if (error instanceof ApiError && error.errors?.length > 0) {
+          setSubmitMessage(error.errors.map(e => e.message).join('. '));
+        } else {
+          setSubmitMessage(error.message || 'Something went wrong. Please try again.');
+        }
+        throw error; // Re-throw to prevent form reset
+      }
     },
     { resetOnSuccess: true }
   );
@@ -157,7 +170,24 @@ export function Contact() {
                 />
               </motion.div>
 
-              <motion.div variants={fadeInUp}>
+              <motion.div variants={fadeInUp} className="space-y-4">
+                {submitStatus && (
+                  <div
+                    className={`flex items-start gap-3 p-4 rounded-lg ${
+                      submitStatus === 'success'
+                        ? 'bg-green-500/10 border border-green-500/20 text-green-400'
+                        : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                    }`}
+                  >
+                    {submitStatus === 'success' ? (
+                      <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    )}
+                    <p className="text-sm">{submitMessage}</p>
+                  </div>
+                )}
+
                 <Button
                   type="submit"
                   size="lg"
@@ -190,7 +220,7 @@ export function Contact() {
             <div className="
               bg-midnight/60 backdrop-blur-sm
               rounded-2xl border border-white/5
-              p-8 h-full
+              p-8
               hover:border-white/10
               transition-colors duration-300
             ">
@@ -220,24 +250,6 @@ export function Contact() {
                     </div>
                   </motion.a>
                 ))}
-              </div>
-
-              <div className="mt-10 pt-8 border-t border-white/5">
-                <p className="text-sm text-text-muted mb-4">
-                  Prefer to schedule a call?
-                </p>
-                <a
-                  href="#"
-                  className="
-                    inline-flex items-center text-sm text-neon-cyan
-                    hover:text-neon-purple
-                    transition-colors duration-300
-                    group
-                  "
-                >
-                  Book a 30-min discovery call
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </a>
               </div>
             </div>
           </motion.div>

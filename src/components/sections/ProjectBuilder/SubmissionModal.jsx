@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { X, Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Input, Textarea } from '../../ui/Input';
 import {
@@ -9,6 +9,7 @@ import {
   timelineOptions,
   budgetRanges,
 } from '../../../data/projectBuilder';
+import { submitQuoteRequest, ApiError } from '../../../utils/api';
 
 // Helper to get feature label by id
 function getFeatureLabel(featureId) {
@@ -28,6 +29,7 @@ export function SubmissionModal({ isOpen, onClose, selections }) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const selectedProjectType = projectTypes.find((t) => t.id === selections.projectType);
   const selectedTimeline = timelineOptions.find((t) => t.id === selections.timeline);
@@ -36,22 +38,43 @@ export function SubmissionModal({ isOpen, onClose, selections }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Prepare quote data with project builder selections
+      const quoteData = {
+        ...formData,
+        projectType: selectedProjectType?.title || selections.projectType,
+        features: selections.features,
+        timeline: selectedTimeline?.duration || selections.timeline,
+        budget: selectedBudget?.label || selections.budget,
+      };
 
-    setIsSubmitting(false);
-    setIsSuccess(true);
+      await submitQuoteRequest(quoteData);
+      setIsSuccess(true);
+    } catch (err) {
+      console.error('Quote submission error:', err);
+      if (err instanceof ApiError && err.errors?.length > 0) {
+        setError(err.errors.map(e => e.message).join('. '));
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
     setFormData({ name: '', email: '', company: '', message: '' });
     setIsSuccess(false);
+    setError(null);
     onClose();
   };
 
@@ -204,6 +227,13 @@ export function SubmissionModal({ isOpen, onClose, selections }) {
                     placeholder="Tell us more about your project goals, timeline constraints, or any specific requirements..."
                     rows={4}
                   />
+
+                  {error && (
+                    <div className="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                      <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">{error}</p>
+                    </div>
+                  )}
 
                   <Button
                     type="submit"

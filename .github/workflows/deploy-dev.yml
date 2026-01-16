@@ -1,0 +1,125 @@
+name: Deploy to Development
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-2
+  NODE_VERSION: '20'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Dev
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install CDK dependencies
+        run: cd cdk && npm ci
+
+      - name: Build React app
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.DEV_API_URL }}
+          VITE_ENVIRONMENT: dev
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: CDK Diff
+        id: cdk-diff
+        run: |
+          cd cdk
+          npx cdk diff --context environment=dev 2>&1 | tee diff-output.txt
+          echo "diff<<EOF" >> $GITHUB_OUTPUT
+          cat diff-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment CDK Diff on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const diff = `${{ steps.cdk-diff.outputs.diff }}`;
+            const body = `## CDK Diff (Development)
+
+            \`\`\`
+            ${diff}
+            \`\`\`
+
+            *This diff shows the infrastructure changes that will be deployed to the development environment.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Deploy to Development
+        run: |
+          cd cdk
+          npx cdk deploy --all --context environment=dev --require-approval never
+
+      - name: Get deployment outputs
+        id: outputs
+        run: |
+          cd cdk
+          WEBSITE_URL=$(aws cloudformation describe-stacks --stack-name PnkDigital-dev-Website --query "Stacks[0].Outputs[?OutputKey=='WebsiteUrl'].OutputValue" --output text)
+          API_URL=$(aws cloudformation describe-stacks --stack-name PnkDigital-dev-Api --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" --output text)
+          echo "website_url=$WEBSITE_URL" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment deployment URL on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const websiteUrl = '${{ steps.outputs.outputs.website_url }}';
+            const apiUrl = '${{ steps.outputs.outputs.api_url }}';
+
+            const body = `## Deployment Complete
+
+            | Resource | URL |
+            |----------|-----|
+            | Website | ${websiteUrl} |
+            | API | ${apiUrl}/api/health |
+
+            Your changes have been deployed to the development environment.`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Resource | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| Website | ${{ steps.outputs.outputs.website_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ steps.outputs.outputs.api_url }}/api/health |" >> $GITHUB_STEP_SUMMARY

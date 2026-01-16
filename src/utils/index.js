@@ -28,3 +28,10 @@ export {
   selectedStyles,
   unselectedStyles,
 } from './colors';
+
+// API utilities
+export {
+  submitContactForm,
+  submitQuoteRequest,
+  ApiError,
+} from './api';

@@ -22,13 +22,6 @@ const footerLinks = {
   ],
 };
 
-const socialLinks = [
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Twitter, href: '#', label: 'Twitter / X' },
-  { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Dribbble, href: '#', label: 'Dribbble' },
-];
-
 function FooterLink({ href, children, className }) {
   const { createHashClickHandler } = useHashNavigation();
 
@@ -68,31 +61,6 @@ export function Footer() {
             <p className="text-text-secondary max-w-xs mb-8 leading-relaxed">
               AI-powered development for companies that refuse to wait.
             </p>
-
-            {/* Social Links */}
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  whileHover={{ y: -3, scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="
-                    w-10 h-10 rounded-xl
-                    bg-midnight/50 border border-white/5
-                    flex items-center justify-center
-                    text-text-secondary
-                    hover:text-neon-cyan hover:border-neon-cyan/30
-                    hover:bg-neon-cyan/10
-                    hover:shadow-[0_0_20px_rgba(0,245,255,0.2)]
-                    transition-all duration-300
-                  "
-                >
-                  <social.icon size={18} />
-                </motion.a>
-              ))}
-            </div>
           </motion.div>
 
           {/* Link Columns */}
