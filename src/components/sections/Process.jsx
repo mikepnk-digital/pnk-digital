@@ -2,6 +2,10 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Target, Code2, RefreshCw, Clock, ArrowRight } from 'lucide-react';
 import { GradientText } from '../ui/GradientText';
+import { Section } from '../ui/Section';
+import { IconBox } from '../ui/IconBox';
+import { getAccentColor } from '../../utils/colors';
+import { smoothEase, fadeInUp, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
 const steps = [
   {
@@ -41,30 +45,6 @@ const steps = [
     accentColor: 'purple',
   },
 ];
-
-const accentColors = {
-  cyan: {
-    text: 'text-neon-cyan',
-    bg: 'bg-neon-cyan',
-    border: 'border-neon-cyan',
-    glow: 'shadow-[0_0_30px_rgba(0,245,255,0.3)]',
-    gradient: 'from-neon-cyan/20 to-neon-cyan/5',
-  },
-  magenta: {
-    text: 'text-neon-magenta',
-    bg: 'bg-neon-magenta',
-    border: 'border-neon-magenta',
-    glow: 'shadow-[0_0_30px_rgba(255,0,110,0.3)]',
-    gradient: 'from-neon-magenta/20 to-neon-magenta/5',
-  },
-  purple: {
-    text: 'text-neon-purple',
-    bg: 'bg-neon-purple',
-    border: 'border-neon-purple',
-    glow: 'shadow-[0_0_30px_rgba(139,92,246,0.3)]',
-    gradient: 'from-neon-purple/20 to-neon-purple/5',
-  },
-};
 
 // Timeline path component
 function ProcessPath({ isInView }) {
@@ -108,8 +88,7 @@ function ProcessPath({ isInView }) {
 
 // Step card component
 function StepCard({ step, index, isInView }) {
-  const colors = accentColors[step.accentColor];
-  const Icon = step.icon;
+  const colors = getAccentColor(step.accentColor);
 
   // Diagonal offset for desktop
   const offsets = [
@@ -125,7 +104,7 @@ function StepCard({ step, index, isInView }) {
       animate={isInView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: -60, y: 40 }}
       transition={{
         duration: 0.7,
-        ease: [0.16, 1, 0.3, 1],
+        ease: smoothEase,
         delay: 0.4 + index * 0.2,
       }}
     >
@@ -146,11 +125,12 @@ function StepCard({ step, index, isInView }) {
       >
         {/* Step label */}
         <div className="flex items-center gap-3 mb-4">
-          <div
-            className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colors.gradient} border ${colors.border}/30 flex items-center justify-center group-hover:${colors.glow} transition-shadow duration-300`}
-          >
-            <Icon className={`w-5 h-5 ${colors.text}`} strokeWidth={1.5} />
-          </div>
+          <IconBox
+            icon={step.icon}
+            color={step.accentColor}
+            size="sm"
+            className="w-10 h-10"
+          />
           <span className={`font-mono text-sm font-medium ${colors.text} tracking-wider uppercase`}>
             {step.number} — {step.title}
           </span>
@@ -200,53 +180,47 @@ function StepCard({ step, index, isInView }) {
 
 export function Process() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const isInView = useInView(sectionRef, viewportWithMargin);
 
   return (
-    <section
+    <Section
       id="process"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      background="gradient"
+      className="relative"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-void via-midnight/30 to-void" />
-
-      {/* Connecting path line */}
+      {/* Connecting path line - positioned absolutely within section */}
       <ProcessPath isInView={isInView} />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          className="max-w-4xl mb-16 lg:mb-20"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      {/* Header */}
+      <motion.div
+        className="max-w-4xl mb-16 lg:mb-20"
+        variants={fadeInUpLarge}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
+        <h2 className="text-center lg:text-left text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
+          From Idea to Working Product
+          <span className="block">
+            <GradientText>Fast.</GradientText>
+          </span>
+        </h2>
+        <motion.p
+          className="text-center md:text-left text-lg lg:text-xl text-text-secondary leading-relaxed"
+          variants={fadeInUp}
         >
-          <h2 className="text-center lg:text-left text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
-            From Idea to Working Product
-            <span className="block">
-              <GradientText>Fast.</GradientText>
-            </span>
-          </h2>
-          <motion.p
-            className="text-center md:text-left text-lg lg:text-xl text-text-secondary leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Most agencies deliver decks. We deliver deployable code. Here's how we turn your
-            vision into reality while others are still "aligning stakeholders."
-          </motion.p>
-        </motion.div>
+          Most agencies deliver decks. We deliver deployable code. Here's how we turn your
+          vision into reality while others are still "aligning stakeholders."
+        </motion.p>
+      </motion.div>
 
-        {/* Steps */}
-        <div className="space-y-8 lg:space-y-0">
-          {steps.map((step, index) => (
-            <StepCard key={step.number} step={step} index={index} isInView={isInView} />
-          ))}
-        </div>
+      {/* Steps */}
+      <div className="space-y-8 lg:space-y-0">
+        {steps.map((step, index) => (
+          <StepCard key={step.number} step={step} index={index} isInView={isInView} />
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 

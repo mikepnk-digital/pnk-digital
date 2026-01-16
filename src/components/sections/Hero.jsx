@@ -5,26 +5,10 @@ import { GradientText } from '../ui/GradientText';
 import { HeroOrbs } from '../decorative/GradientOrb';
 import { ParticleBackground } from '../decorative/ParticleBackground';
 import { DataTransformationViz } from '../decorative/DataTransformationViz';
+import { createStaggerContainer, fadeInUpLarge } from '../../utils/animations';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
-  },
-};
+// Use shared animation utilities with hero-specific timing
+const containerVariants = createStaggerContainer(0.15, 0.3);
 
 export function Hero() {
   return (
@@ -47,7 +31,7 @@ export function Hero() {
         >
           {/* Badge */}
           <motion.div
-            variants={itemVariants}
+            variants={fadeInUpLarge}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan text-sm mb-8"
           >
             <span className="relative flex h-2 w-2">
@@ -59,7 +43,7 @@ export function Hero() {
 
           {/* Main headline */}
           <motion.h1
-            variants={itemVariants}
+            variants={fadeInUpLarge}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8"
           >
             <GradientText className="inline-block">
@@ -69,7 +53,7 @@ export function Hero() {
 
           {/* Subtext */}
           <motion.p
-            variants={itemVariants}
+            variants={fadeInUpLarge}
             className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-12 leading-relaxed"
           >
             We build websites, applications, and software tools at speeds that leave traditional
@@ -79,7 +63,7 @@ export function Hero() {
 
           {/* CTA Buttons */}
           <motion.div
-            variants={itemVariants}
+            variants={fadeInUpLarge}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <a href="#project-builder">

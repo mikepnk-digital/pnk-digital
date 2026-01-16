@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useHashNavigation, useScrollState, useResponsiveClose } from '../../hooks';
 import logo from '../../assets/pnk-digital-logo.svg';
 
 const navLinks = [
@@ -14,61 +15,18 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Use shared hooks for common functionality
+  const isScrolled = useScrollState(50);
+  const { navigateToHash, createHashClickHandler } = useHashNavigation();
 
-  // Close mobile menu on resize to desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Close mobile menu on desktop resize
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
+  useResponsiveClose(768, closeMobileMenu);
 
-  const handleNavClick = (e, href) => {
-    e.preventDefault();
-    const hash = href.split('#')[1];
-
-    if (location.pathname === '/') {
-      // Already on home page, just scroll
-      const target = document.getElementById(hash);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      // Navigate to home page with hash
-      navigate('/', { state: { scrollTo: hash } });
-    }
-  };
-
-  // Handle scroll after navigation from subpage
-  useEffect(() => {
-    if (location.state?.scrollTo) {
-      const hash = location.state.scrollTo;
-      // Small delay to ensure page is rendered
-      setTimeout(() => {
-        const target = document.getElementById(hash);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-      // Clear the state
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
+  // Handler for desktop nav clicks
+  const handleNavClick = createHashClickHandler;
 
   return (
     <motion.nav
@@ -113,7 +71,7 @@ export function Navbar() {
               <motion.a
                 key={link.name}
                 href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
+                onClick={handleNavClick(link.href)}
                 className="
                   relative text-text-secondary
                   hover:text-brand-pink
@@ -136,7 +94,7 @@ export function Navbar() {
             ))}
             <a
               href="/#project-builder"
-              onClick={(e) => handleNavClick(e, '/#project-builder')}
+              onClick={handleNavClick('/#project-builder')}
             >
               <Button size="sm">Get Your Quote</Button>
             </a>
@@ -208,19 +166,8 @@ export function Navbar() {
                   "
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsMobileMenuOpen(false);
-                    const hash = link.href.split('#')[1];
-
-                    if (location.pathname === '/') {
-                      const target = document.getElementById(hash);
-                      if (target) {
-                        setTimeout(() => {
-                          target.scrollIntoView({ behavior: 'smooth' });
-                        }, 300);
-                      }
-                    } else {
-                      navigate('/', { state: { scrollTo: hash } });
-                    }
+                    closeMobileMenu();
+                    navigateToHash(link.href, { delay: 300 });
                   }}
                 >
                   {link.name}
@@ -236,18 +183,8 @@ export function Navbar() {
                   href="/#project-builder"
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsMobileMenuOpen(false);
-
-                    if (location.pathname === '/') {
-                      const target = document.getElementById('project-builder');
-                      if (target) {
-                        setTimeout(() => {
-                          target.scrollIntoView({ behavior: 'smooth' });
-                        }, 300);
-                      }
-                    } else {
-                      navigate('/', { state: { scrollTo: 'project-builder' } });
-                    }
+                    closeMobileMenu();
+                    navigateToHash('/#project-builder', { delay: 300 });
                   }}
                 >
                   <Button size="md" className="w-full">

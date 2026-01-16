@@ -1,30 +1,24 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { GradientText } from '../../ui/GradientText';
+import { StepIndicator } from '../../ui/IconBox';
 import { ProjectTypeSelector } from './ProjectTypeSelector';
 import { FeatureSelector } from './FeatureSelector';
 import { TimelineSelector } from './TimelineSelector';
 import { BudgetSelector } from './BudgetSelector';
 import { BuilderSummary } from './BuilderSummary';
 import { SubmissionModal } from './SubmissionModal';
+import { useProjectBuilder } from '../../../hooks';
+import { createStaggerContainer, fadeInUp, smoothEase } from '../../../utils/animations';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
-    },
-  },
-};
+const containerVariants = createStaggerContainer(0.15, 0.2);
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.5, ease: smoothEase },
   },
 };
 
@@ -32,52 +26,18 @@ export function ProjectBuilder() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
 
-  const [selections, setSelections] = useState({
-    projectType: null,
-    features: [],
-    timeline: null,
-    budget: null,
-  });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleProjectTypeSelect = (typeId) => {
-    setSelections((prev) => ({ ...prev, projectType: typeId }));
-  };
-
-  const handleFeatureToggle = (featureId) => {
-    setSelections((prev) => ({
-      ...prev,
-      features: prev.features.includes(featureId)
-        ? prev.features.filter((f) => f !== featureId)
-        : [...prev.features, featureId],
-    }));
-  };
-
-  const handleTimelineSelect = (timelineId) => {
-    setSelections((prev) => ({ ...prev, timeline: timelineId }));
-  };
-
-  const handleBudgetSelect = (budgetId) => {
-    setSelections((prev) => ({ ...prev, budget: budgetId }));
-  };
-
-  const handleGetQuote = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleReset = () => {
-    setSelections({
-      projectType: null,
-      features: [],
-      timeline: null,
-      budget: null,
-    });
-  };
+  // Use the custom hook for all state management
+  const {
+    selections,
+    isModalOpen,
+    handleProjectTypeSelect,
+    handleFeatureToggle,
+    handleTimelineSelect,
+    handleBudgetSelect,
+    openModal,
+    closeModal,
+    reset,
+  } = useProjectBuilder();
 
   return (
     <section
@@ -117,9 +77,7 @@ export function ProjectBuilder() {
             {/* Project Type */}
             <motion.div variants={itemVariants}>
               <h3 className="text-xl font-semibold text-text-primary mb-6 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-neon-cyan/20 flex items-center justify-center text-neon-cyan text-sm font-bold">
-                  1
-                </span>
+                <StepIndicator number={1} color="cyan" />
                 What type of project?
               </h3>
               <ProjectTypeSelector
@@ -131,9 +89,7 @@ export function ProjectBuilder() {
             {/* Features */}
             <motion.div variants={itemVariants}>
               <h3 className="text-xl font-semibold text-text-primary mb-6 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-neon-purple/20 flex items-center justify-center text-neon-purple text-sm font-bold">
-                  2
-                </span>
+                <StepIndicator number={2} color="purple" />
                 What capabilities do you need?
               </h3>
               <FeatureSelector
@@ -145,9 +101,7 @@ export function ProjectBuilder() {
             {/* Timeline */}
             <motion.div variants={itemVariants}>
               <h3 className="text-xl font-semibold text-text-primary mb-6 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-neon-magenta/20 flex items-center justify-center text-neon-magenta text-sm font-bold">
-                  3
-                </span>
+                <StepIndicator number={3} color="magenta" />
                 What's your timeline?
               </h3>
               <TimelineSelector
@@ -159,9 +113,7 @@ export function ProjectBuilder() {
             {/* Budget */}
             <motion.div variants={itemVariants}>
               <h3 className="text-xl font-semibold text-text-primary mb-6 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-neon-cyan/20 flex items-center justify-center text-neon-cyan text-sm font-bold">
-                  4
-                </span>
+                <StepIndicator number={4} color="cyan" />
                 What's your budget range?
               </h3>
               <BudgetSelector
@@ -181,8 +133,8 @@ export function ProjectBuilder() {
             >
               <BuilderSummary
                 selections={selections}
-                onGetQuote={handleGetQuote}
-                onReset={handleReset}
+                onGetQuote={openModal}
+                onReset={reset}
               />
             </motion.div>
           </div>
@@ -192,7 +144,7 @@ export function ProjectBuilder() {
       {/* Submission Modal */}
       <SubmissionModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        onClose={closeModal}
         selections={selections}
       />
     </section>

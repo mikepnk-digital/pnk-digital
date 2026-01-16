@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { budgetRanges } from '../../../data/projectBuilder';
+import { SelectableCard, SelectionIndicator } from '../../ui/SelectableCard';
 
 export function BudgetSelector({ selected, onSelect }) {
   return (
@@ -8,20 +8,14 @@ export function BudgetSelector({ selected, onSelect }) {
         const isSelected = selected === range.id;
 
         return (
-          <motion.button
+          <SelectableCard
             key={range.id}
+            isSelected={isSelected}
             onClick={() => onSelect(range.id)}
-            className={`
-              relative p-4 rounded-xl text-center
-              bg-midnight/60 backdrop-blur-sm
-              border transition-all duration-300
-              ${isSelected
-                ? 'border-neon-cyan/60 shadow-[0_0_25px_rgba(0,245,255,0.15)]'
-                : 'border-white/10 hover:border-white/20'
-              }
-            `}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            color="cyan"
+            showCheckmark={false}
+            hoverScale={1.03}
+            className="p-4 text-center"
           >
             {/* Tier label */}
             <span
@@ -44,14 +38,8 @@ export function BudgetSelector({ selected, onSelect }) {
             </span>
 
             {/* Selection indicator */}
-            {isSelected && (
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-full"
-              />
-            )}
-          </motion.button>
+            <SelectionIndicator isSelected={isSelected} color="cyan" />
+          </SelectableCard>
         );
       })}
     </div>

@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Github, Linkedin, Twitter, Dribbble } from 'lucide-react';
 import logo from '../../assets/pnk-digital-logo.svg';
+import { useHashNavigation } from '../../hooks/useHashNavigation';
+import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {
   Services: [
@@ -27,44 +29,11 @@ const socialLinks = [
   { icon: Dribbble, href: '#', label: 'Dribbble' },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
 function FooterLink({ href, children, className }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const handleClick = (e) => {
-    if (href.startsWith('/#')) {
-      e.preventDefault();
-      const hash = href.split('#')[1];
-
-      if (location.pathname === '/') {
-        const target = document.getElementById(hash);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        navigate('/', { state: { scrollTo: hash } });
-      }
-    }
-  };
+  const { createHashClickHandler } = useHashNavigation();
 
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a href={href} onClick={createHashClickHandler(href)} className={className}>
       {children}
     </a>
   );
@@ -77,7 +46,7 @@ export function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-neon-cyan/5 via-transparent to-transparent pointer-events-none" />
 
       <motion.div
-        variants={containerVariants}
+        variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
@@ -85,7 +54,7 @@ export function Footer() {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Brand Column */}
-          <motion.div variants={itemVariants} className="lg:col-span-4">
+          <motion.div variants={fadeInUp} className="lg:col-span-4">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <img
                 src={logo}
@@ -130,7 +99,7 @@ export function Footer() {
           {Object.entries(footerLinks).map(([category, links]) => (
             <motion.div
               key={category}
-              variants={itemVariants}
+              variants={fadeInUp}
               className="lg:col-span-2"
             >
               <h3 className="font-semibold text-text-primary mb-5 text-sm uppercase tracking-wider">
@@ -157,7 +126,7 @@ export function Footer() {
           ))}
 
           {/* CTA Column */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
+          <motion.div variants={fadeInUp} className="lg:col-span-2">
             <h3 className="font-semibold text-text-primary mb-5 text-sm uppercase tracking-wider">
               Ready to Start?
             </h3>
@@ -180,7 +149,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <motion.div
-          variants={itemVariants}
+          variants={fadeInUp}
           className="
             mt-16 pt-8 border-t border-white/5
             flex flex-col sm:flex-row justify-between items-center gap-4

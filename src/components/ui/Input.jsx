@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
 
+/**
+ * Shared input styles for consistent form field appearance
+ */
 const baseInputStyles = `
   w-full px-4 py-3 rounded-xl
   bg-midnight/70 backdrop-blur-sm
@@ -11,7 +14,26 @@ const baseInputStyles = `
   transition-all duration-300
 `;
 
-export function Input({ label, className = '', ...props }) {
+/**
+ * Shared animated wrapper for form fields
+ * Reduces duplication across Input, Textarea, and Select components
+ */
+function FormFieldWrapper({ label, className = '', children, animate = true }) {
+  const content = (
+    <>
+      {label && (
+        <label className="block text-text-secondary text-sm font-medium mb-2">
+          {label}
+        </label>
+      )}
+      {children}
+    </>
+  );
+
+  if (!animate) {
+    return <div className={className}>{content}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -20,56 +42,34 @@ export function Input({ label, className = '', ...props }) {
       transition={{ duration: 0.3 }}
       className={className}
     >
-      {label && (
-        <label className="block text-text-secondary text-sm font-medium mb-2">
-          {label}
-        </label>
-      )}
-      <input
-        className={baseInputStyles}
-        {...props}
-      />
+      {content}
     </motion.div>
   );
 }
 
-export function Textarea({ label, className = '', rows = 5, ...props }) {
+export function Input({ label, className = '', animate = true, ...props }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
-      className={className}
-    >
-      {label && (
-        <label className="block text-text-secondary text-sm font-medium mb-2">
-          {label}
-        </label>
-      )}
+    <FormFieldWrapper label={label} className={className} animate={animate}>
+      <input className={baseInputStyles} {...props} />
+    </FormFieldWrapper>
+  );
+}
+
+export function Textarea({ label, className = '', rows = 5, animate = true, ...props }) {
+  return (
+    <FormFieldWrapper label={label} className={className} animate={animate}>
       <textarea
         className={`${baseInputStyles} resize-none`}
         rows={rows}
         {...props}
       />
-    </motion.div>
+    </FormFieldWrapper>
   );
 }
 
-export function Select({ label, options = [], placeholder, className = '', ...props }) {
+export function Select({ label, options = [], placeholder, className = '', animate = true, ...props }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
-      className={className}
-    >
-      {label && (
-        <label className="block text-text-secondary text-sm font-medium mb-2">
-          {label}
-        </label>
-      )}
+    <FormFieldWrapper label={label} className={className} animate={animate}>
       <select
         className={`
           ${baseInputStyles}
@@ -94,6 +94,9 @@ export function Select({ label, options = [], placeholder, className = '', ...pr
           </option>
         ))}
       </select>
-    </motion.div>
+    </FormFieldWrapper>
   );
 }
+
+// Export for custom form field usage
+export { FormFieldWrapper, baseInputStyles };

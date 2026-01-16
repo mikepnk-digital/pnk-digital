@@ -1,10 +1,12 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, ArrowRight } from 'lucide-react';
 import { SectionHeading } from '../ui/SectionHeading';
+import { Section, orbPresets } from '../ui/Section';
 import { Button } from '../ui/Button';
 import { Input, Textarea, Select } from '../ui/Input';
-import { GradientOrb } from '../decorative/GradientOrb';
+import { IconBox } from '../ui/IconBox';
+import { useFormState } from '../../hooks';
+import { staggerContainer, fadeInUp, fadeInRight, viewportWithMargin } from '../../utils/animations';
 
 const contactInfo = [
   {
@@ -45,87 +47,55 @@ const budgetRanges = [
   { value: '250k+', label: '£250k+' },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
+// Initial form state
+const initialFormState = {
+  name: '',
+  email: '',
+  company: '',
+  projectType: '',
+  budget: '',
+  message: '',
 };
 
 export function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    projectType: '',
-    budget: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Use the custom form state hook
+  const {
+    formData,
+    isSubmitting,
+    handleChange,
+    createSubmitHandler,
+  } = useFormState(initialFormState);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Form submitted:', formData);
-    setIsSubmitting(false);
-    // Reset form or show success message
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Create the submit handler
+  const handleSubmit = createSubmitHandler(
+    async (data) => {
+      // Simulate form submission
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log('Form submitted:', data);
+      // In production, this would send to an API
+    },
+    { resetOnSuccess: true }
+  );
 
   return (
-    <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
-      {/* Background decoration */}
-      <GradientOrb
-        color="cyan"
-        size={500}
-        top="-100px"
-        left="-200px"
-        opacity={0.06}
-        blur={120}
-        animate={false}
-      />
-      <GradientOrb
-        color="purple"
-        size={400}
-        bottom="-100px"
-        right="-150px"
-        opacity={0.05}
-        blur={100}
-        animate={false}
+    <Section id="contact" orbs={orbPresets.contactDual}>
+      <SectionHeading
+        title="Ready to Move Faster?"
+        subtitle="While your competitors are getting quotes from agencies and interviewing dev teams, you could already be building. Tell us what you need—we'll tell you how fast we can deliver it and what it'll actually cost. No fluff, no surprises."
+        gradient
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          title="Ready to Move Faster?"
-          subtitle="While your competitors are getting quotes from agencies and interviewing dev teams, you could already be building. Tell us what you need—we'll tell you how fast we can deliver it and what it'll actually cost. No fluff, no surprises."
-          gradient
-        />
-
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-          {/* Contact Form */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-            className="lg:col-span-3"
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <motion.div variants={itemVariants} className="grid sm:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
+        {/* Contact Form */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportWithMargin}
+          className="lg:col-span-3"
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <motion.div variants={fadeInUp} className="grid sm:grid-cols-2 gap-6">
                 <Input
                   label="Your Name"
                   name="name"
@@ -145,7 +115,7 @@ export function Contact() {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={fadeInUp}>
                 <Input
                   label="Company Name"
                   name="company"
@@ -155,7 +125,7 @@ export function Contact() {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants} className="grid sm:grid-cols-2 gap-6">
+              <motion.div variants={fadeInUp} className="grid sm:grid-cols-2 gap-6">
                 <Select
                   label="What Are You Building?"
                   name="projectType"
@@ -175,7 +145,7 @@ export function Contact() {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={fadeInUp}>
                 <Textarea
                   label="Tell Us About Your Project"
                   name="message"
@@ -187,7 +157,7 @@ export function Contact() {
                 />
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              <motion.div variants={fadeInUp}>
                 <Button
                   type="submit"
                   size="lg"
@@ -211,10 +181,10 @@ export function Contact() {
 
           {/* Contact Info Panel */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={fadeInRight}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
             className="lg:col-span-2"
           >
             <div className="
@@ -241,17 +211,7 @@ export function Contact() {
                     transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
                     className="flex items-start gap-4 group"
                   >
-                    <div className="
-                      w-12 h-12 rounded-xl
-                      bg-gradient-to-br from-neon-cyan/20 to-neon-purple/10
-                      border border-neon-cyan/20
-                      flex items-center justify-center shrink-0
-                      group-hover:shadow-[0_0_25px_rgba(0,245,255,0.3)]
-                      group-hover:border-neon-cyan/40
-                      transition-all duration-300
-                    ">
-                      <item.icon className="w-5 h-5 text-neon-cyan" />
-                    </div>
+                    <IconBox icon={item.icon} color="cyan" size="md" className="w-12 h-12" />
                     <div>
                       <div className="text-sm text-text-muted mb-1">{item.label}</div>
                       <div className="text-text-primary group-hover:text-neon-cyan transition-colors font-medium">
@@ -282,7 +242,6 @@ export function Contact() {
             </div>
           </motion.div>
         </div>
-      </div>
-    </section>
+    </Section>
   );
 }
