@@ -28,7 +28,7 @@ const itemVariants = {
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern" id="home">
       {/* Animated particle background */}
       <ParticleBackground particleCount={50} connectionDistance={100} />
 
@@ -54,7 +54,7 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan" />
             </span>
-            AI Development Agency
+            AI-Powered Development
           </motion.div>
 
           {/* Main headline */}
@@ -63,7 +63,7 @@ export function Hero() {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8"
           >
             <GradientText className="inline-block">
-              Intelligence, Engineered.
+              Ship Faster. Spend Less. Win More.
             </GradientText>
           </motion.h1>
 
@@ -72,9 +72,9 @@ export function Hero() {
             variants={itemVariants}
             className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-12 leading-relaxed"
           >
-            We build AI systems that actually work. Custom solutions that solve real problems,
-            not science projects that gather dust. From predictive models to conversational agents,
-            we turn your data into decisions and your ideas into competitive advantages.
+            We build websites, applications, and software tools at speeds that leave traditional
+            agencies in the dust. Powered by AI development workflows, we deliver enterprise-quality
+            products without the enterprise price tag—or the six-month timeline.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -82,13 +82,15 @@ export function Hero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="group min-w-[200px]">
-              Start Your Project
-              <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <a href="#project-builder">
+              <Button size="lg" className="group min-w-[200px]">
+                Start Building Today
+                <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </a>
             <Button variant="secondary" size="lg" className="group min-w-[200px]">
               <Eye className="inline-block mr-2 w-5 h-5" />
-              See Our Work
+              See How We Work
             </Button>
           </motion.div>
         </motion.div>

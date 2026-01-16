@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { GradientText } from '../ui/GradientText';
+import logo from '../../assets/pnk-digital-logo.svg';
 
 const navLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'Services', href: '#services' },
-  { name: 'About', href: '#about' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Home', href: '/#home' },
+  { name: 'Services', href: '/#services' },
+  { name: 'About', href: '/#about' },
+  { name: 'Build Your Project', href: '/#project-builder' },
+  { name: 'Contact', href: '/#contact' },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +38,38 @@ export function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    const hash = href.split('#')[1];
+
+    if (location.pathname === '/') {
+      // Already on home page, just scroll
+      const target = document.getElementById(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Navigate to home page with hash
+      navigate('/', { state: { scrollTo: hash } });
+    }
+  };
+
+  // Handle scroll after navigation from subpage
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const hash = location.state.scrollTo;
+      // Small delay to ensure page is rendered
+      setTimeout(() => {
+        const target = document.getElementById(hash);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      // Clear the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -52,24 +88,24 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <motion.a
-            href="#"
-            className="flex items-center gap-2 text-2xl font-bold group"
+          <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="
-              w-10 h-10 rounded-lg
-              bg-gradient-to-br from-neon-cyan to-neon-purple
-              flex items-center justify-center
-              shadow-[0_0_20px_rgba(0,245,255,0.3)]
-              group-hover:shadow-[0_0_30px_rgba(0,245,255,0.5)]
-              transition-shadow duration-300
-            ">
-              <Zap className="w-5 h-5 text-void" strokeWidth={2.5} />
-            </div>
-            <GradientText>NeuralForge</GradientText>
-          </motion.a>
+            <Link
+              to="/"
+              className="flex items-center gap-3"
+            >
+              <img
+                src={logo}
+                alt="PNK Digital"
+                className="h-10 w-auto"
+              />
+              <span className="text-white font-semibold text-xl tracking-tight">
+                PNK Digital
+              </span>
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
@@ -77,11 +113,13 @@ export function Navbar() {
               <motion.a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="
                   relative text-text-secondary
-                  hover:text-neon-cyan
+                  hover:text-brand-pink
                   transition-colors duration-300
                   py-2
+                  group
                 "
                 whileHover={{ y: -2 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
@@ -89,14 +127,19 @@ export function Navbar() {
                 {link.name}
                 <span className="
                   absolute bottom-0 left-0 w-full h-0.5
-                  bg-gradient-to-r from-neon-cyan to-neon-purple
+                  bg-gradient-to-r from-brand-pink to-neon-purple
                   scale-x-0 origin-left
                   transition-transform duration-300
                   group-hover:scale-x-100
                 " />
               </motion.a>
             ))}
-            <Button size="sm">Start Your Project</Button>
+            <a
+              href="/#project-builder"
+              onClick={(e) => handleNavClick(e, '/#project-builder')}
+            >
+              <Button size="sm">Get Your Quote</Button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -158,12 +201,27 @@ export function Navbar() {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   className="
                     block text-text-secondary
-                    hover:text-neon-cyan
-                    hover:bg-neon-cyan/5
+                    hover:text-brand-pink
+                    hover:bg-brand-pink/5
                     transition-all duration-300
                     py-3 px-4 rounded-lg
                   "
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+                    const hash = link.href.split('#')[1];
+
+                    if (location.pathname === '/') {
+                      const target = document.getElementById(hash);
+                      if (target) {
+                        setTimeout(() => {
+                          target.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                      }
+                    } else {
+                      navigate('/', { state: { scrollTo: hash } });
+                    }
+                  }}
                 >
                   {link.name}
                 </motion.a>
@@ -174,9 +232,28 @@ export function Navbar() {
                 transition={{ duration: 0.3, delay: 0.4 }}
                 className="pt-4"
               >
-                <Button size="md" className="w-full">
-                  Start Your Project
-                </Button>
+                <a
+                  href="/#project-builder"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+
+                    if (location.pathname === '/') {
+                      const target = document.getElementById('project-builder');
+                      if (target) {
+                        setTimeout(() => {
+                          target.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                      }
+                    } else {
+                      navigate('/', { state: { scrollTo: 'project-builder' } });
+                    }
+                  }}
+                >
+                  <Button size="md" className="w-full">
+                    Get Your Quote
+                  </Button>
+                </a>
               </motion.div>
             </div>
           </motion.div>

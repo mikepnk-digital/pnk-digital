@@ -10,8 +10,8 @@ export function SectionHeading({
 }) {
   const alignmentClasses = {
     center: 'text-center mx-auto',
-    left: 'text-left',
-    right: 'text-right ml-auto',
+    left: 'text-center md:text-left mx-auto md:mx-0',
+    right: 'text-center md:text-right mx-auto md:ml-auto md:mr-0',
   };
 
   return (

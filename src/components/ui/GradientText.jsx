@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export function GradientText({ children, className = '', animate = false }) {
   const baseClasses = `
-    bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta
+    bg-gradient-to-r from-neon-cyan via-neon-purple to-brand-pink
     bg-clip-text text-transparent
     bg-[length:200%_auto]
   `;

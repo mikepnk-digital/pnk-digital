@@ -69,7 +69,7 @@ Each card: icon, title, description, technology tags
   - Description
   - Deliverable block
   - Timeline badge
-  - Comparison callout (Traditional vs NeuralForge)
+  - Comparison callout (Traditional vs PNK Digital)
 
 ### 5. Project Builder (Interactive Requirements Builder)
 - Headline: "Build Your AI Project"

@@ -1,11 +1,11 @@
 import {
-  Brain,
-  Layers,
-  Plug,
+  Monitor,
+  Smartphone,
+  Settings,
   Lightbulb,
-  Database,
+  Plug,
   Shield,
-  Cpu,
+  Layers,
   Link,
   Zap,
   Clock,
@@ -14,22 +14,22 @@ import {
 
 export const projectTypes = [
   {
-    id: 'custom-ai',
-    icon: Brain,
-    title: 'Custom AI Development',
-    shortDesc: 'Bespoke intelligent systems',
+    id: 'website',
+    icon: Monitor,
+    title: 'Website Development',
+    shortDesc: 'Marketing sites & web platforms',
   },
   {
-    id: 'ml-systems',
-    icon: Layers,
-    title: 'Machine Learning Systems',
-    shortDesc: 'Predictive models & analytics',
+    id: 'application',
+    icon: Smartphone,
+    title: 'Application Development',
+    shortDesc: 'Mobile & web applications',
   },
   {
-    id: 'integration',
-    icon: Plug,
-    title: 'AI Integration',
-    shortDesc: 'Embed AI into existing systems',
+    id: 'software',
+    icon: Settings,
+    title: 'Software Tools',
+    shortDesc: 'Dashboards & automation',
   },
   {
     id: 'consulting',
@@ -38,30 +38,31 @@ export const projectTypes = [
     shortDesc: 'Strategy & roadmap planning',
   },
   {
-    id: 'data-engineering',
-    icon: Database,
-    title: 'Data Engineering',
-    shortDesc: 'Pipelines & infrastructure',
+    id: 'integration',
+    icon: Plug,
+    title: 'AI Integration',
+    shortDesc: 'Embed AI into your workflows',
   },
   {
     id: 'support',
     icon: Shield,
-    title: 'Maintenance & Support',
-    shortDesc: 'Ongoing optimization',
+    title: 'Ongoing Support',
+    shortDesc: 'Maintenance & updates',
   },
 ];
 
 export const featureCategories = [
   {
     id: 'core',
-    category: 'Core Capabilities',
-    icon: Cpu,
+    category: 'Core Features',
+    icon: Layers,
     features: [
-      { id: 'nlp', label: 'Natural Language Processing' },
-      { id: 'computer-vision', label: 'Computer Vision' },
-      { id: 'predictive', label: 'Predictive Analytics' },
-      { id: 'generative', label: 'Generative AI / LLMs' },
-      { id: 'recommendation', label: 'Recommendation Engine' },
+      { id: 'responsive', label: 'Responsive Design' },
+      { id: 'cms', label: 'Content Management System' },
+      { id: 'ecommerce', label: 'E-commerce Functionality' },
+      { id: 'auth', label: 'User Authentication' },
+      { id: 'dashboard', label: 'Admin Dashboard' },
+      { id: 'core-other', label: 'Other' },
     ],
   },
   {
@@ -70,21 +71,23 @@ export const featureCategories = [
     icon: Link,
     features: [
       { id: 'api', label: 'REST / GraphQL APIs' },
+      { id: 'payment', label: 'Payment Processing' },
       { id: 'crm', label: 'CRM Integration' },
-      { id: 'database', label: 'Database Connectors' },
-      { id: 'cloud', label: 'Cloud Services (AWS/GCP/Azure)' },
-      { id: 'realtime', label: 'Real-time Streaming' },
+      { id: 'analytics', label: 'Analytics & Tracking' },
+      { id: 'ai-features', label: 'AI-Powered Features' },
+      { id: 'integrations-other', label: 'Other' },
     ],
   },
   {
     id: 'scale',
-    category: 'Scale & Security',
+    category: 'Scale & Support',
     icon: Shield,
     features: [
-      { id: 'enterprise', label: 'Enterprise Scale' },
-      { id: 'compliance', label: 'Compliance (HIPAA/SOC2)' },
-      { id: 'mlops', label: 'ML Ops & Monitoring' },
-      { id: 'edge', label: 'Edge Deployment' },
+      { id: 'hosting', label: 'Managed Hosting' },
+      { id: 'performance', label: 'Performance Optimization' },
+      { id: 'seo', label: 'SEO Optimization' },
+      { id: 'maintenance', label: 'Ongoing Maintenance' },
+      { id: 'scale-other', label: 'Other' },
     ],
   },
 ];
@@ -117,11 +120,11 @@ export const timelineOptions = [
 ];
 
 export const budgetRanges = [
-  { id: '10k-25k', label: '$10k - $25k', tier: 'Starter' },
-  { id: '25k-50k', label: '$25k - $50k', tier: 'Growth' },
-  { id: '50k-100k', label: '$50k - $100k', tier: 'Scale' },
-  { id: '100k-250k', label: '$100k - $250k', tier: 'Enterprise' },
-  { id: '250k+', label: '$250k+', tier: 'Custom' },
+  { id: '3k-25k', label: '£3k - £25k', tier: 'Starter' },
+  { id: '25k-50k', label: '£25k - £50k', tier: 'Growth' },
+  { id: '50k-100k', label: '£50k - £100k', tier: 'Scale' },
+  { id: '100k-250k', label: '£100k - £250k', tier: 'Enterprise' },
+  { id: '250k+', label: '£250k+', tier: 'Custom' },
 ];
 
 // Complexity calculation based on selections
@@ -130,11 +133,11 @@ export function calculateComplexity(selections) {
 
   // Project type weights
   const typeWeights = {
-    'custom-ai': 3,
-    'ml-systems': 3,
-    'integration': 2,
+    'website': 2,
+    'application': 3,
+    'software': 3,
     'consulting': 1,
-    'data-engineering': 2,
+    'integration': 2,
     'support': 1,
   };
   score += typeWeights[selections.projectType] || 0;

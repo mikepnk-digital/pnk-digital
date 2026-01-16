@@ -43,7 +43,7 @@ export function TimelineSelector({ selected, onSelect }) {
               key={option.id}
               onClick={() => onSelect(option.id)}
               className={`
-                relative p-6 rounded-xl text-center
+                relative p-4 sm:p-6 rounded-xl text-left sm:text-center
                 bg-midnight/60 backdrop-blur-sm
                 border transition-all duration-300
                 ${isSelected
@@ -63,35 +63,40 @@ export function TimelineSelector({ selected, onSelect }) {
                 `}
               />
 
-              {/* Icon */}
-              <div
-                className={`
-                  w-14 h-14 rounded-xl mx-auto mb-4
-                  flex items-center justify-center
-                  transition-all duration-300
-                  ${isSelected ? styles.bg : 'bg-white/5'}
-                `}
-              >
-                <Icon
-                  className={`w-7 h-7 transition-colors ${isSelected ? styles.text : 'text-text-secondary'}`}
-                  strokeWidth={1.5}
-                />
+              {/* Icon and content - horizontal on mobile */}
+              <div className="flex gap-4 sm:block">
+                {/* Icon */}
+                <div
+                  className={`
+                    w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:mx-auto sm:mb-4 shrink-0
+                    flex items-center justify-center
+                    transition-all duration-300
+                    ${isSelected ? styles.bg : 'bg-white/5'}
+                  `}
+                >
+                  <Icon
+                    className={`w-5 h-5 sm:w-7 sm:h-7 transition-colors ${isSelected ? styles.text : 'text-text-secondary'}`}
+                    strokeWidth={1.5}
+                  />
+                </div>
+
+                <div>
+                  {/* Label */}
+                  <h4
+                    className={`font-semibold mb-1 transition-colors ${isSelected ? 'text-white' : 'text-text-primary'}`}
+                  >
+                    {option.label}
+                  </h4>
+
+                  {/* Duration */}
+                  <p className={`text-base sm:text-lg font-bold mb-1 ${isSelected ? styles.text : 'text-text-secondary'}`}>
+                    {option.duration}
+                  </p>
+
+                  {/* Description */}
+                  <p className="text-sm text-text-muted">{option.description}</p>
+                </div>
               </div>
-
-              {/* Label */}
-              <h4
-                className={`font-semibold mb-1 transition-colors ${isSelected ? 'text-white' : 'text-text-primary'}`}
-              >
-                {option.label}
-              </h4>
-
-              {/* Duration */}
-              <p className={`text-lg font-bold mb-1 ${isSelected ? styles.text : 'text-text-secondary'}`}>
-                {option.duration}
-              </p>
-
-              {/* Description */}
-              <p className="text-sm text-text-muted">{option.description}</p>
             </motion.button>
           );
         })}

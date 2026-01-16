@@ -96,10 +96,10 @@ export function ProjectBuilder() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
+          <h2 className="text-center lg:text-left text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
             Build Your <GradientText>AI Project</GradientText>
           </h2>
-          <p className="text-lg lg:text-xl text-text-secondary max-w-3xl mx-auto">
+          <p className="text-center md:text-left text-lg lg:text-xl text-text-secondary max-w-3xl mx-auto md:mx-0">
             Configure your project requirements in minutes. Select features, set your
             timeline, and get an instant complexity assessment with a custom quote.
           </p>

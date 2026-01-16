@@ -10,39 +10,39 @@ const contactInfo = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'hello@neuralforge.dev',
-    href: 'mailto:hello@neuralforge.dev',
+    value: 'hello@pnkdigital.com',
+    href: 'mailto:hello@pnkdigital.com',
   },
   {
     icon: Phone,
     label: 'Phone',
-    value: '+1 (415) 555-0192',
-    href: 'tel:+14155550192',
+    value: '+44 20 7946 0958',
+    href: 'tel:+442079460958',
   },
   {
     icon: MapPin,
     label: 'Location',
-    value: 'San Francisco, CA',
+    value: 'London, UK',
     href: '#',
   },
 ];
 
 const projectTypes = [
-  { value: 'custom-ai', label: 'Custom AI Development' },
-  { value: 'ml', label: 'Machine Learning Systems' },
-  { value: 'integration', label: 'AI Integration' },
+  { value: 'website', label: 'Website Development' },
+  { value: 'application', label: 'Application Development' },
+  { value: 'software', label: 'Software Tools' },
   { value: 'consulting', label: 'AI Consulting' },
-  { value: 'data', label: 'Data Engineering' },
-  { value: 'support', label: 'AI Maintenance & Support' },
+  { value: 'integration', label: 'AI Integration' },
+  { value: 'support', label: 'Ongoing Support' },
   { value: 'other', label: 'Other' },
 ];
 
 const budgetRanges = [
-  { value: '10k-25k', label: '$10k - $25k' },
-  { value: '25k-50k', label: '$25k - $50k' },
-  { value: '50k-100k', label: '$50k - $100k' },
-  { value: '100k-250k', label: '$100k - $250k' },
-  { value: '250k+', label: '$250k+' },
+  { value: '10k-25k', label: '£10k - £25k' },
+  { value: '25k-50k', label: '£25k - £50k' },
+  { value: '50k-100k', label: '£50k - £100k' },
+  { value: '100k-250k', label: '£100k - £250k' },
+  { value: '250k+', label: '£250k+' },
 ];
 
 const containerVariants = {
@@ -110,8 +110,8 @@ export function Contact() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          title="Let's Build Something Intelligent"
-          subtitle="Every breakthrough starts with a conversation. Tell us what you're trying to solve—we'll tell you exactly how we can help, what it takes, and whether we're the right fit. No pitch decks, no pressure."
+          title="Ready to Move Faster?"
+          subtitle="While your competitors are getting quotes from agencies and interviewing dev teams, you could already be building. Tell us what you need—we'll tell you how fast we can deliver it and what it'll actually cost. No fluff, no surprises."
           gradient
         />
 
@@ -200,7 +200,7 @@ export function Contact() {
                     </>
                   ) : (
                     <>
-                      Send Message
+                      Let's Talk
                       <Send className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}

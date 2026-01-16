@@ -217,19 +217,19 @@ export function Process() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
-          className="max-w-3xl mb-16 lg:mb-20"
+          className="max-w-4xl mb-16 lg:mb-20"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
+          <h2 className="text-center lg:text-left text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
             From Idea to Working Product
             <span className="block">
               <GradientText>Fast.</GradientText>
             </span>
           </h2>
           <motion.p
-            className="text-lg lg:text-xl text-text-secondary leading-relaxed"
+            className="text-center md:text-left text-lg lg:text-xl text-text-secondary leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}

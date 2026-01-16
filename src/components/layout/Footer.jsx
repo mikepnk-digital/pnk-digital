@@ -1,27 +1,22 @@
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Dribbble, Zap } from 'lucide-react';
-import { GradientText } from '../ui/GradientText';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Github, Linkedin, Twitter, Dribbble } from 'lucide-react';
+import logo from '../../assets/pnk-digital-logo.svg';
 
 const footerLinks = {
   Services: [
-    { name: 'Custom Development', href: '#services' },
-    { name: 'Machine Learning', href: '#services' },
-    { name: 'AI Integration', href: '#services' },
-    { name: 'Consulting', href: '#services' },
-    { name: 'Data Engineering', href: '#services' },
-    { name: 'Support', href: '#services' },
+    { name: 'Website Development', href: '/#services' },
+    { name: 'Application Development', href: '/#services' },
+    { name: 'Software Tools', href: '/#services' },
+    { name: 'AI Consulting', href: '/#services' },
+    { name: 'AI Integration', href: '/#services' },
+    { name: 'Ongoing Support', href: '/#services' },
   ],
-  Company: [
-    { name: 'About Us', href: '#about' },
-    { name: 'Our Work', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Blog', href: '#' },
-  ],
-  Resources: [
-    { name: 'Case Studies', href: '#' },
-    { name: 'Documentation', href: '#' },
-    { name: 'AI Readiness Guide', href: '#' },
-    { name: 'Contact', href: '#contact' },
+  Navigation: [
+    { name: 'Home', href: '/#home' },
+    { name: 'About Us', href: '/#about' },
+    { name: 'Build Your Project', href: '/#project-builder' },
+    { name: 'Contact', href: '/#contact' },
   ],
 };
 
@@ -48,6 +43,33 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+function FooterLink({ href, children, className }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    if (href.startsWith('/#')) {
+      e.preventDefault();
+      const hash = href.split('#')[1];
+
+      if (location.pathname === '/') {
+        const target = document.getElementById(hash);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        navigate('/', { state: { scrollTo: hash } });
+      }
+    }
+  };
+
+  return (
+    <a href={href} onClick={handleClick} className={className}>
+      {children}
+    </a>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="relative bg-void border-t border-white/5 overflow-hidden">
@@ -64,21 +86,18 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Brand Column */}
           <motion.div variants={itemVariants} className="lg:col-span-4">
-            <a href="#" className="flex items-center gap-2 text-2xl font-bold group mb-6">
-              <div className="
-                w-10 h-10 rounded-lg
-                bg-gradient-to-br from-neon-cyan to-neon-purple
-                flex items-center justify-center
-                shadow-[0_0_20px_rgba(0,245,255,0.3)]
-                group-hover:shadow-[0_0_30px_rgba(0,245,255,0.5)]
-                transition-shadow duration-300
-              ">
-                <Zap className="w-5 h-5 text-void" strokeWidth={2.5} />
-              </div>
-              <GradientText>NeuralForge</GradientText>
-            </a>
+            <Link to="/" className="flex items-center gap-3 mb-6">
+              <img
+                src={logo}
+                alt="PNK Digital"
+                className="h-10 w-auto"
+              />
+              <span className="text-white font-semibold text-xl tracking-tight">
+                PNK Digital
+              </span>
+            </Link>
             <p className="text-text-secondary max-w-xs mb-8 leading-relaxed">
-              Turning ambitious ideas into intelligent systems.
+              AI-powered development for companies that refuse to wait.
             </p>
 
             {/* Social Links */}
@@ -108,7 +127,7 @@ export function Footer() {
           </motion.div>
 
           {/* Link Columns */}
-          {Object.entries(footerLinks).map(([category, links], categoryIndex) => (
+          {Object.entries(footerLinks).map(([category, links]) => (
             <motion.div
               key={category}
               variants={itemVariants}
@@ -120,7 +139,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <a
+                    <FooterLink
                       href={link.href}
                       className="
                         text-text-secondary text-sm
@@ -130,32 +149,32 @@ export function Footer() {
                       "
                     >
                       {link.name}
-                    </a>
+                    </FooterLink>
                   </li>
                 ))}
               </ul>
             </motion.div>
           ))}
 
-          {/* Newsletter / CTA Column */}
+          {/* CTA Column */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3 className="font-semibold text-text-primary mb-5 text-sm uppercase tracking-wider">
-              Stay Updated
+              Ready to Start?
             </h3>
             <p className="text-text-secondary text-sm mb-4">
-              Get insights on AI trends and opportunities.
+              Let's build something amazing together.
             </p>
-            <a
-              href="#contact"
+            <FooterLink
+              href="/#project-builder"
               className="
                 inline-flex items-center text-sm text-neon-cyan
                 hover:text-neon-purple
                 transition-colors duration-300
               "
             >
-              Subscribe to updates
+              Get your quote
               <span className="ml-2">-&gt;</span>
-            </a>
+            </FooterLink>
           </motion.div>
         </div>
 
@@ -168,15 +187,15 @@ export function Footer() {
           "
         >
           <p className="text-text-muted text-sm">
-            &copy; {new Date().getFullYear()} NeuralForge. All rights reserved.
+            &copy; {new Date().getFullYear()} PNK Digital. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
+            <Link to="/privacy-policy" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
+            </Link>
+            <Link to="/terms-of-service" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </motion.div>
       </motion.div>

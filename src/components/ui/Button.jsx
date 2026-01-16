@@ -2,24 +2,24 @@ import { motion } from 'framer-motion';
 
 const variants = {
   primary: `
-    bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta
-    text-void font-semibold
-    shadow-[0_0_20px_rgba(0,245,255,0.3),0_0_40px_rgba(0,245,255,0.15)]
-    hover:shadow-[0_0_30px_rgba(0,245,255,0.5),0_0_60px_rgba(0,245,255,0.25)]
+    bg-gradient-to-r from-brand-pink via-neon-purple to-neon-cyan
+    text-white font-semibold
+    shadow-[0_0_20px_rgba(244,23,140,0.3),0_0_40px_rgba(244,23,140,0.15)]
+    hover:shadow-[0_0_30px_rgba(244,23,140,0.5),0_0_60px_rgba(244,23,140,0.25)]
     hover:scale-[1.02]
     active:scale-[0.98]
   `,
   secondary: `
-    border border-neon-cyan/50
-    text-neon-cyan
+    border border-brand-pink/50
+    text-brand-pink
     bg-transparent
-    hover:bg-neon-cyan/10
-    hover:border-neon-cyan
-    hover:shadow-[0_0_20px_rgba(0,245,255,0.2)]
+    hover:bg-brand-pink/10
+    hover:border-brand-pink
+    hover:shadow-[0_0_20px_rgba(244,23,140,0.2)]
   `,
   ghost: `
     text-text-secondary
-    hover:text-neon-cyan
+    hover:text-brand-pink
     hover:bg-white/5
   `,
 };

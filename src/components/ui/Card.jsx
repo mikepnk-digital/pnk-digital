@@ -26,22 +26,25 @@ export function Card({ icon: Icon, title, description, tags = [] }) {
       <div className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-neon-cyan/20 via-transparent to-neon-purple/20 blur-sm pointer-events-none" />
 
       <div className="relative z-10">
-        {/* Icon container with neon glow */}
-        <div className="
-          w-14 h-14 rounded-xl
-          bg-gradient-to-br from-neon-cyan/20 to-neon-purple/10
-          border border-neon-cyan/20
-          flex items-center justify-center mb-5
-          group-hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]
-          group-hover:border-neon-cyan/40
-          transition-all duration-300
-        ">
-          {Icon && <Icon className="w-7 h-7 text-neon-cyan" strokeWidth={1.5} />}
-        </div>
+        {/* Icon and title - horizontal on mobile, vertical on sm+ */}
+        <div className="flex gap-4 sm:block items-center mb-3 sm:mb-0">
+          {/* Icon container with neon glow */}
+          <div className="
+            w-10 h-10 sm:w-14 sm:h-14 rounded-xl shrink-0
+            bg-gradient-to-br from-neon-cyan/20 to-neon-purple/10
+            border border-neon-cyan/20
+            flex items-center justify-center sm:mb-5
+            group-hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]
+            group-hover:border-neon-cyan/40
+            transition-all duration-300
+          ">
+            {Icon && <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-neon-cyan" strokeWidth={1.5} />}
+          </div>
 
-        <h3 className="text-xl font-semibold text-text-primary mb-3 group-hover:text-white transition-colors">
-          {title}
-        </h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-text-primary sm:mb-3 group-hover:text-white transition-colors">
+            {title}
+          </h3>
+        </div>
 
         <p className="text-text-secondary mb-5 leading-relaxed text-sm">
           {description}
