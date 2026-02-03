@@ -6,6 +6,7 @@ import { Section } from '../ui/Section';
 import { IconBox } from '../ui/IconBox';
 import { getAccentColor } from '../../utils/colors';
 import { smoothEase, fadeInUp, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
+import { useIsMobile } from '../../hooks';
 
 const steps = [
   {
@@ -181,6 +182,7 @@ function StepCard({ step, index, isInView }) {
 export function Process() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, viewportWithMargin);
+  const isMobile = useIsMobile();
 
   return (
     <Section
@@ -189,8 +191,8 @@ export function Process() {
       background="gradient"
       className="relative"
     >
-      {/* Connecting path line - positioned absolutely within section */}
-      <ProcessPath isInView={isInView} />
+      {/* Connecting path line - disabled on mobile for performance */}
+      {!isMobile && <ProcessPath isInView={isInView} />}
 
       {/* Header */}
       <motion.div

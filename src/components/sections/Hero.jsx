@@ -6,21 +6,24 @@ import { HeroOrbs } from '../decorative/GradientOrb';
 import { ParticleBackground } from '../decorative/ParticleBackground';
 import { DataTransformationViz } from '../decorative/DataTransformationViz';
 import { createStaggerContainer, fadeInUpLarge } from '../../utils/animations';
+import { useIsMobile } from '../../hooks';
 
 // Use shared animation utilities with hero-specific timing
 const containerVariants = createStaggerContainer(0.15, 0.3);
 
 export function Hero() {
+  const isMobile = useIsMobile();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern" id="home">
-      {/* Animated particle background */}
-      <ParticleBackground particleCount={50} connectionDistance={100} />
+      {/* Animated particle background - disabled on mobile for performance */}
+      {!isMobile && <ParticleBackground particleCount={50} connectionDistance={100} />}
 
-      {/* Scroll-driven data transformation visualization */}
-      <DataTransformationViz opacity={0.5} />
+      {/* Scroll-driven data transformation visualization - disabled on mobile */}
+      {!isMobile && <DataTransformationViz opacity={0.5} />}
 
-      {/* Floating gradient orbs */}
-      <HeroOrbs />
+      {/* Floating gradient orbs - simplified on mobile */}
+      {!isMobile && <HeroOrbs />}
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">

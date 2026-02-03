@@ -33,7 +33,7 @@ export const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
 
@@ -43,7 +43,7 @@ export const fadeInUpLarge = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
 
@@ -53,7 +53,7 @@ export const fadeInLeft = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
 
@@ -62,7 +62,7 @@ export const fadeInRight = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
 
@@ -94,6 +94,7 @@ export const springTransition = {
 export const smoothEase = [0.16, 1, 0.3, 1];
 
 // Viewport options for scroll-triggered animations
-export const viewportOnce = { once: true };
-export const viewportWithMargin = { once: true, margin: '-100px' };
-export const viewportSmallMargin = { once: true, margin: '-50px' };
+// Using amount property for more reliable mobile detection
+export const viewportOnce = { once: true, amount: 0.15 };
+export const viewportWithMargin = { once: true, amount: 0.1 };
+export const viewportSmallMargin = { once: true, amount: 0.05 };

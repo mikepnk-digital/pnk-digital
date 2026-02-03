@@ -4,12 +4,14 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 import { EnvironmentConfig } from '../config/types';
 
 interface WebsiteStackProps extends cdk.StackProps {
   config: EnvironmentConfig;
   apiUrl?: string;
+  certificate?: acm.ICertificate;
 }
 
 export class WebsiteStack extends cdk.Stack {
@@ -20,7 +22,7 @@ export class WebsiteStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WebsiteStackProps) {
     super(scope, id, props);
 
-    const { config, apiUrl } = props;
+    const { config, apiUrl, certificate } = props;
     const isProd = config.environmentName === 'prod';
 
     // S3 bucket for static website hosting (private - accessed via CloudFront only)
@@ -80,6 +82,11 @@ export class WebsiteStack extends cdk.Stack {
       'PriceClass_All': cloudfront.PriceClass.PRICE_CLASS_ALL,
     };
 
+    // Build domain names array if domain is configured
+    const domainNames = config.domain
+      ? [config.domain, `www.${config.domain}`]
+      : undefined;
+
     // CloudFront distribution
     this.distribution = new cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
@@ -111,6 +118,9 @@ export class WebsiteStack extends cdk.Stack {
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
       comment: `PNK Digital Website - ${config.environmentName}`,
+      // Custom domain configuration
+      domainNames,
+      certificate,
     });
 
     // Grant CloudFront access to S3 bucket

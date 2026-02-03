@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { GradientOrb } from '../decorative/GradientOrb';
+import { useIsMobile } from '../../hooks';
 
 /**
  * Reusable section wrapper with consistent padding, background, and optional decorative orbs
@@ -17,6 +18,8 @@ export const Section = forwardRef(function Section(
   },
   ref
 ) {
+  const isMobile = useIsMobile();
+
   const paddingClasses = {
     none: '',
     sm: 'py-16 md:py-20',
@@ -49,8 +52,8 @@ export const Section = forwardRef(function Section(
         <div className={`absolute inset-0 ${backgroundClasses[background]}`} />
       )}
 
-      {/* Decorative gradient orbs */}
-      {orbs.map((orb, index) => (
+      {/* Decorative gradient orbs - disabled on mobile for performance */}
+      {!isMobile && orbs.map((orb, index) => (
         <GradientOrb
           key={`${id}-orb-${index}`}
           color={orb.color}

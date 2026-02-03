@@ -101,41 +101,24 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button
+          <button
+            type="button"
             className="
-              md:hidden p-2 rounded-lg
+              md:hidden p-3 rounded-lg
               text-text-primary
               hover:bg-white/5
+              active:bg-white/10
               transition-colors duration-300
+              touch-action-manipulation
+              select-none
             "
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileTap={{ scale: 0.95 }}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+            onClick={() => setIsMobileMenuOpen(prev => !prev)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
           >
-            <AnimatePresence mode="wait">
-              {isMobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X size={24} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu size={24} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
 
@@ -151,27 +134,33 @@ export function Navbar() {
           >
             <div className="px-4 py-6 space-y-2">
               {navLinks.map((link, index) => (
-                <motion.a
+                <motion.div
                   key={link.name}
-                  href={link.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="
-                    block text-text-secondary
-                    hover:text-brand-pink
-                    hover:bg-brand-pink/5
-                    transition-all duration-300
-                    py-3 px-4 rounded-lg
-                  "
-                  onClick={(e) => {
-                    e.preventDefault();
-                    closeMobileMenu();
-                    navigateToHash(link.href, { delay: 300 });
-                  }}
                 >
-                  {link.name}
-                </motion.a>
+                  <a
+                    href={link.href}
+                    className="
+                      block text-text-secondary
+                      hover:text-brand-pink
+                      hover:bg-brand-pink/5
+                      active:bg-brand-pink/10
+                      transition-all duration-300
+                      py-3 px-4 rounded-lg
+                      cursor-pointer
+                      touch-action-manipulation
+                    "
+                    onClick={(e) => {
+                      e.preventDefault();
+                      closeMobileMenu();
+                      navigateToHash(link.href, { delay: 300 });
+                    }}
+                  >
+                    {link.name}
+                  </a>
+                </motion.div>
               ))}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -181,6 +170,7 @@ export function Navbar() {
               >
                 <a
                   href="/#project-builder"
+                  className="block touch-action-manipulation"
                   onClick={(e) => {
                     e.preventDefault();
                     closeMobileMenu();

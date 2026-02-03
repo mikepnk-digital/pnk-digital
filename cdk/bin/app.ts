@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { WebsiteStack, DatabaseStack, ApiStack, DnsStack } from '../lib/stacks';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as route53 from 'aws-cdk-lib/aws-route53';
+import { WebsiteStack, DatabaseStack, ApiStack } from '../lib/stacks';
 import { devConfig, prodConfig, EnvironmentConfig } from '../lib/config';
 
 const app = new cdk.App();
@@ -31,14 +33,13 @@ const databaseStack = new DatabaseStack(app, `${stackPrefix}-Database`, {
 });
 
 // 2. API Stack (API Gateway + Lambda)
-// Initially, we'll use placeholder origins, then update after website stack
 const apiStack = new ApiStack(app, `${stackPrefix}-Api`, {
   env,
   config,
   enquiriesTable: databaseStack.enquiriesTable,
   allowedOrigins: config.domain
     ? [`https://${config.domain}`, `https://www.${config.domain}`]
-    : ['*'], // Will be restricted in production with domain
+    : ['*'],
   description: `PNK Digital API Stack - ${config.environmentName}`,
   tags: {
     Environment: config.environmentName,
@@ -47,11 +48,50 @@ const apiStack = new ApiStack(app, `${stackPrefix}-Api`, {
 });
 apiStack.addDependency(databaseStack);
 
-// 3. Website Stack (S3 + CloudFront)
+// 3. Certificate Stack (if domain configured) - must be in us-east-1 for CloudFront
+let certificate: acm.ICertificate | undefined;
+
+if (config.domain && config.hostedZoneId) {
+  // Create a stack for the certificate in us-east-1
+  const certStack = new cdk.Stack(app, `${stackPrefix}-Certificate`, {
+    env: {
+      account: env.account,
+      region: 'us-east-1', // Required for CloudFront
+    },
+    crossRegionReferences: true,
+    description: `PNK Digital Certificate Stack - ${config.environmentName}`,
+    tags: {
+      Environment: config.environmentName,
+      Project: 'PnkDigital',
+    },
+  });
+
+  // Look up the hosted zone
+  const hostedZone = route53.HostedZone.fromHostedZoneAttributes(certStack, 'HostedZone', {
+    hostedZoneId: config.hostedZoneId,
+    zoneName: config.domain,
+  });
+
+  // Create the certificate with DNS validation
+  certificate = new acm.Certificate(certStack, 'Certificate', {
+    domainName: config.domain,
+    subjectAlternativeNames: [`www.${config.domain}`],
+    validation: acm.CertificateValidation.fromDns(hostedZone),
+  });
+
+  new cdk.CfnOutput(certStack, 'CertificateArn', {
+    value: certificate.certificateArn,
+    description: 'ACM Certificate ARN',
+  });
+}
+
+// 4. Website Stack (S3 + CloudFront)
 const websiteStack = new WebsiteStack(app, `${stackPrefix}-Website`, {
   env,
   config,
   apiUrl: apiStack.apiUrl,
+  certificate,
+  crossRegionReferences: true,
   description: `PNK Digital Website Stack - ${config.environmentName}`,
   tags: {
     Environment: config.environmentName,
@@ -60,25 +100,7 @@ const websiteStack = new WebsiteStack(app, `${stackPrefix}-Website`, {
 });
 websiteStack.addDependency(apiStack);
 
-// 4. DNS Stack (Route53 + ACM) - Only if domain is configured
-if (config.domain && config.hostedZoneId) {
-  // Note: ACM certificates for CloudFront must be in us-east-1
-  const dnsStack = new DnsStack(app, `${stackPrefix}-Dns`, {
-    env: {
-      account: env.account,
-      region: 'us-east-1', // Required for CloudFront certificates
-    },
-    config,
-    distribution: websiteStack.distribution,
-    description: `PNK Digital DNS Stack - ${config.environmentName}`,
-    tags: {
-      Environment: config.environmentName,
-      Project: 'PnkDigital',
-    },
-    crossRegionReferences: true,
-  });
-  dnsStack.addDependency(websiteStack);
-}
+// DNS is configured externally - no DNS stack needed
 
 // Add tags to all stacks
 cdk.Tags.of(app).add('ManagedBy', 'CDK');

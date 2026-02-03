@@ -12,7 +12,7 @@ export const devConfig: EnvironmentConfig = {
 
   // Email Configuration
   notificationEmail: 'mike@pnk-digital.com',
-  fromEmail: 'noreply@pnk-digital.com',
+  fromEmail: 'contact@pnk-digital.com',
 
   // API Throttling (more permissive for dev)
   apiThrottling: {

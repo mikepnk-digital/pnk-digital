@@ -49,6 +49,13 @@ body {
     background-clip: text;
   }
 
+  /* GPU acceleration for animated elements to reduce mobile flickering */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
   .glow-cyan {
     box-shadow: 0 0 20px rgba(0, 245, 255, 0.4), 0 0 40px rgba(0, 245, 255, 0.2), 0 0 60px rgba(0, 245, 255, 0.1);
   }
@@ -70,6 +77,11 @@ body {
       linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
+  }
+
+  .touch-action-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 

@@ -16,3 +16,8 @@ export {
   useProjectBuilder,
   getFeatureLabel,
 } from './useProjectBuilder';
+
+export {
+  useIsMobile,
+  checkIsMobile,
+} from './useMobile';

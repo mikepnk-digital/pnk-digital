@@ -24,7 +24,7 @@ const itemVariants = {
 
 export function ProjectBuilder() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.05 });
 
   // Use the custom hook for all state management
   const {
