@@ -12,6 +12,7 @@ export interface EnvironmentConfig {
   // Email Configuration
   notificationEmail: string;
   fromEmail: string;
+  sesRegion?: string;
 
   // API Throttling
   apiThrottling: {

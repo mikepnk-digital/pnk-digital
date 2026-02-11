@@ -12,7 +12,8 @@ export const prodConfig: EnvironmentConfig = {
 
   // Email Configuration
   notificationEmail: 'mike@pnk-digital.com',
-  fromEmail: 'hello@pnk-digital.com',
+  fromEmail: 'contact@pnk-digital.com',
+  sesRegion: 'eu-west-1',
 
   // API Throttling
   apiThrottling: {

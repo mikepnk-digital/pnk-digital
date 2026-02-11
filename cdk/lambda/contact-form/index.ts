@@ -11,7 +11,9 @@ import {
 } from './types';
 
 const dynamoClient = new DynamoDBClient({});
-const sesClient = new SESClient({});
+const sesClient = new SESClient(
+  process.env.SES_REGION ? { region: process.env.SES_REGION } : {}
+);
 
 const TABLE_NAME = process.env.TABLE_NAME!;
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL!;
@@ -372,7 +374,7 @@ function buildConfirmationEmailHtml(enquiry: EnquiryRecord): string {
               </div>
 
               <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #374151;">
-                In the meantime, if you have any urgent questions, feel free to reply to this email or call us at <strong>+44 20 7946 0958</strong>.
+                In the meantime, if you have any urgent questions, feel free to reply to this email.
               </p>
 
               <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #374151;">

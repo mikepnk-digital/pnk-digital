@@ -55,6 +55,7 @@ export class ApiStack extends cdk.Stack {
         NOTIFICATION_EMAIL: config.notificationEmail,
         FROM_EMAIL: config.fromEmail,
         ENVIRONMENT: config.environmentName,
+        ...(config.sesRegion && { SES_REGION: config.sesRegion }),
       },
       tracing: lambda.Tracing.ACTIVE,
       logGroup: contactFormLogGroup,
