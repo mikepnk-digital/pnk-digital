@@ -1,36 +1,23 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Github, Linkedin, Twitter, Dribbble } from 'lucide-react';
 import logo from '../../assets/pnk-digital-logo.svg';
-import { useHashNavigation } from '../../hooks/useHashNavigation';
 import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {
   Services: [
-    { name: 'Website Development', href: '/#services' },
-    { name: 'Application Development', href: '/#services' },
-    { name: 'Software Tools', href: '/#services' },
-    { name: 'AI Consulting', href: '/#services' },
-    { name: 'AI Integration', href: '/#services' },
-    { name: 'Ongoing Support', href: '/#services' },
+    { name: 'Web App Development', to: '/services' },
+    { name: 'AWS Integration', to: '/services' },
+    { name: 'AI-Powered MVPs', to: '/services' },
+    { name: 'AI Integration', to: '/services' },
   ],
   Navigation: [
-    { name: 'Home', href: '/#home' },
-    { name: 'About Us', href: '/#about' },
-    { name: 'Build Your Project', href: '/#project-builder' },
-    { name: 'Contact', href: '/#contact' },
+    { name: 'Home', to: '/' },
+    { name: 'About', to: '/about' },
+    { name: 'Work', to: '/work' },
+    { name: 'Blog', to: '/blog' },
+    { name: 'Contact', to: '/contact' },
   ],
 };
-
-function FooterLink({ href, children, className }) {
-  const { createHashClickHandler } = useHashNavigation();
-
-  return (
-    <a href={href} onClick={createHashClickHandler(href)} className={className}>
-      {children}
-    </a>
-  );
-}
 
 export function Footer() {
   return (
@@ -59,7 +46,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-text-secondary max-w-xs mb-8 leading-relaxed">
-              AI-powered development for companies that refuse to wait.
+              Senior full-stack development, accelerated by AI.
             </p>
           </motion.div>
 
@@ -76,8 +63,8 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <FooterLink
-                      href={link.href}
+                    <Link
+                      to={link.to}
                       className="
                         text-text-secondary text-sm
                         hover:text-neon-cyan
@@ -86,32 +73,31 @@ export function Footer() {
                       "
                     >
                       {link.name}
-                    </FooterLink>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </motion.div>
           ))}
 
-          {/* CTA Column */}
+          {/* Contact Column */}
           <motion.div variants={fadeInUp} className="lg:col-span-2">
             <h3 className="font-semibold text-text-primary mb-5 text-sm uppercase tracking-wider">
-              Ready to Start?
+              Get in Touch
             </h3>
-            <p className="text-text-secondary text-sm mb-4">
-              Let's build something amazing together.
-            </p>
-            <FooterLink
-              href="/#project-builder"
-              className="
-                inline-flex items-center text-sm text-neon-cyan
-                hover:text-neon-purple
-                transition-colors duration-300
-              "
-            >
-              Get your quote
-              <span className="ml-2">-&gt;</span>
-            </FooterLink>
+            <ul className="space-y-3 mb-6">
+              <li>
+                <a
+                  href="mailto:hello@pnk-digital.com"
+                  className="text-text-secondary text-sm hover:text-neon-cyan transition-colors duration-300"
+                >
+                  hello@pnk-digital.com
+                </a>
+              </li>
+              <li className="text-text-secondary text-sm">
+                Surrey, UK
+              </li>
+            </ul>
           </motion.div>
         </div>
 

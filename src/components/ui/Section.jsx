@@ -15,6 +15,7 @@ export const Section = forwardRef(function Section(
     background = 'transparent',
     orbs = [],
     overflow = true,
+    maxWidth = '7xl',
   },
   ref
 ) {
@@ -26,6 +27,7 @@ export const Section = forwardRef(function Section(
     default: 'py-24 md:py-32',
     lg: 'py-32 md:py-40',
     hero: 'min-h-screen py-32',
+    'page-header': 'pt-32 pb-16 md:pt-40 md:pb-20',
   };
 
   const backgroundClasses = {
@@ -69,7 +71,7 @@ export const Section = forwardRef(function Section(
       ))}
 
       {/* Content with proper z-index */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`relative z-10 ${maxWidth === '4xl' ? 'max-w-4xl' : 'max-w-7xl'} mx-auto px-4 sm:px-6 lg:px-8`}>
         {children}
       </div>
     </section>

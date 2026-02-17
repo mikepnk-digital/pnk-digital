@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -41,7 +42,7 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan" />
             </span>
-            AI-Powered Development
+            Senior Developer, AI-Accelerated
           </motion.div>
 
           {/* Main headline */}
@@ -50,7 +51,7 @@ export function Hero() {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8"
           >
             <GradientText className="inline-block">
-              Ship Faster. Spend Less. Win More.
+              Ship Faster. Spend Less. Build Better.
             </GradientText>
           </motion.h1>
 
@@ -59,9 +60,10 @@ export function Hero() {
             variants={fadeInUpLarge}
             className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-12 leading-relaxed"
           >
-            We build websites, applications, and software tools at speeds that leave traditional
-            agencies in the dust. Powered by AI development workflows, we deliver enterprise-quality
-            products without the enterprise price tag—or the six-month timeline.
+            I'm Mike — a senior full-stack developer with 10+ years building web applications
+            and cloud architecture. I use AI-accelerated workflows to deliver production-quality
+            software in weeks, not months. You work directly with me. No agency layers. No juniors.
+            No surprises.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -69,12 +71,17 @@ export function Hero() {
             variants={fadeInUpLarge}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <a href="#project-builder">
+            <Link to="/contact">
               <Button size="lg" className="group min-w-[200px]">
-                Start Building Today
+                Book a Discovery Call
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-            </a>
+            </Link>
+            <Link to="/work">
+              <Button size="lg" variant="secondary" className="min-w-[200px]">
+                See My Work
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
 

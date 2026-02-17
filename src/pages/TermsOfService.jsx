@@ -1,33 +1,25 @@
-import { useEffect } from 'react';
+import { Helmet } from '@dr.pogodin/react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Mail, MapPin } from 'lucide-react';
-import { Navbar } from '../components/layout/Navbar';
-import { Footer } from '../components/layout/Footer';
-
-const sectionVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+import { Section } from '../components/ui/Section';
+import { fadeInUp } from '../utils/animations';
 
 export function TermsOfService() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const lastUpdated = '16 January 2026';
 
   return (
-    <div className="min-h-screen bg-abyss">
-      <Navbar />
-
-      <main className="pt-32 pb-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      <Helmet>
+        <title>Terms of Service - PNK Digital</title>
+        <meta name="description" content="PNK Digital terms of service. The terms and conditions governing our software development services." />
+      </Helmet>
+      <Section padding="page-header" maxWidth="4xl">
           {/* Header */}
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={sectionVariants}
+            variants={fadeInUp}
             className="mb-12"
           >
             <Link
@@ -56,7 +48,7 @@ export function TermsOfService() {
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={sectionVariants}
+            variants={fadeInUp}
             className="prose prose-invert max-w-none"
           >
             <div className="space-y-10 text-text-secondary">
@@ -448,10 +440,7 @@ export function TermsOfService() {
               </section>
             </div>
           </motion.div>
-        </div>
-      </main>
-
-      <Footer />
-    </div>
+      </Section>
+    </>
   );
 }
