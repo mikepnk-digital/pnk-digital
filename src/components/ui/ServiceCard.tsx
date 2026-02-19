@@ -95,9 +95,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         </div>
 
         {/* CTA */}
-        <Link to="/contact">
+        <Link to={service.link || '/contact'}>
           <Button variant="secondary" size="sm" className="group">
-            Discuss a {service.title.split(' ')[0]} project
+            {service.link ? 'Learn More' : `Discuss a ${service.title.split(' ')[0]} project`}
             <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>

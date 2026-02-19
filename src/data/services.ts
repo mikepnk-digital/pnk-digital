@@ -1,4 +1,4 @@
-import { Code2, Cloud, Zap, Cpu } from 'lucide-react';
+import { Code2, Cloud, Zap, Cpu, Bot } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface Service {
@@ -10,6 +10,7 @@ export interface Service {
   deliverables: string[];
   tags: string[];
   color: string;
+  link?: string;
 }
 
 export const services: Service[] = [
@@ -88,5 +89,25 @@ export const services: Service[] = [
     ],
     tags: ['OpenAI API', 'Claude API', 'LangChain', 'RAG', 'Embeddings', 'Node.js'],
     color: 'neon-green',
+  },
+  {
+    icon: Bot,
+    title: 'AI Employees for Your Team',
+    slug: 'ai-employees',
+    description:
+      "Give every employee a personal AI assistant that knows their workflow, manages their inbox, prepares their meetings, and handles the admin they hate. Not a generic chatbot — a personalised AI colleague connected to their actual tools. Setup from £5,000, with ongoing management and team training packages available.",
+    targetClient:
+      "Businesses with 5–200+ employees who want to reclaim the 40% of the working day lost to admin, email, and repetitive tasks.",
+    deliverables: [
+      'Discovery workshop to map team workflows',
+      'Per-employee AI assistant deployment',
+      'Integration with email, calendar, Slack/Teams, CRM, and more',
+      'Custom skill development for your specific processes',
+      'Team training workshops',
+      'Ongoing management and monthly strategy calls',
+    ],
+    tags: ['OpenClaw', 'AI Assistants', 'WhatsApp', 'Slack', 'Teams', 'Automation'],
+    color: 'brand-pink',
+    link: '/services/ai-employees',
   },
 ];
