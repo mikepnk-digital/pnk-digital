@@ -9,7 +9,6 @@ import logo from '../../assets/pnk-digital-logo.svg';
 const navLinks = [
   { name: 'Home', to: '/' },
   { name: 'Services', to: '/services' },
-  { name: 'Work', to: '/work' },
   { name: 'Blog', to: '/blog' },
   { name: 'About', to: '/about' },
   { name: 'Contact', to: '/contact' },

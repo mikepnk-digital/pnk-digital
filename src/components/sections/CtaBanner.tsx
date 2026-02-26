@@ -12,7 +12,7 @@ interface CtaBannerProps {
 
 export function CtaBanner({
   heading = "Got a project in mind?",
-  subtext = "Book a free discovery call. No obligation, no hard sell — just a conversation about what you're building and how I can help.",
+  subtext = "Book a free discovery call. No obligation, no hard sell - just a conversation about what you're building and how I can help.",
   buttonText = "Let's Talk",
   buttonTo = "/contact",
 }: CtaBannerProps) {

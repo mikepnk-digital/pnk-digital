@@ -2,6 +2,7 @@ import { Helmet } from '@dr.pogodin/react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MessageSquare, Zap, Shield, Target, Bot, GitBranch, Users, Lightbulb } from 'lucide-react';
+import mikePinkPhoto from '../assets/mike-pink.jpg';
 import { Section, orbPresets } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
 import { CtaBanner } from '../components/sections/CtaBanner';
@@ -11,7 +12,7 @@ const processSteps = [
   {
     icon: MessageSquare,
     title: 'Discovery Call',
-    description: "A 30-minute conversation to understand your project, goals, and constraints. I'll ask the right questions to scope things properly — no sales pitch.",
+    description: "A 30-minute conversation to understand your project, goals, and constraints. I'll ask the right questions to scope things properly - no sales pitch.",
   },
   {
     icon: Target,
@@ -21,7 +22,7 @@ const processSteps = [
   {
     icon: Bot,
     title: 'AI-Accelerated Build',
-    description: "I use AI tooling to handle repetitive work while I focus on architecture, quality, and the decisions that actually matter. The result: faster delivery without cutting corners.",
+    description: "I use AI tooling to handle repetitive work while I focus on architecture, quality, and the decisions that count. You get faster delivery without cutting corners.",
   },
   {
     icon: GitBranch,
@@ -39,7 +40,7 @@ const values = [
   {
     icon: Shield,
     title: 'Radical Transparency',
-    benefit: "You always know where your project stands. No status meetings to schedule — you can see the work as it happens.",
+    benefit: "You always know where your project stands. No status meetings to schedule - you can see the work as it happens.",
   },
   {
     icon: Users,
@@ -85,7 +86,6 @@ export function AboutPage() {
       {/* Intro / Story Section */}
       <Section padding="page-header" orbs={orbPresets.aboutRight}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Photo placeholder */}
           <motion.div
             variants={fadeInLeft}
             initial="hidden"
@@ -93,12 +93,14 @@ export function AboutPage() {
           >
             <div className="
               w-full max-w-md mx-auto lg:mx-0 aspect-[4/5] rounded-2xl
-              bg-charcoal/50
               border border-white/10
-              flex items-center justify-center
               overflow-hidden
             ">
-              <span className="text-text-muted text-sm">Photo</span>
+              <img
+                src={mikePinkPhoto}
+                alt="Mike Pink - Senior Full-Stack Developer"
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
 
@@ -122,8 +124,8 @@ export function AboutPage() {
             </motion.h1>
 
             <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
-              For over a decade, I've been a contract React and AWS developer — building production
-              applications for startups, scale-ups, and enterprise clients across the UK. I've seen
+              For 25 years, I've been building production web applications for startups, scale-ups,
+              and enterprise clients across the UK. I've seen
               how software gets built inside agencies and consultancies: layers of management,
               junior developers learning on client budgets, and timelines that balloon because
               nobody wants to make a decision.
@@ -131,15 +133,15 @@ export function AboutPage() {
 
             <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
               I started PNK Digital because I believed there was a better way. AI tooling has
-              fundamentally changed what a single experienced developer can achieve. The
-              productivity gains are real — not because AI writes perfect code, but because it
-              eliminates the tedious parts and lets me focus on the decisions that actually matter:
-              architecture, user experience, and getting your product to market.
+              changed what a single experienced developer can ship. The productivity gains
+              are real - not because AI writes perfect code, but because it handles the tedious
+              parts and frees me up for the things that actually matter: architecture, user
+              experience, and getting your product to market.
             </motion.p>
 
             <motion.p variants={fadeInUp} className="text-text-secondary leading-relaxed">
-              The result? You get senior-level expertise on every line of code, delivered at a
-              speed and price point that traditional agencies simply can't match.
+              You get senior-level expertise on every line of code, at a speed and price
+              that traditional agencies can't touch.
             </motion.p>
           </motion.div>
         </div>
@@ -171,8 +173,8 @@ export function AboutPage() {
             {[
               { label: 'Low overhead', detail: 'No office, no middle management, no bloated margins. You pay for development, not infrastructure.' },
               { label: 'Direct communication', detail: 'You talk to the developer. Questions answered in hours, not routed through three people over three days.' },
-              { label: 'Senior expertise on every project', detail: 'Every line of code is written by someone with 10+ years of experience. No juniors, no interns, no bait-and-switch.' },
-              { label: 'Accountability', detail: 'One person, one project, full ownership. If something\'s wrong, there\'s nobody to blame but me — and I fix it fast.' },
+              { label: 'Senior expertise on every project', detail: 'Every line of code is written by someone with 25 years of experience. No juniors, no interns, no bait-and-switch.' },
+              { label: 'Accountability', detail: 'One person, one project, full ownership. If something\'s wrong, there\'s nobody to blame but me - and I fix it fast.' },
             ].map((point) => (
               <div
                 key={point.label}
@@ -198,8 +200,7 @@ export function AboutPage() {
             <GradientText>How I Work</GradientText>
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            A straightforward process designed to get you from idea to working software
-            with minimal friction.
+            From first conversation to working software, with as little friction as possible.
           </motion.p>
         </motion.div>
 
@@ -260,7 +261,7 @@ export function AboutPage() {
             <GradientText>What I Stand For</GradientText>
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            Not platitudes on a wall — principles that directly affect how your project gets built.
+            Not platitudes on a wall - principles that directly affect how your project gets built.
           </motion.p>
         </motion.div>
 

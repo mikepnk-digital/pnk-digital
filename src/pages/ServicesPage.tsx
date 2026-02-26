@@ -72,8 +72,8 @@ export function ServicesPage() {
             What I don't do
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
-            I believe in being upfront. I don't build native iOS/Android apps, WordPress or Webflow
-            sites, or offer broad "AI strategy consulting." If your project needs something outside
+            I believe in being upfront. I don't offer broad "AI strategy consulting."
+            If your project needs something outside
             my focus areas, I'll tell you honestly and point you in the right direction.
           </p>
         </motion.div>
@@ -81,7 +81,7 @@ export function ServicesPage() {
 
       <CtaBanner
         heading="Got a project in mind?"
-        subtext="Tell me what you're building. I'll let you know if I'm the right fit — and if I'm not, I'll point you to someone who is."
+        subtext="Tell me what you're building. I'll let you know if I'm the right fit - and if I'm not, I'll point you to someone who is."
         buttonText="Start a Conversation"
       />
     </>

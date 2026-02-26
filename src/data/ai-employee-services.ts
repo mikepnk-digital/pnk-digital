@@ -152,7 +152,7 @@ export const faqs = [
   {
     question: 'Is our data secure?',
     answer:
-      'Yes — the AI runs on your infrastructure. No data leaves your network. Enterprise-grade security with audit logging and role-based access controls.',
+      'Yes - the AI runs on your infrastructure. No data leaves your network. Enterprise-grade security with audit logging and role-based access controls.',
   },
   {
     question: 'How long does setup take?',
@@ -161,12 +161,12 @@ export const faqs = [
   {
     question: 'Do employees need technical skills?',
     answer:
-      'No — they interact via chat (WhatsApp, Slack, Teams) in natural language. It feels like messaging a colleague.',
+      'No - they interact via chat (WhatsApp, Slack, Teams) in natural language. It feels like messaging a colleague.',
   },
   {
     question: 'Can we try it with a small team first?',
     answer:
-      'Absolutely — our Starter package is designed for exactly this. Start with 5 employees and scale from there.',
+      'Absolutely - our Starter package is designed for exactly this. Start with 5 employees and scale from there.',
   },
   {
     question: 'What happens if we cancel?',

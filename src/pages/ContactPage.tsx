@@ -86,7 +86,7 @@ export function ContactPage() {
 
               <p className="text-text-secondary text-sm leading-relaxed mb-6">
                 A 30-minute conversation to understand your project, explore options,
-                and see if we're a good fit. No obligation, no hard sell — just a
+                and see if we're a good fit. No obligation, no hard sell - just a
                 straightforward chat about what you're building.
               </p>
 
@@ -102,28 +102,6 @@ export function ContactPage() {
                   </li>
                 ))}
               </ul>
-
-              <a
-                href="https://calendly.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-flex items-center gap-2
-                  px-6 py-3 rounded-lg
-                  bg-gradient-to-r from-brand-pink via-neon-purple to-neon-cyan
-                  text-white font-semibold
-                  shadow-[0_0_20px_rgba(244,23,140,0.3)]
-                  hover:shadow-[0_0_30px_rgba(244,23,140,0.5)]
-                  transition-all duration-300
-                "
-              >
-                Schedule a Call
-                <ExternalLink size={16} />
-              </a>
-
-              <p className="text-text-muted text-xs mt-3">
-                Calendly link coming soon — email me in the meantime.
-              </p>
             </div>
 
             {/* Contact Details */}

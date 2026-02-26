@@ -13,7 +13,6 @@ const footerLinks = {
   Navigation: [
     { name: 'Home', to: '/' },
     { name: 'About', to: '/about' },
-    { name: 'Work', to: '/work' },
     { name: 'Blog', to: '/blog' },
     { name: 'Contact', to: '/contact' },
   ],
@@ -109,9 +108,14 @@ export function Footer() {
             flex flex-col sm:flex-row justify-between items-center gap-4
           "
         >
-          <p className="text-text-muted text-sm">
-            &copy; {new Date().getFullYear()} PNK Digital. All rights reserved.
-          </p>
+          <div>
+            <p className="text-text-muted text-sm">
+              &copy; {new Date().getFullYear()} PNK Digital. All rights reserved.
+            </p>
+            <p className="text-text-muted text-xs mt-1">
+              PNK Digital is a trading name of Mike Pink Ltd.<br />Registered in England &amp; Wales &middot; Company No. 09029124 &middot; Registered Office: 7 Jubilee Lane, Farnham, Surrey GU104SZ
+            </p>
+          </div>
           <div className="flex items-center gap-6">
             <Link to="/privacy-policy" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
               Privacy Policy

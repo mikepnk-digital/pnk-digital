@@ -9,13 +9,13 @@ const services = [
   {
     icon: Code2,
     title: 'Web Application Development',
-    description: 'Custom web apps that solve real business problems — dashboards, portals, booking systems, and more. Production-ready in weeks, not months.',
+    description: 'Custom web apps that solve real business problems - dashboards, portals, booking systems, and more. Production-ready in weeks, not months.',
     color: 'neon-cyan',
   },
   {
     icon: Cloud,
     title: 'AWS Integration & Infrastructure',
-    description: 'Scalable, secure cloud infrastructure on AWS. Serverless APIs, databases, authentication, and CI/CD — architected for reliability from day one.',
+    description: 'Scalable, secure cloud infrastructure on AWS. Serverless APIs, databases, authentication, and CI/CD - architected for reliability from day one.',
     color: 'neon-purple',
   },
   {
@@ -27,7 +27,7 @@ const services = [
   {
     icon: Cpu,
     title: 'AI Integration',
-    description: 'Embed intelligent capabilities into your existing products. From chatbots to content generation to workflow automation — practical AI that delivers value.',
+    description: 'Embed intelligent capabilities into your existing products. From chatbots to content generation to workflow automation - AI that actually solves problems.',
     color: 'neon-green',
   },
 ];

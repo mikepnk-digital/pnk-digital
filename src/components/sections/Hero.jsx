@@ -60,10 +60,9 @@ export function Hero() {
             variants={fadeInUpLarge}
             className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-12 leading-relaxed"
           >
-            I'm Mike — a senior full-stack developer with 10+ years building web applications
+            I'm Mike - a senior full-stack developer with 25 years building web applications
             and cloud architecture. I use AI-accelerated workflows to deliver production-quality
-            software in weeks, not months. You work directly with me. No agency layers. No juniors.
-            No surprises.
+            software in weeks, not months. You work directly with me. No agency layers, no juniors, no surprises.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -77,9 +76,9 @@ export function Hero() {
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/work">
+            <Link to="/services">
               <Button size="lg" variant="secondary" className="min-w-[200px]">
-                See My Work
+                View Services
               </Button>
             </Link>
           </motion.div>

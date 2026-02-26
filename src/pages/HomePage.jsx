@@ -10,9 +10,9 @@ export function HomePage() {
     <>
       <Helmet>
         <title>PNK Digital - Mike Pink | Senior Full-Stack Developer</title>
-        <meta name="description" content="I'm Mike, a senior full-stack developer with 10+ years experience. React, Node.js, AWS. AI-accelerated delivery in weeks, not months. Work directly with me — no agency layers." />
+        <meta name="description" content="I'm Mike, a senior full-stack developer with 25 years experience. React, Node.js, AWS. AI-accelerated delivery in weeks, not months. Work directly with me - no agency layers." />
         <meta property="og:title" content="PNK Digital - Mike Pink | Senior Full-Stack Developer" />
-        <meta property="og:description" content="Senior full-stack developer with 10+ years experience. AI-accelerated delivery in weeks, not months. Work directly with me — no agency layers." />
+        <meta property="og:description" content="Senior full-stack developer with 25 years experience. AI-accelerated delivery in weeks, not months. Work directly with me - no agency layers." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://pnk-digital.com/" />
         <meta name="twitter:card" content="summary_large_image" />

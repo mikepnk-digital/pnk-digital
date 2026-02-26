@@ -87,12 +87,12 @@ export function AIEmployeesPage() {
   return (
     <>
       <Helmet>
-        <title>AI Employee Assistants for Business — PNK Digital</title>
+        <title>AI Employee Assistants for Business - PNK Digital</title>
         <meta
           name="description"
           content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000. UK-based, enterprise-grade security."
         />
-        <meta property="og:title" content="AI Employee Assistants for Business — PNK Digital" />
+        <meta property="og:title" content="AI Employee Assistants for Business - PNK Digital" />
         <meta
           property="og:description"
           content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000."
@@ -100,7 +100,7 @@ export function AIEmployeesPage() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://pnk-digital.com/services/ai-employees" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Employee Assistants for Business — PNK Digital" />
+        <meta name="twitter:title" content="AI Employee Assistants for Business - PNK Digital" />
         <meta
           name="twitter:description"
           content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000."
@@ -133,7 +133,7 @@ export function AIEmployeesPage() {
             className="text-lg md:text-xl text-text-secondary leading-relaxed mb-10"
           >
             Personal AI that knows their workflow, manages their inbox, prepares their meetings,
-            and handles the admin they hate — so they can focus on work that matters.
+            and handles the admin they hate - so they can focus on work that matters.
           </motion.p>
 
           <motion.div variants={fadeInUp}>
@@ -151,7 +151,7 @@ export function AIEmployeesPage() {
       <Section padding="default" background="midnight">
         <SectionHeading
           title="Your Team Spends 40% of Their Day on Admin"
-          subtitle="The average knowledge worker spends 2.5 hours a day just on email. Add meeting prep, expense reports, scheduling, and reporting — it all adds up."
+          subtitle="The average knowledge worker spends 2.5 hours a day just on email. Add meeting prep, expense reports, scheduling, and reporting - it all adds up."
         />
 
         <motion.div
@@ -203,13 +203,13 @@ export function AIEmployeesPage() {
               step: '02',
               title: 'We deploy your AI workforce',
               description:
-                'Each employee gets a personalised assistant connected to their tools — email, calendar, Slack, CRM, and more.',
+                'Each employee gets a personalised assistant connected to their tools - email, calendar, Slack, CRM, and more.',
             },
             {
               step: '03',
               title: 'Your team gets time back',
               description:
-                'Morning briefings, email triage, meeting prep, admin automation — all handled. Your team focuses on what matters.',
+                'Morning briefings, email triage, meeting prep, admin automation - all handled. Your team focuses on what matters.',
             },
           ].map((item) => (
             <motion.div
@@ -326,7 +326,7 @@ export function AIEmployeesPage() {
       <Section padding="default">
         <SectionHeading
           title="What Your Team's AI Assistant Can Do"
-          subtitle="From email to onboarding — AI assistants that handle the work your team shouldn't be doing manually."
+          subtitle="From email to onboarding - AI assistants that handle the work your team shouldn't be doing manually."
         />
 
         <motion.div
@@ -425,7 +425,7 @@ export function AIEmployeesPage() {
             {
               icon: Server,
               title: 'Your infrastructure',
-              description: 'Your data stays on your servers — nothing sent to third parties.',
+              description: 'Your data stays on your servers - nothing sent to third parties.',
             },
             {
               icon: Shield,
@@ -435,7 +435,7 @@ export function AIEmployeesPage() {
             {
               icon: UserCheck,
               title: 'Battle-tested',
-              description: "I use this exact technology to run my own business. It's not theory — it works.",
+              description: "I use this exact technology to run my own business. It's not theory - it works.",
             },
           ].map((item) => (
             <motion.div

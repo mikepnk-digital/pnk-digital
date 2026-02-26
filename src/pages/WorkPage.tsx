@@ -36,7 +36,7 @@ export function WorkPage() {
 
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-4">
             PNK Digital is new, and my portfolio here is growing. But the experience behind it
-            isn't — I've spent over a decade building production software as a contract developer
+            isn't - I've spent 25 years building production software as a contract developer
             for startups, scale-ups, and enterprise clients across the UK.
           </motion.p>
 

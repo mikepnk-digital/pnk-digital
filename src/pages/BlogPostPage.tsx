@@ -163,7 +163,7 @@ export function BlogPostPage() {
       {/* CTA after article */}
       <CtaBanner
         heading="Working on something similar?"
-        subtext="I'd love to hear about your project. Book a discovery call — no obligation, no hard sell."
+        subtext="I'd love to hear about your project. Book a discovery call - no obligation, no hard sell."
         buttonText="Let's Talk"
       />
 
