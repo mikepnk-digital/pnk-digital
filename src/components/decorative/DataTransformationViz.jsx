@@ -94,7 +94,6 @@ export function DataTransformationViz({ opacity = 0.5, className = '' }) {
 
   // Central hub animations
   const centerOpacity = useTransform(smoothProgress, [0.4, 0.8], [0, 1]);
-  const centerGlow = useTransform(smoothProgress, [0.6, 1], [0, 12]);
   const centerScale = useTransform(smoothProgress, [0.5, 0.9], [0.5, 1]);
 
   if (prefersReducedMotion) {

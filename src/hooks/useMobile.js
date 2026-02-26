@@ -22,13 +22,3 @@ export function useIsMobile() {
 
   return isMobile;
 }
-
-/**
- * Simple check for mobile without state (for initial render)
- */
-export function checkIsMobile() {
-  if (typeof window === 'undefined') return false;
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const isSmallScreen = window.innerWidth < 768;
-  return isTouchDevice || isSmallScreen;
-}

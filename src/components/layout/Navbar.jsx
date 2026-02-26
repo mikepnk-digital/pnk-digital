@@ -1,32 +1,28 @@
 import { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { useHashNavigation, useScrollState, useResponsiveClose } from '../../hooks';
+import { useScrollState, useResponsiveClose } from '../../hooks';
 import logo from '../../assets/pnk-digital-logo.svg';
 
 const navLinks = [
-  { name: 'Home', href: '/#home' },
-  { name: 'Services', href: '/#services' },
-  { name: 'About', href: '/#about' },
-  { name: 'Build Your Project', href: '/#project-builder' },
-  { name: 'Contact', href: '/#contact' },
+  { name: 'Home', to: '/' },
+  { name: 'Services', to: '/services' },
+  { name: 'Blog', to: '/blog' },
+  { name: 'About', to: '/about' },
+  { name: 'Contact', to: '/contact' },
 ];
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  // Use shared hooks for common functionality
   const isScrolled = useScrollState(50);
-  const { navigateToHash, createHashClickHandler } = useHashNavigation();
 
   // Close mobile menu on desktop resize
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
   useResponsiveClose(768, closeMobileMenu);
-
-  // Handler for desktop nav clicks
-  const handleNavClick = createHashClickHandler;
 
   return (
     <motion.nav
@@ -67,37 +63,39 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                onClick={handleNavClick(link.href)}
-                className="
-                  relative text-text-secondary
-                  hover:text-brand-pink
-                  transition-colors duration-300
-                  py-2
-                  group
-                "
-                whileHover={{ y: -2 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              >
-                {link.name}
-                <span className="
-                  absolute bottom-0 left-0 w-full h-0.5
-                  bg-gradient-to-r from-brand-pink to-neon-purple
-                  scale-x-0 origin-left
-                  transition-transform duration-300
-                  group-hover:scale-x-100
-                " />
-              </motion.a>
-            ))}
-            <a
-              href="/#project-builder"
-              onClick={handleNavClick('/#project-builder')}
-            >
-              <Button size="sm">Get Your Quote</Button>
-            </a>
+            {navLinks.map((link) => {
+              const isActive = link.to === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(link.to);
+              return (
+                <motion.div
+                  key={link.name}
+                  whileHover={{ y: -2 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                >
+                  <Link
+                    to={link.to}
+                    className={`
+                      relative py-2 group
+                      transition-colors duration-300
+                      ${isActive ? 'text-brand-pink' : 'text-text-secondary hover:text-brand-pink'}
+                    `}
+                  >
+                    {link.name}
+                    <span className={`
+                      absolute bottom-0 left-0 w-full h-0.5
+                      bg-gradient-to-r from-brand-pink to-neon-purple
+                      origin-left
+                      transition-transform duration-300
+                      ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}
+                    `} />
+                  </Link>
+                </motion.div>
+              );
+            })}
+            <Link to="/contact">
+              <Button size="sm">Let's Talk</Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -133,54 +131,51 @@ export function Navbar() {
             className="md:hidden bg-void/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
           >
             <div className="px-4 py-6 space-y-2">
-              {navLinks.map((link, index) => (
-                <motion.div
-                  key={link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <a
-                    href={link.href}
-                    className="
-                      block text-text-secondary
-                      hover:text-brand-pink
-                      hover:bg-brand-pink/5
-                      active:bg-brand-pink/10
-                      transition-all duration-300
-                      py-3 px-4 rounded-lg
-                      cursor-pointer
-                      touch-action-manipulation
-                    "
-                    onClick={(e) => {
-                      e.preventDefault();
-                      closeMobileMenu();
-                      navigateToHash(link.href, { delay: 300 });
-                    }}
+              {navLinks.map((link, index) => {
+                const isActive = link.to === '/'
+                  ? location.pathname === '/'
+                  : location.pathname.startsWith(link.to);
+                return (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    {link.name}
-                  </a>
-                </motion.div>
-              ))}
+                    <Link
+                      to={link.to}
+                      onClick={closeMobileMenu}
+                      className={`
+                        block
+                        hover:bg-brand-pink/5
+                        active:bg-brand-pink/10
+                        transition-all duration-300
+                        py-3 px-4 rounded-lg
+                        cursor-pointer
+                        touch-action-manipulation
+                        ${isActive ? 'text-brand-pink' : 'text-text-secondary hover:text-brand-pink'}
+                      `}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                );
+              })}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
                 className="pt-4"
               >
-                <a
-                  href="/#project-builder"
+                <Link
+                  to="/contact"
+                  onClick={closeMobileMenu}
                   className="block touch-action-manipulation"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    closeMobileMenu();
-                    navigateToHash('/#project-builder', { delay: 300 });
-                  }}
                 >
                   <Button size="md" className="w-full">
-                    Get Your Quote
+                    Let's Talk
                   </Button>
-                </a>
+                </Link>
               </motion.div>
             </div>
           </motion.div>

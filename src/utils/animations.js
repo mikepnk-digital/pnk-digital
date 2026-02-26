@@ -66,35 +66,5 @@ export const fadeInRight = {
   },
 };
 
-// Scale animations for interactive elements
-export const scaleOnHover = {
-  whileHover: { scale: 1.02 },
-  whileTap: { scale: 0.98 },
-};
-
-export const scaleOnHoverLarge = {
-  whileHover: { scale: 1.03 },
-  whileTap: { scale: 0.97 },
-};
-
-// Card hover animation
-export const cardHover = {
-  whileHover: { y: -8, scale: 1.01 },
-  transition: { duration: 0.3, ease: 'easeOut' },
-};
-
-// Spring transition preset
-export const springTransition = {
-  type: 'spring',
-  stiffness: 400,
-  damping: 17,
-};
-
-// Smooth ease transition preset
-export const smoothEase = [0.16, 1, 0.3, 1];
-
 // Viewport options for scroll-triggered animations
-// Using amount property for more reliable mobile detection
-export const viewportOnce = { once: true, amount: 0.15 };
 export const viewportWithMargin = { once: true, amount: 0.1 };
-export const viewportSmallMargin = { once: true, amount: 0.05 };
