@@ -8,6 +8,9 @@ export interface ContactFormInput {
   // Project builder specific fields
   features?: string[];
   timeline?: string;
+  // Spam protection fields
+  website?: string; // Honeypot — should always be empty from real users
+  _t?: number; // Elapsed milliseconds since form mount
 }
 
 export interface QuoteRequestInput extends ContactFormInput {

@@ -66,8 +66,8 @@ export class ApiStack extends cdk.Stack {
       },
     });
 
-    // Grant DynamoDB write permissions
-    enquiriesTable.grantWriteData(contactFormHandler);
+    // Grant DynamoDB read+write permissions (read needed for IP rate limiting)
+    enquiriesTable.grantReadWriteData(contactFormHandler);
 
     // Grant SES send permissions
     contactFormHandler.addToRolePolicy(new iam.PolicyStatement({

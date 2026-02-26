@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { marshall } from '@aws-sdk/util-dynamodb';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
@@ -46,6 +46,46 @@ export const handler = async (
     const path = event.rawPath;
     const body = event.body ? JSON.parse(event.body) : {};
     const isQuoteRequest = path.includes('/quote');
+
+    // Layer 1: Honeypot check — bots auto-fill the hidden "website" field
+    if (body.website) {
+      console.log('Honeypot triggered');
+      return createResponse(200, {
+        success: true,
+        message: 'Thank you for your enquiry. We will be in touch shortly.',
+      });
+    }
+
+    // Layer 2: Time-based check — reject submissions faster than 3s or missing _t
+    if (!body._t || body._t < 3000) {
+      console.log('Time-based check failed:', body._t);
+      return createResponse(200, {
+        success: true,
+        message: 'Thank you for your enquiry. We will be in touch shortly.',
+      });
+    }
+
+    // Layer 4: Per-IP rate limiting — max 3 submissions per hour
+    const clientIp = event.requestContext.http.sourceIp;
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const recentSubmissions = await dynamoClient.send(new QueryCommand({
+      TableName: TABLE_NAME,
+      IndexName: 'ip-createdAt-index',
+      KeyConditionExpression: 'ipAddress = :ip AND createdAt > :since',
+      ExpressionAttributeValues: {
+        ':ip': { S: clientIp },
+        ':since': { S: oneHourAgo },
+      },
+      Select: 'COUNT',
+    }));
+
+    if ((recentSubmissions.Count ?? 0) >= 3) {
+      console.log('IP rate limit exceeded:', clientIp);
+      return createResponse(429, {
+        success: false,
+        message: "You've sent several messages recently. Please wait a bit before sending another.",
+      });
+    }
 
     // Validate input
     const validationErrors = validateInput(body, isQuoteRequest);
@@ -335,92 +375,424 @@ function buildNotificationEmailText(enquiry: EnquiryRecord): string {
 }
 
 function buildConfirmationEmailHtml(enquiry: EnquiryRecord): string {
+  const firstName = enquiry.name.split(' ')[0];
+  const isQuote = enquiry.source === 'quote-request';
+
   return `
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Thank you for contacting PNK Digital</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    :root { color-scheme: light dark; }
+    /* Prevent dark mode color inversion on all clients */
+    [data-ogsc] body, [data-ogsb] body, .dark-mode body { background-color: #05040a !important; }
+    @media (prefers-color-scheme: dark) {
+      .email-body, .email-body table, .email-body td, .email-body div, .email-body p, .email-body span, .email-body h1, .email-body a {
+        color: inherit !important;
+        background-color: inherit !important;
+      }
+    }
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; max-width: 100% !important; }
+      .service-card { display: block !important; width: 100% !important; max-width: 100% !important; margin-bottom: 8px !important; }
+      .service-card-inner { width: 100% !important; }
+      .step-cell { display: block !important; width: 100% !important; padding-bottom: 12px !important; }
+      .step-arrow { display: none !important; }
+      .diff-col { display: block !important; width: 100% !important; margin-bottom: 8px !important; }
+      .mobile-padding { padding-left: 20px !important; padding-right: 20px !important; }
+      .hero-heading { font-size: 24px !important; line-height: 32px !important; }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <td style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <tr>
-            <td style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 30px 40px;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">
-                Thank You, ${enquiry.name}!
-              </h1>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 40px;">
-              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #374151;">
-                We've received your ${enquiry.source === 'quote-request' ? 'quote request' : 'message'} and appreciate you reaching out to PNK Digital.
-              </p>
+<body class="email-body" style="margin:0; padding:0; background-color:#05040a; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
 
-              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #374151;">
-                Our team will review your enquiry and get back to you within <strong>24 hours</strong> during business days.
-              </p>
+<!-- Preheader -->
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">
+  Thanks for reaching out, ${firstName}. Here's what happens next and how I can help your project.
+</div>
 
-              <div style="margin: 30px 0; padding: 20px; background-color: #f0f9ff; border-radius: 6px; border-left: 4px solid #6366f1;">
-                <h3 style="margin: 0 0 12px 0; font-size: 14px; color: #1e40af;">What happens next?</h3>
-                <ol style="margin: 0; padding-left: 20px; color: #374151; line-height: 1.8;">
-                  <li>We'll review your project requirements</li>
-                  <li>A member of our team will reach out to schedule a call</li>
-                  <li>We'll discuss your vision and provide a detailed proposal</li>
-                </ol>
-              </div>
+<!-- Outer wrapper -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#05040a;">
+<tr><td align="center" style="padding: 20px 10px;">
 
-              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #374151;">
-                In the meantime, if you have any urgent questions, feel free to reply to this email.
-              </p>
+<!-- Email container -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="email-container" style="max-width:600px; width:100%; border-radius:8px; overflow:hidden;">
 
-              <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #374151;">
-                Best regards,<br>
-                <strong>The PNK Digital Team</strong>
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td style="background-color: #f9fafb; padding: 20px 40px; text-align: center;">
-              <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                PNK Digital | London, UK<br>
-                <a href="mailto:hello@pnk-digital.com" style="color: #6366f1;">hello@pnk-digital.com</a>
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+<!-- ============================================ -->
+<!-- BRANDED HEADER                                -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #0a0a0f; padding: 32px 40px; text-align: center; border-bottom: 2px solid #f4178c;" class="mobile-padding">
+  <p style="margin: 0 0 4px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 2px;">
+    <span style="color: #f4178c;">PNK</span> <span style="color: #e4e4e7;">Digital</span>
+  </p>
+  <p style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #a1a1aa; letter-spacing: 1px; text-transform: uppercase;">
+    Senior Full-Stack Development, Accelerated by AI
+  </p>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- PERSONAL THANK YOU                            -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #0f0f1a; padding: 40px 40px 32px 40px;" class="mobile-padding">
+  <h1 class="hero-heading" style="margin: 0 0 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 28px; line-height: 36px; font-weight: 700; color: #e4e4e7;">
+    Thanks for reaching out, <span style="color: #f4178c;">${firstName}</span>.
+  </h1>
+  <p style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; color: #a1a1aa;">
+    I've received your ${isQuote ? 'quote request' : 'message'} and I'm looking forward to learning more about your project. Every enquiry gets my personal attention &mdash; no account managers, no juniors, just me.
+  </p>
+  <p style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; color: #a1a1aa;">
+    I'll get back to you within <span style="color: #e4e4e7; font-weight: 600;">24 hours</span> during business days.
+  </p>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- ABOUT / WHO YOU'RE WORKING WITH               -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #1a1a2e; padding: 32px 40px;" class="mobile-padding">
+  <p style="margin: 0 0 6px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; color: #f4178c; text-transform: uppercase; letter-spacing: 1.5px;">
+    Who You're Working With
+  </p>
+  <p style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #e4e4e7; line-height: 28px;">
+    Mike Pink &mdash; Senior Full-Stack Developer
+  </p>
+  <p style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 22px; color: #a1a1aa;">
+    I've spent <span style="color: #e4e4e7; font-weight: 600;">25 years</span> building production web applications for startups, scale-ups, and enterprise clients across the UK. I started PNK Digital because I believed there was a better way &mdash; AI tooling has changed what a single experienced developer can ship.
+  </p>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td width="25%" class="diff-col" style="vertical-align: top; padding-right: 8px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0a0a0f; border-radius: 6px;">
+        <tr><td style="padding: 16px 12px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <p style="margin: 0 0 4px 0; font-size: 20px; line-height: 1; color: #00f5ff;">&#9889;</p>
+          <p style="margin: 0; font-size: 11px; font-weight: 600; color: #e4e4e7; line-height: 15px;">Speed Without Shortcuts</p>
+        </td></tr>
+      </table>
+    </td>
+    <td width="25%" class="diff-col" style="vertical-align: top; padding: 0 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0a0a0f; border-radius: 6px;">
+        <tr><td style="padding: 16px 12px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <p style="margin: 0 0 4px 0; font-size: 20px; line-height: 1; color: #00f5ff;">&#128269;</p>
+          <p style="margin: 0; font-size: 11px; font-weight: 600; color: #e4e4e7; line-height: 15px;">Radical Transparency</p>
+        </td></tr>
+      </table>
+    </td>
+    <td width="25%" class="diff-col" style="vertical-align: top; padding: 0 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0a0a0f; border-radius: 6px;">
+        <tr><td style="padding: 16px 12px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <p style="margin: 0 0 4px 0; font-size: 20px; line-height: 1; color: #00f5ff;">&#128172;</p>
+          <p style="margin: 0; font-size: 11px; font-weight: 600; color: #e4e4e7; line-height: 15px;">Direct Access</p>
+        </td></tr>
+      </table>
+    </td>
+    <td width="25%" class="diff-col" style="vertical-align: top; padding-left: 8px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0a0a0f; border-radius: 6px;">
+        <tr><td style="padding: 16px 12px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <p style="margin: 0 0 4px 0; font-size: 20px; line-height: 1; color: #00f5ff;">&#10003;</p>
+          <p style="margin: 0; font-size: 11px; font-weight: 600; color: #e4e4e7; line-height: 15px;">Honest Advice</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
   </table>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- SERVICES                                      -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #0a0a0f; padding: 32px 40px;" class="mobile-padding">
+  <p style="margin: 0 0 6px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; color: #f4178c; text-transform: uppercase; letter-spacing: 1.5px;">
+    What I Can Build For You
+  </p>
+  <p style="margin: 0 0 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; color: #e4e4e7; line-height: 26px;">
+    Full-stack development, cloud infrastructure, and AI integration.
+  </p>
+
+  <!-- Service Row 1: 2 cards -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 8px;">
+  <tr>
+    <td width="50%" class="service-card" style="vertical-align: top; padding-right: 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="service-card-inner" style="background-color: #1a1a2e; border-radius: 8px; border: 1px solid #2a2a3e; height: 155px;">
+        <tr><td style="padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; height: 155px; vertical-align: top;">
+          <p style="margin: 0 0 6px 0; font-size: 22px; line-height: 1;">&#128187;</p>
+          <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #00f5ff;">Web Applications</p>
+          <p style="margin: 0; font-size: 12px; color: #a1a1aa; line-height: 18px;">Custom dashboards, portals, and business tools built with React &amp; TypeScript.</p>
+        </td></tr>
+      </table>
+    </td>
+    <td width="50%" class="service-card" style="vertical-align: top; padding-left: 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="service-card-inner" style="background-color: #1a1a2e; border-radius: 8px; border: 1px solid #2a2a3e; height: 155px;">
+        <tr><td style="padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; height: 155px; vertical-align: top;">
+          <p style="margin: 0 0 6px 0; font-size: 22px; line-height: 1;">&#9729;&#65039;</p>
+          <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #8b5cf6;">AWS Infrastructure</p>
+          <p style="margin: 0; font-size: 12px; color: #a1a1aa; line-height: 18px;">Scalable serverless backends, databases, and CI/CD on AWS.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+
+  <!-- Service Row 2: 2 cards -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 8px;">
+  <tr>
+    <td width="50%" class="service-card" style="vertical-align: top; padding-right: 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="service-card-inner" style="background-color: #1a1a2e; border-radius: 8px; border: 1px solid #2a2a3e; height: 155px;">
+        <tr><td style="padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; height: 155px; vertical-align: top;">
+          <p style="margin: 0 0 6px 0; font-size: 22px; line-height: 1;">&#128640;</p>
+          <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #f4178c;">AI-Powered MVPs</p>
+          <p style="margin: 0; font-size: 12px; color: #a1a1aa; line-height: 18px;">Go from idea to working product fast with AI-accelerated development.</p>
+        </td></tr>
+      </table>
+    </td>
+    <td width="50%" class="service-card" style="vertical-align: top; padding-left: 4px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="service-card-inner" style="background-color: #1a1a2e; border-radius: 8px; border: 1px solid #2a2a3e; height: 155px;">
+        <tr><td style="padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; height: 155px; vertical-align: top;">
+          <p style="margin: 0 0 6px 0; font-size: 22px; line-height: 1;">&#129302;</p>
+          <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #00ff88;">AI Integration</p>
+          <p style="margin: 0; font-size: 12px; color: #a1a1aa; line-height: 18px;">Embed LLMs, automation, and intelligent features into your existing products.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+
+  <!-- Service Row 3: Full width -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td style="vertical-align: top;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #1a1a2e; border-radius: 8px; border: 1px solid #f4178c;">
+        <tr><td style="padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td width="36" style="vertical-align: top;">
+              <p style="margin: 0; font-size: 22px; line-height: 1;">&#129504;</p>
+            </td>
+            <td style="vertical-align: top;">
+              <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #f4178c;">AI Employees for Your Team</p>
+              <p style="margin: 0; font-size: 12px; color: #a1a1aa; line-height: 18px;">Personal AI assistants that manage inboxes, prepare meetings, handle admin, and integrate with your tools. Reclaim the 40% of your day lost to repetitive tasks.</p>
+            </td>
+          </tr>
+          </table>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- WHAT HAPPENS NEXT                             -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #1a1a2e; padding: 32px 40px;" class="mobile-padding">
+  <p style="margin: 0 0 6px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; color: #f4178c; text-transform: uppercase; letter-spacing: 1.5px;">
+    What Happens Next
+  </p>
+  <p style="margin: 0 0 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; color: #e4e4e7;">
+    Here's how we get started.
+  </p>
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td width="22%" class="step-cell" style="text-align: center; vertical-align: top; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <p style="margin: 0 0 8px 0; font-size: 28px; line-height: 1; color: #f4178c;">&#128172;</p>
+      <p style="margin: 0 0 2px 0; font-size: 13px; font-weight: 700; color: #e4e4e7;">Discovery Call</p>
+      <p style="margin: 0; font-size: 11px; color: #a1a1aa;">30-min chat about your project</p>
+    </td>
+    <td width="4%" class="step-arrow" style="text-align: center; vertical-align: middle; font-size: 18px; color: #a1a1aa;">&rarr;</td>
+    <td width="22%" class="step-cell" style="text-align: center; vertical-align: top; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <p style="margin: 0 0 8px 0; font-size: 28px; line-height: 1; color: #f4178c;">&#128203;</p>
+      <p style="margin: 0 0 2px 0; font-size: 13px; font-weight: 700; color: #e4e4e7;">Proposal</p>
+      <p style="margin: 0; font-size: 11px; color: #a1a1aa;">Fixed pricing, clear scope</p>
+    </td>
+    <td width="4%" class="step-arrow" style="text-align: center; vertical-align: middle; font-size: 18px; color: #a1a1aa;">&rarr;</td>
+    <td width="22%" class="step-cell" style="text-align: center; vertical-align: top; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <p style="margin: 0 0 8px 0; font-size: 28px; line-height: 1; color: #f4178c;">&#9889;</p>
+      <p style="margin: 0 0 2px 0; font-size: 13px; font-weight: 700; color: #e4e4e7;">Build</p>
+      <p style="margin: 0; font-size: 11px; color: #a1a1aa;">AI-accelerated dev</p>
+    </td>
+    <td width="4%" class="step-arrow" style="text-align: center; vertical-align: middle; font-size: 18px; color: #a1a1aa;">&rarr;</td>
+    <td width="22%" class="step-cell" style="text-align: center; vertical-align: top; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <p style="margin: 0 0 8px 0; font-size: 28px; line-height: 1; color: #f4178c;">&#128640;</p>
+      <p style="margin: 0 0 2px 0; font-size: 13px; font-weight: 700; color: #e4e4e7;">Launch</p>
+      <p style="margin: 0; font-size: 11px; color: #a1a1aa;">Live &amp; supported</p>
+    </td>
+  </tr>
+  </table>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- PERSONAL SIGN-OFF                             -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #0f0f1a; padding: 32px 40px;" class="mobile-padding">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left: 3px solid #f4178c;">
+    <tr><td style="padding: 0 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <p style="margin: 0 0 12px 0; font-size: 15px; color: #a1a1aa; line-height: 24px;">
+        In the meantime, if you have any urgent questions, feel free to reply directly to this email. I read every message personally.
+      </p>
+      <p style="margin: 0; font-size: 15px; color: #e4e4e7; line-height: 24px;">
+        Speak soon,<br>
+        <span style="font-weight: 700; color: #f4178c;">Mike Pink</span><br>
+        <span style="font-size: 13px; color: #a1a1aa;">Founder, PNK Digital</span>
+      </p>
+    </td></tr>
+  </table>
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- CTA                                           -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #1a1a2e; padding: 24px 40px; text-align: center;" class="mobile-padding">
+  <!--[if mso]>
+  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://pnk-digital.com" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="50%" stroke="f" fillcolor="#f4178c">
+  <w:anchorlock/>
+  <center>
+  <![endif]-->
+  <a href="https://pnk-digital.com" style="display: inline-block; background-color: #f4178c; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 32px; border-radius: 22px;">
+    Visit pnk-digital.com &rarr;
+  </a>
+  <!--[if mso]>
+  </center>
+  </v:roundrect>
+  <![endif]-->
+</td>
+</tr>
+
+<!-- ============================================ -->
+<!-- FOOTER                                        -->
+<!-- ============================================ -->
+<tr>
+<td style="background-color: #0a0a0f; padding: 32px 40px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-top: 1px solid #2a2a3e;" class="mobile-padding">
+  <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #e4e4e7;">Mike Pink</p>
+  <p style="margin: 0 0 4px 0; font-size: 13px; color: #f4178c; font-weight: 600;">PNK Digital</p>
+  <p style="margin: 0 0 12px 0; font-size: 12px; color: #a1a1aa;">Farnham, Surrey, UK</p>
+  <p style="margin: 0 0 4px 0; font-size: 12px;">
+    <a href="https://pnk-digital.com" style="color: #00f5ff; text-decoration: none;">pnk-digital.com</a>
+  </p>
+  <p style="margin: 0 0 4px 0; font-size: 12px;">
+    <a href="mailto:hello@pnk-digital.com" style="color: #a1a1aa; text-decoration: none;">hello@pnk-digital.com</a>
+  </p>
+  <p style="margin: 0; font-size: 12px;">
+    <a href="tel:+442079460958" style="color: #a1a1aa; text-decoration: none;">+44 20 7946 0958</a>
+  </p>
+  <p style="margin: 16px 0 0 0; font-size: 11px; color: #71717a;">
+    Mike Pink Ltd &bull; Company No. 09029124<br>
+    Registered in England &amp; Wales
+  </p>
+</td>
+</tr>
+
+</table>
+<!-- /Email container -->
+
+</td></tr>
+</table>
+<!-- /Outer wrapper -->
+
 </body>
 </html>
   `.trim();
 }
 
 function buildConfirmationEmailText(enquiry: EnquiryRecord): string {
+  const firstName = enquiry.name.split(' ')[0];
+  const isQuote = enquiry.source === 'quote-request';
+
   return `
-Thank You, ${enquiry.name}!
+PNK Digital
+Senior Full-Stack Development, Accelerated by AI
+================================================
 
-We've received your ${enquiry.source === 'quote-request' ? 'quote request' : 'message'} and appreciate you reaching out to PNK Digital.
+Thanks for reaching out, ${firstName}.
 
-Our team will review your enquiry and get back to you within 24 hours during business days.
+I've received your ${isQuote ? 'quote request' : 'message'} and I'm looking forward to learning more about your project. Every enquiry gets my personal attention — no account managers, no juniors, just me.
 
-What happens next?
-1. We'll review your project requirements
-2. A member of our team will reach out to schedule a call
-3. We'll discuss your vision and provide a detailed proposal
+I'll get back to you within 24 hours during business days.
 
-In the meantime, if you have any urgent questions, feel free to reply to this email or call us at +44 20 7946 0958.
 
-Best regards,
-The PNK Digital Team
+WHO YOU'RE WORKING WITH
+-----------------------
+Mike Pink — Senior Full-Stack Developer
+
+I've spent 25 years building production web applications for startups, scale-ups, and enterprise clients across the UK. I started PNK Digital because I believed there was a better way — AI tooling has changed what a single experienced developer can ship.
+
+• Speed Without Shortcuts — Production-quality software in weeks
+• Radical Transparency — You always know where your project stands
+• Direct Access — Talk to the person writing your code
+• Honest Advice — I'll tell you if something is a bad idea
+
+
+WHAT I CAN BUILD FOR YOU
+------------------------
+Full-stack development, cloud infrastructure, and AI integration.
+
+→ Web Applications
+  Custom dashboards, portals, and business tools built with React & TypeScript.
+
+→ AWS Infrastructure
+  Scalable serverless backends, databases, and CI/CD on AWS.
+
+→ AI-Powered MVPs
+  Go from idea to working product fast with AI-accelerated development.
+
+→ AI Integration
+  Embed LLMs, automation, and intelligent features into your existing products.
+
+→ AI Employees for Your Team
+  Personal AI assistants that manage inboxes, prepare meetings, handle admin,
+  and integrate with your tools. Reclaim the 40% of your day lost to repetitive tasks.
+
+
+WHAT HAPPENS NEXT
+-----------------
+1. Discovery Call → 30-minute chat about your project, goals, and constraints
+2. Proposal → Clear deliverables, fixed pricing, defined timeline
+3. Build → AI-accelerated development with regular check-ins
+4. Launch → Live, supported, and ready to grow
+
+
+In the meantime, if you have any urgent questions, feel free to reply directly to this email. I read every message personally.
+
+Speak soon,
+Mike Pink
+Founder, PNK Digital
 
 ---
-PNK Digital | London, UK
+pnk-digital.com
 hello@pnk-digital.com
++44 20 7946 0958
+
+Mike Pink Ltd | Company No. 09029124
+Registered in England & Wales
+Farnham, Surrey, UK
   `.trim();
 }
 

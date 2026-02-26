@@ -64,6 +64,20 @@ export class DatabaseStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
+    // Global Secondary Index for per-IP rate limiting
+    this.enquiriesTable.addGlobalSecondaryIndex({
+      indexName: 'ip-createdAt-index',
+      partitionKey: {
+        name: 'ipAddress',
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'createdAt',
+        type: dynamodb.AttributeType.STRING,
+      },
+      projectionType: dynamodb.ProjectionType.KEYS_ONLY,
+    });
+
     // Outputs
     new cdk.CfnOutput(this, 'TableName', {
       value: this.enquiriesTable.tableName,

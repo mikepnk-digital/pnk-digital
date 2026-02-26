@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input, Textarea } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { submitContactForm, ApiError } from '../../utils/api';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
+
+const COOLDOWN_SECONDS = 60;
+const COOLDOWN_STORAGE_KEY = 'contactForm_lastSubmit';
 
 const initialFormState = {
   name: '',
@@ -18,6 +21,44 @@ export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+
+  // Layer 1: Honeypot — hidden field that bots auto-fill
+  const [honeypot, setHoneypot] = useState('');
+
+  // Layer 2: Time-based — track when the form mounted
+  const mountTimeRef = useRef(Date.now());
+
+  // Layer 3: Client-side cooldown — restore from sessionStorage
+  const getCooldownRemaining = useCallback(() => {
+    const lastSubmit = sessionStorage.getItem(COOLDOWN_STORAGE_KEY);
+    if (!lastSubmit) return 0;
+    const elapsed = Math.floor((Date.now() - Number(lastSubmit)) / 1000);
+    return Math.max(0, COOLDOWN_SECONDS - elapsed);
+  }, []);
+
+  useEffect(() => {
+    const remaining = getCooldownRemaining();
+    if (remaining <= 0) return;
+
+    setCooldownRemaining(remaining);
+    const interval = setInterval(() => {
+      const r = getCooldownRemaining();
+      setCooldownRemaining(r);
+      if (r <= 0) clearInterval(interval);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [getCooldownRemaining]);
+
+  const startCooldown = () => {
+    sessionStorage.setItem(COOLDOWN_STORAGE_KEY, String(Date.now()));
+    setCooldownRemaining(COOLDOWN_SECONDS);
+    const interval = setInterval(() => {
+      const r = getCooldownRemaining();
+      setCooldownRemaining(r);
+      if (r <= 0) clearInterval(interval);
+    }, 1000);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,11 +71,34 @@ export function ContactForm() {
     setSubmitStatus(null);
     setSubmitMessage('');
 
-    try {
-      const response = await submitContactForm(formData);
+    // Layer 1: Honeypot — if filled, fake success without calling API
+    if (honeypot) {
       setSubmitStatus('success');
-      setSubmitMessage(response.message || 'Thanks for reaching out. I\'ll get back to you within 24 hours.');
+      setSubmitMessage("Thanks for reaching out. I'll get back to you within 24 hours.");
       setFormData(initialFormState);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Layer 2: Time-based — if submitted too fast, fake success
+    const elapsed = Date.now() - mountTimeRef.current;
+    if (elapsed < 3000) {
+      setSubmitStatus('success');
+      setSubmitMessage("Thanks for reaching out. I'll get back to you within 24 hours.");
+      setFormData(initialFormState);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await submitContactForm({
+        ...formData,
+        _t: elapsed,
+      });
+      setSubmitStatus('success');
+      setSubmitMessage(response.message || "Thanks for reaching out. I'll get back to you within 24 hours.");
+      setFormData(initialFormState);
+      startCooldown();
     } catch (error) {
       setSubmitStatus('error');
       if (error instanceof ApiError && error.errors?.length > 0) {
@@ -49,6 +113,8 @@ export function ContactForm() {
     }
   };
 
+  const isCoolingDown = cooldownRemaining > 0;
+
   return (
     <motion.div
       variants={staggerContainer}
@@ -57,6 +123,23 @@ export function ContactForm() {
       viewport={viewportWithMargin}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Layer 1: Honeypot field — hidden from real users, auto-filled by bots */}
+        <div
+          aria-hidden="true"
+          style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
+        >
+          <label htmlFor="website">Website</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </div>
+
         <motion.div variants={fadeInUp} className="grid sm:grid-cols-2 gap-6">
           <Input
             label="Your Name"
@@ -125,10 +208,12 @@ export function ContactForm() {
             type="submit"
             size="lg"
             className="w-full sm:w-auto group"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCoolingDown}
           >
             {isSubmitting ? (
               <span className="animate-pulse">Sending...</span>
+            ) : isCoolingDown ? (
+              <span>Message sent. You can send another in {cooldownRemaining}s</span>
             ) : (
               <>
                 Send Message
