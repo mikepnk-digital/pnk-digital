@@ -99,6 +99,11 @@ export function ContactForm() {
       setSubmitMessage(response.message || "Thanks for reaching out. I'll get back to you within 24 hours.");
       setFormData(initialFormState);
       startCooldown();
+
+      // Google Ads conversion tracking
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: 'AW-17989609549/hzhOCO2094EcEM3QjoJD' });
+      }
     } catch (error) {
       setSubmitStatus('error');
       if (error instanceof ApiError && error.errors?.length > 0) {
