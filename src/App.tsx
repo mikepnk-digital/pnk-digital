@@ -15,11 +15,15 @@ const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ defaul
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const AIEmployeesPage = lazy(() => import('./pages/AIEmployeesPage').then(m => ({ default: m.AIEmployeesPage })));
+const WebDeveloperSurreyPage = lazy(() => import('./pages/landing/WebDeveloperSurreyPage').then(m => ({ default: m.WebDeveloperSurreyPage })));
 
 function App() {
   return (
     <Suspense fallback={null}>
       <Routes>
+        {/* Landing pages — no Layout (no nav/footer for conversion focus) */}
+        <Route path="/landing/web-developer-surrey" element={<WebDeveloperSurreyPage />} />
+
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
