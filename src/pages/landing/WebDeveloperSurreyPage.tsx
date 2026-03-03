@@ -82,11 +82,11 @@ export function WebDeveloperSurreyPage() {
               <span className="text-white font-semibold text-xl tracking-tight">PNK Digital</span>
             </Link>
             <a
-              href="tel:07909901600"
+              href="tel:01252279059"
               className="inline-flex items-center gap-2 text-brand-pink hover:text-neon-cyan transition-colors font-medium"
             >
               <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">07909 901600</span>
+              <span className="hidden sm:inline">01252 279059</span>
               <span className="sm:hidden">Call Now</span>
             </a>
           </div>
@@ -297,11 +297,11 @@ export function WebDeveloperSurreyPage() {
                 <motion.div variants={fadeInRight}>
                   <h3 className="text-lg font-semibold text-text-primary mb-4">Prefer to Talk?</h3>
                   <a
-                    href="tel:07909901600"
+                    href="tel:01252279059"
                     className="inline-flex items-center gap-3 text-brand-pink hover:text-neon-cyan transition-colors text-lg font-medium"
                   >
                     <Phone className="w-5 h-5" />
-                    07909 901600
+                    01252 279059
                   </a>
                   <p className="text-sm text-text-secondary mt-2">
                     Free 15-minute discovery call - no obligation.
