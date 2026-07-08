@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /audit/
 
 Sitemap: https://pnk-digital.com/sitemap.xml

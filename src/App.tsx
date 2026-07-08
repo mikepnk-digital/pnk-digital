@@ -16,6 +16,8 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ de
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const AIEmployeesPage = lazy(() => import('./pages/AIEmployeesPage').then(m => ({ default: m.AIEmployeesPage })));
 const WebDeveloperSurreyPage = lazy(() => import('./pages/landing/WebDeveloperSurreyPage').then(m => ({ default: m.WebDeveloperSurreyPage })));
+const AuditLandingPage = lazy(() => import('./pages/audit/AuditLandingPage').then(m => ({ default: m.AuditLandingPage })));
+const AuditReportPage = lazy(() => import('./pages/audit/AuditReportPage').then(m => ({ default: m.AuditReportPage })));
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <Routes>
         {/* Landing pages — no Layout (no nav/footer for conversion focus) */}
         <Route path="/landing/web-developer-surrey" element={<WebDeveloperSurreyPage />} />
+        <Route path="/audit" element={<AuditLandingPage />} />
+        <Route path="/audit/:slug" element={<AuditReportPage />} />
 
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
