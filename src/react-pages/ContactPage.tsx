@@ -1,4 +1,3 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Clock, Calendar, ExternalLink } from 'lucide-react';
 import { Section } from '../components/ui/Section';
@@ -9,17 +8,6 @@ import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInRight, viewportWithMar
 export function ContactPage() {
   return (
     <>
-      <Helmet>
-        <title>Contact - PNK Digital</title>
-        <meta name="description" content="Get in touch to discuss your project. Book a discovery call or send a message. No obligation, no hard sell." />
-        <meta property="og:title" content="Contact - PNK Digital" />
-        <meta property="og:description" content="Get in touch to discuss your project. Book a discovery call or send a message. No obligation, no hard sell." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/contact" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Contact - PNK Digital" />
-        <meta name="twitter:description" content="Get in touch to discuss your project. Book a discovery call or send a message." />
-      </Helmet>
 
       {/* Header */}
       <Section padding="page-header">

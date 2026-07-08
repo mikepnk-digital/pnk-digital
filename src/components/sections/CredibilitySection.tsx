@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Section, orbPresets } from '../ui/Section';
 import { SectionHeading } from '../ui/SectionHeading';
 import { staggerContainer, fadeInUp, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
-import mikePinkPhoto from '../../assets/mike-pink.jpg';
+import mikePinkPhoto from '../../assets/mike-pink.jpg?url';
 
 const technologies = [
   'React', 'TypeScript', 'Next.js', 'Node.js', 'AWS',

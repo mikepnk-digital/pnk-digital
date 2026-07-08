@@ -1,0 +1,18 @@
+---
+import BareLayout from '../../layouts/BareLayout.astro';
+import { AuditReportPage } from '../../react-pages/audit/AuditReportPage';
+import { prospects } from '../../data/prospects';
+
+export function getStaticPaths() {
+  return prospects.map((p) => ({
+    params: { slug: p.slug },
+    props: { name: p.name },
+  }));
+}
+
+const { slug } = Astro.params;
+const { name } = Astro.props;
+---
+<BareLayout title={`Website Audit: ${name} — PNK Digital`} description={`A website audit for ${name} by PNK Digital.`} noindex={true}>
+  <AuditReportPage slug={slug} client:load />
+</BareLayout>

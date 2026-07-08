@@ -1,5 +1,4 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Mail, MapPin } from 'lucide-react';
 import { Section } from '../components/ui/Section';
@@ -10,10 +9,6 @@ export function TermsOfService() {
 
   return (
     <>
-      <Helmet>
-        <title>Terms of Service - PNK Digital</title>
-        <meta name="description" content="PNK Digital terms of service. The terms and conditions governing our software development services." />
-      </Helmet>
       <Section padding="page-header" maxWidth="4xl">
           {/* Header */}
           <motion.div

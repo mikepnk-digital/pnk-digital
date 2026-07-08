@@ -1,5 +1,4 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Shield, Mail, MapPin } from 'lucide-react';
 import { Section } from '../components/ui/Section';
@@ -10,10 +9,6 @@ export function PrivacyPolicy() {
 
   return (
     <>
-      <Helmet>
-        <title>Privacy Policy - PNK Digital</title>
-        <meta name="description" content="PNK Digital privacy policy. How your data is collected, used, and protected." />
-      </Helmet>
       <Section padding="page-header" maxWidth="4xl">
           {/* Header */}
           <motion.div

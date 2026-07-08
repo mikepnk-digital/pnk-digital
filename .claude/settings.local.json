@@ -55,7 +55,15 @@
       "WebFetch(domain:www.thegoodbacteria.com)",
       "WebFetch(domain:www.linkedin.com)",
       "WebFetch(domain:www.rhizoptx.com)",
-      "WebFetch(domain:www.wovenbio.com)"
+      "WebFetch(domain:www.wovenbio.com)",
+      "Bash(node -p \"const p=require\\('./package.json'\\); JSON.stringify\\({astro:p.devDependencies.astro,react:p.devDependencies['@astrojs/react'],sitemap:p.devDependencies['@astrojs/sitemap']},null,2\\)\")",
+      "Bash(node -p \"['astro','@astrojs/react','@astrojs/sitemap'].map\\(m=>m+': '+require\\(m+'/package.json'\\).version\\).join\\('\\\\n'\\)\")",
+      "Bash(npx astro *)",
+      "Bash(npm remove *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(grep -roE \".{0,12}/api/contact\" dist/_astro)",
+      "Bash(npm run *)",
+      "Bash(git mv *)"
     ]
   }
 }

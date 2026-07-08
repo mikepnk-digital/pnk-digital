@@ -1,0 +1,25 @@
+---
+// Standard page shell: full <head> via BaseHead + nav/main/footer chrome.
+// Layout-less pages (landing, audit) skip this and use BaseHead directly.
+import BaseHead from '../components/seo/BaseHead.astro';
+import type { Props as SeoProps } from '../components/seo/BaseHead.astro';
+import { Navbar } from '../components/layout/Navbar.jsx';
+import { Footer } from '../components/layout/Footer.jsx';
+
+export type Props = SeoProps;
+
+const currentPath = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead {...Astro.props} />
+  </head>
+  <body class="min-h-screen bg-abyss">
+    <Navbar currentPath={currentPath} client:load />
+    <main>
+      <slot />
+    </main>
+    <Footer client:visible />
+  </body>
+</html>

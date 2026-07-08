@@ -1,0 +1,17 @@
+---
+// Chrome-free shell (no nav/footer) for conversion-focused landing pages and
+// audit reports, which supply their own headers/footers.
+import BaseHead from '../components/seo/BaseHead.astro';
+import type { Props as SeoProps } from '../components/seo/BaseHead.astro';
+
+export type Props = SeoProps;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead {...Astro.props} />
+  </head>
+  <body class="min-h-screen bg-abyss">
+    <slot />
+  </body>
+</html>

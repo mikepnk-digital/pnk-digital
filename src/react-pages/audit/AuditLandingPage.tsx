@@ -8,7 +8,7 @@ import { ContactForm } from '../../components/sections/ContactForm';
 import { AuditHeader } from '../../components/audit/AuditHeader';
 import { AuditFooter } from '../../components/audit/AuditFooter';
 import { ProspectCard } from '../../components/audit/ProspectCard';
-import { prospects } from './prospects';
+import { prospects } from '../../data/prospects';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
 
 export function AuditLandingPage() {

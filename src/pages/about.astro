@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AboutPage } from '../react-pages/AboutPage';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Mike Pink',
+  jobTitle: 'Founder & Developer',
+  url: 'https://pnk-digital.com',
+  sameAs: [],
+  worksFor: { '@type': 'Organization', name: 'PNK Digital', url: 'https://pnk-digital.com' },
+  knowsAbout: ['React', 'AWS', 'TypeScript', 'AI Integration', 'Software Development'],
+};
+---
+<Layout
+  title="About - PNK Digital"
+  description="Meet Mike Pink, the founder of PNK Digital. Senior React and AWS developer building AI-accelerated software for ambitious businesses."
+  jsonLd={jsonLd}
+>
+  <AboutPage client:load />
+</Layout>

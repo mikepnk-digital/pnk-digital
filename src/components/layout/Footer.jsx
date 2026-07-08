@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import logo from '../../assets/pnk-digital-logo.svg';
+import { Link } from '@/lib/router';
+import logo from '../../assets/pnk-digital-logo.svg?url';
 import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {

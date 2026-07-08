@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { Code2, Cloud, Zap, Cpu } from 'lucide-react';
 import { Section, orbPresets } from '../ui/Section';

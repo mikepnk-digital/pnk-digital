@@ -87,6 +87,33 @@ export class WebsiteStack extends cdk.Stack {
       ? [config.domain, `www.${config.domain}`]
       : undefined;
 
+    // URL-rewrite function: Astro emits static .html files (e.g. /about.html)
+    // but the site links to clean routes (/about). The private S3/OAC origin
+    // won't resolve directory indexes, so rewrite extensionless request URIs to
+    // the matching .html object. Assets (with a file extension) pass through.
+    const urlRewriteFunction = new cloudfront.Function(this, 'UrlRewriteFunction', {
+      functionName: `pnk-digital-url-rewrite-${config.environmentName}`,
+      comment: 'Rewrite clean routes to Astro .html files',
+      code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  var uri = request.uri;
+  if (uri === '/') { return request; }
+  // Normalise any trailing slash to the extensionless form.
+  if (uri.length > 1 && uri.charAt(uri.length - 1) === '/') {
+    uri = uri.slice(0, -1);
+    request.uri = uri;
+  }
+  var lastSegment = uri.slice(uri.lastIndexOf('/') + 1);
+  // No file extension => it's a route; serve the matching .html file.
+  if (lastSegment.indexOf('.') === -1) {
+    request.uri = uri + '.html';
+  }
+  return request;
+}
+      `),
+    });
+
     // CloudFront distribution
     this.distribution = new cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
@@ -98,19 +125,26 @@ export class WebsiteStack extends cdk.Stack {
         responseHeadersPolicy,
         compress: true,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        functionAssociations: [
+          {
+            function: urlRewriteFunction,
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
       defaultRootObject: 'index.html',
       errorResponses: [
+        // Private S3/OAC returns 403 for missing keys; serve the real 404 page.
         {
           httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
+          responseHttpStatus: 404,
+          responsePagePath: '/404.html',
           ttl: cdk.Duration.minutes(5),
         },
         {
           httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
+          responseHttpStatus: 404,
+          responsePagePath: '/404.html',
           ttl: cdk.Duration.minutes(5),
         },
       ],

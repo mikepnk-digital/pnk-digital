@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react';
 import { Section } from '../../components/ui/Section';
@@ -12,26 +11,11 @@ import { IssueCard } from '../../components/audit/IssueCard';
 import { ScoreCard } from '../../components/audit/ScoreCard';
 import { MockupFrame } from '../../components/audit/MockupFrame';
 import { MockupRenderer } from '../../components/audit/mockups';
-import { getProspectBySlug } from './prospects';
+import { getProspectBySlug } from '../../data/prospects';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
 
-export function AuditReportPage() {
-  const { slug } = useParams<{ slug: string }>();
+export function AuditReportPage({ slug }: { slug: string }) {
   const prospect = slug ? getProspectBySlug(slug) : undefined;
-
-  useEffect(() => {
-    const meta = document.createElement('meta');
-    meta.name = 'robots';
-    meta.content = 'noindex, nofollow';
-    document.head.appendChild(meta);
-    document.title = prospect
-      ? `Website Audit: ${prospect.name} — PNK Digital`
-      : 'Website Audit — PNK Digital';
-    window.scrollTo(0, 0);
-    return () => {
-      document.head.removeChild(meta);
-    };
-  }, [prospect]);
 
   if (!prospect) {
     return (

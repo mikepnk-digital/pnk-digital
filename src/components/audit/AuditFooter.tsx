@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import logo from '../../assets/pnk-digital-logo.svg';
+import { Link } from '@/lib/router';
+import logo from '../../assets/pnk-digital-logo.svg?url';
 
 export function AuditFooter() {
   const year = new Date().getFullYear();

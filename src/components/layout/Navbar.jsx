@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from '@/lib/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useScrollState, useResponsiveClose } from '../../hooks';
-import logo from '../../assets/pnk-digital-logo.svg';
+import logo from '../../assets/pnk-digital-logo.svg?url';
 
 const navLinks = [
   { name: 'Home', to: '/' },
@@ -14,9 +14,11 @@ const navLinks = [
   { name: 'Contact', to: '/contact' },
 ];
 
-export function Navbar() {
+export function Navbar({ currentPath }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  // Prefer the SSR-provided path so active state is correct before hydration.
+  const pathname = currentPath ?? location.pathname;
 
   const isScrolled = useScrollState(50);
 
@@ -65,8 +67,8 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const isActive = link.to === '/'
-                ? location.pathname === '/'
-                : location.pathname.startsWith(link.to);
+                ? pathname === '/'
+                : pathname.startsWith(link.to);
               return (
                 <motion.div
                   key={link.name}
@@ -133,8 +135,8 @@ export function Navbar() {
             <div className="px-4 py-6 space-y-2">
               {navLinks.map((link, index) => {
                 const isActive = link.to === '/'
-                  ? location.pathname === '/'
-                  : location.pathname.startsWith(link.to);
+                  ? pathname === '/'
+                  : pathname.startsWith(link.to);
                 return (
                   <motion.div
                     key={link.name}

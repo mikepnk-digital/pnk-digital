@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Helmet } from '@dr.pogodin/react-helmet';
 import { motion } from 'framer-motion';
 import { Section } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
@@ -17,17 +16,6 @@ export function BlogPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Blog - PNK Digital</title>
-        <meta name="description" content="Thoughts on AI-accelerated development, React, AWS, and building modern software. By Mike Pink." />
-        <meta property="og:title" content="Blog - PNK Digital" />
-        <meta property="og:description" content="Thoughts on AI-accelerated development, React, AWS, and building modern software. By Mike Pink." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/blog" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Blog - PNK Digital" />
-        <meta name="twitter:description" content="Thoughts on AI-accelerated development, React, AWS, and building modern software. By Mike Pink." />
-      </Helmet>
 
       {/* Header */}
       <Section padding="page-header">

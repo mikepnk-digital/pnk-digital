@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Helmet } from '@dr.pogodin/react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { ArrowRight, Check, ChevronDown, Shield, Server, Code2, UserCheck } from 'lucide-react';
 import { Section } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
@@ -86,26 +85,6 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 export function AIEmployeesPage() {
   return (
     <>
-      <Helmet>
-        <title>AI Employee Assistants for Business - PNK Digital</title>
-        <meta
-          name="description"
-          content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000. UK-based, enterprise-grade security."
-        />
-        <meta property="og:title" content="AI Employee Assistants for Business - PNK Digital" />
-        <meta
-          property="og:description"
-          content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/services/ai-employees" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Employee Assistants for Business - PNK Digital" />
-        <meta
-          name="twitter:description"
-          content="Deploy personalised AI assistants for your entire team. Email triage, meeting prep, admin automation. Setup from £5,000."
-        />
-      </Helmet>
 
       {/* Hero */}
       <Section padding="page-header">

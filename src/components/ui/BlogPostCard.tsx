@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { Calendar, Clock } from 'lucide-react';
 import type { BlogPost } from '../../lib/blog';
 import { formatDate } from '../../lib/blog';

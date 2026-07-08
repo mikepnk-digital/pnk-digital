@@ -100,6 +100,64 @@ Astro pre-renders each route to static HTML at build time. Interactive React pie
 
 ---
 
+## Phase 0 status — DONE
+- Installed `astro@7`, `@astrojs/react@6`, `@astrojs/sitemap@3` (React 19 compatible). Install needs `--force` on macOS because `@rollup/rollup-linux-arm64-gnu` is pinned in `dependencies` for the Linux CI build.
+- Added `astro.config.mjs` (static output, `site`, `@` alias, Tailwind v4 Vite plugin, `VITE_*` env passthrough).
+- Added parallel `astro`/`astro:dev`/`astro:build`/`astro:preview` scripts; left `dev`/`build` on Vite so the current site still ships until Phase 3.
+- Smoke-tested: `astro build` produced real server-rendered HTML + sitemap; Vite build verified still working.
+- **Finding for Phase 3:** `src/pages/` is Astro's reserved routing root, but it currently holds the React page components **and data files**. Astro ignores `.tsx`/`.jsx` there, but treated `src/pages/audit/prospects.ts` as an API endpoint route (`/audit/prospects`). Before converting, move data files (`prospects.ts`) to `src/data/`|`src/lib/`, and relocate the React page components (e.g. to `src/components/pages/`) so `src/pages/` contains only `.astro` routes.
+
+## Phase 1 status — DONE
+- `src/components/seo/BaseHead.astro` — all `<head>` content: favicons/manifest/MS tiles/theme-color, gtag (`AW-17989609549`), Inter fonts, per-page `title`/`description`/OG/Twitter, auto-`canonical` from `site`+path, optional `jsonLd`, optional `noindex`. Imports `src/index.css`.
+- `src/layouts/Layout.astro` — `<html>`/`<body class="min-h-screen bg-abyss">` shell using BaseHead; nav/footer slots reserved for Phase 3.
+- Layout-less pages (landing, audit) will use `BaseHead` directly.
+- Verified: title/canonical/OG/JSON-LD render server-side; Tailwind v4 (`@theme` tokens) compiles through Astro's Vite pipeline.
+- **Trailing-slash note:** `build.format: 'directory'` yields canonical `…/about/` (trailing slash). Current react-router uses no trailing slash. Phase 5 must make Astro `trailingSlash`, the CloudFront Function, and canonical tags agree to avoid redirects/duplicate-URL SEO issues.
+- Per-page `page_view` gtag tracking from the old `Layout.tsx` `useEffect` is no longer needed — each Astro route is a full page load, so `gtag('config')` fires it automatically.
+
+## Phase 2 status — DONE
+- `src/content.config.ts` — `blog` collection via `glob` loader pointed at `./content/blog` (**no file move**); `id` derives from filename == existing slug/URL. Schema: `title, date (coerce→Date), excerpt, category, tags[], author(default "Mike Pink"), slug, published(default false)`.
+- `astro.config.mjs` markdown — GFM on by default; replaced the old unthemed `rehype-highlight` with built-in **Shiki** (`github-dark`, `wrap`): themed, build-time, no client JS.
+- `src/lib/posts.ts` — Astro-side helpers (`getPublishedPosts`, `getPostBySlug`, `getRelatedPosts`, `calculateReadingTime`, `formatDate`, `categories`). **`src/lib/blog.ts` left intact** so the current Vite build keeps working until Phase 3.
+- Verified: 3 posts load newest-first, dates format, reading time computes, body renders to server HTML with auto heading-anchor `id`s.
+- **Finding for Phase 3 (blog styling):** `.prose-custom` is **not** a CSS class — all blog markdown styling currently lives in `MarkdownRenderer.tsx`'s per-element `components={{…}}` className map (h2/p/ul/code/pre/blockquote/table…). Astro's native `<Content />` won't apply those. Port them to real CSS (a `.prose-custom { … }` block with descendant selectors) so server-rendered articles match the current look. Internal-link `<Link>` handling there becomes plain `<a>` (fine for MPA).
+
+## Phase 3 status — DONE (big-bang conversion; builds 23 routes, all SSR)
+Approach taken: each page kept as a React component but rendered as a **server-rendered island** (`client:load`) inside a thin `.astro` route — Astro SSRs the island to HTML at build (SEO fixed) and hydrates it (framer-motion + interactivity preserved). Minimal component-body churn.
+- **Router retired via shim:** `src/lib/router.tsx` (SSR-safe `Link`→`<a>`, `useLocation`, `useParams`, `Navigate`, `Outlet`); swapped `react-router-dom` → `@/lib/router` across ~18 files. `react-router-dom` removed from deps.
+- **Helmet retired:** stripped `<Helmet>` + import from all pages; SEO now flows through `Layout`/`BareLayout` props. About's Person JSON-LD moved to `about.astro`. `@dr.pogodin/react-helmet` removed from deps.
+- **Layouts:** `Layout.astro` (Navbar `client:load` + `currentPath`, Footer `client:visible`); `BareLayout.astro` (no chrome) for landing + audit.
+- **Param pages:** `BlogPostPage`/`AuditReportPage` take `slug` via prop; `blog/[slug]` uses the content collection for `getStaticPaths`, `audit/[slug]` uses `prospects.ts`.
+- **Routes created:** index, about, services, services/ai-employees, blog, blog/[slug], contact, privacy-policy, terms-of-service, landing/web-developer-surrey (noindex), audit (noindex), audit/[slug] (noindex). WorkPage/CaseStudyPage stay disabled.
+- **Entry retired:** deleted `App.tsx`, `main.tsx`, `components/layout/Layout.tsx`, root `index.html`. Scripts flipped to `astro dev`/`astro build`/`astro preview`.
+- **Env fix:** `astro.config.mjs` now uses Vite `loadEnv` so `VITE_API_URL`/`VITE_ENVIRONMENT` are injected (Astro's client prefix is `PUBLIC_`, not `VITE_`). Verified the API Gateway URL is baked into the ContactForm island.
+- **Verified per route:** SSR body content, per-page title/description/canonical, `og:type=article` on posts, About JSON-LD, `noindex` on landing/audit, contact `<form>` SSR.
+- **Prose CSS (old Phase 5 task): not needed** — blog article keeps `MarkdownRenderer` (react-markdown SSRs inside the island), so its inline element styles carry over.
+
+### Follow-ups (not blockers)
+- **Sitemap includes noindex pages:** `@astrojs/sitemap` currently lists `/audit/*` and `/landing/*`. Add a `filter` in Phase 4 to exclude them (they're `noindex`).
+- **Two blog data sources:** `src/lib/blog.ts` (glob, used by blog index/highlights/cards) + `astro:content` collection (used by `blog/[slug]` getStaticPaths). Works; consolidate later if desired.
+- **Dead files — DELETED:** `vite.config.js`, `scripts/generate-sitemap.js` (+ empty `scripts/`), `vite-env.d.ts`, `src/pages/WorkPage.tsx`, `src/pages/CaseStudyPage.tsx`. Replaced Vite env types with `src/env.d.ts` (`astro/client` + `window.gtag` augmentation, still used by ContactForm); `tsconfig` include now `["src", ".astro/types.d.ts"]`.
+- **Build-warning tidy-up — DONE:** moved all 12 React page components out of `src/pages/` into `src/react-pages/` (mirroring `landing/` + `audit/` subdirs; same depth under `src` so their internal imports are unchanged) and repointed the 12 `.astro` route imports. `src/pages/` now holds only `.astro` routes; build is warning-free.
+- **Type-check:** `astro build` doesn't typecheck islands; run `astro check` sometime for TS coverage.
+- **Confirm noindex intent** on `/audit` and `/landing/*` — set them noindex as a safe default; flip if you want them indexed.
+
+## Phase 4 status — DONE (sitemap)
+- `@astrojs/sitemap` `filter` excludes `/audit/*` and `/landing/*` (noindex). Verified `sitemap-0.xml` lists only indexable clean URLs.
+
+## Phase 5 status — DONE (CDK / CloudFront) — synth verified, not yet deployed
+- **URL format settled: no trailing slash.** `astro.config.mjs` → `trailingSlash: 'never'`, `build.format: 'file'` (emits `/about.html`). Matches the site's existing indexed URLs (`/about`, not `/about/`).
+- **Canonical normalization:** BaseHead strips `.html`/trailing slash so canonical + `og:url` are the clean served URL (`/about`), matching the sitemap.
+- **CloudFront Function (viewer-request)** in `website-stack.ts`: rewrites extensionless routes → `.html` (`/about`→`/about.html`, `/blog/x`→`/blog/x.html`), normalises a trailing slash, passes through the root and any path with a file extension (assets). Attached via `functionAssociations`.
+- **Error responses:** 403 (S3/OAC missing key) and 404 → serve `/404.html` with a real **404** status (replacing the old 200-everywhere SPA fallback). Added `src/pages/404.astro`.
+- **Unchanged:** bucket, OAC, security headers/CSP, ACM cert, DNS, API/DB stacks, `s3deploy` (still `../dist`).
+- `npm run cdk:synth` succeeds; template contains the Function, `FunctionAssociations`, and the 404 error responses.
+
+## Phase 6 — remaining (deploy + verify)
+- `npm run cdk:deploy:dev` (runs `astro build` then deploys). Then verify on the dev CloudFront URL: clean routes resolve (`/about`, `/blog/<slug>`), a genuine unknown path returns the 404 page with 404 status, assets load, and view-source shows real content + correct canonical/OG.
+- Resubmit `sitemap-index.xml` in Google Search Console; spot-check a page in the LinkedIn Post Inspector.
+- Optional hardening: make the CloudFront Function 301-redirect `/about/` → `/about` (currently it rewrites without redirect — fine, since nothing links the slash variant and canonical points to the non-slash URL).
+
 ## Risks & watch-items
 - **Trailing slashes / URL format:** `build.format: 'directory'` yields `/about/`. Keep URLs consistent with current inbound links (the CloudFront Function + `trailingSlash` config must agree) to avoid redirect loops or 404s. Verify canonical tags match.
 - **Islands hydration cost:** prefer `client:visible` over `client:load` for anything below the fold to keep the SEO/perf win.

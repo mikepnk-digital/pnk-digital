@@ -1,0 +1,11 @@
+---
+import BareLayout from '../../layouts/BareLayout.astro';
+import { AuditLandingPage } from '../../react-pages/audit/AuditLandingPage';
+---
+<BareLayout
+  title="Website Audits — PNK Digital"
+  description="Free website audits for local businesses by PNK Digital."
+  noindex={true}
+>
+  <AuditLandingPage client:load />
+</BareLayout>

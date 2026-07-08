@@ -1,8 +1,7 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { MessageSquare, Zap, Shield, Target, Bot, GitBranch, Users, Lightbulb } from 'lucide-react';
-import mikePinkPhoto from '../assets/mike-pink.jpg';
+import mikePinkPhoto from '../assets/mike-pink.jpg?url';
 import { Section, orbPresets } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
 import { CtaBanner } from '../components/sections/CtaBanner';
@@ -57,31 +56,6 @@ const values = [
 export function AboutPage() {
   return (
     <>
-      <Helmet>
-        <title>About - PNK Digital</title>
-        <meta name="description" content="Meet Mike Pink, the founder of PNK Digital. Senior React and AWS developer building AI-accelerated software for ambitious businesses." />
-        <meta property="og:title" content="About - PNK Digital" />
-        <meta property="og:description" content="Meet Mike Pink, the founder of PNK Digital. Senior React and AWS developer building AI-accelerated software for ambitious businesses." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/about" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About - PNK Digital" />
-        <meta name="twitter:description" content="Meet Mike Pink, the founder of PNK Digital. Senior React and AWS developer building AI-accelerated software." />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Person",
-          "name": "Mike Pink",
-          "jobTitle": "Founder & Developer",
-          "url": "https://pnk-digital.com",
-          "sameAs": [],
-          "worksFor": {
-            "@type": "Organization",
-            "name": "PNK Digital",
-            "url": "https://pnk-digital.com"
-          },
-          "knowsAbout": ["React", "AWS", "TypeScript", "AI Integration", "Software Development"]
-        })}</script>
-      </Helmet>
 
       {/* Intro / Story Section */}
       <Section padding="page-header" orbs={orbPresets.aboutRight}>

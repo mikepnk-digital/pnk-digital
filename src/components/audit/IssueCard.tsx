@@ -10,7 +10,7 @@ import {
   FileText,
   Shield,
 } from 'lucide-react';
-import type { WebsiteIssue } from '../../pages/audit/prospects';
+import type { WebsiteIssue } from '../../data/prospects';
 import { fadeInUp } from '../../utils/animations';
 
 const severityConfig = {

@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { ScoreCard } from './ScoreCard';
-import type { Prospect } from '../../pages/audit/prospects';
+import type { Prospect } from '../../data/prospects';
 import { fadeInUp } from '../../utils/animations';
 
 interface ProspectCardProps {

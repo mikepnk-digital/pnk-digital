@@ -1,5 +1,4 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, Twitter, LinkIcon } from 'lucide-react';
 import { Section } from '../components/ui/Section';
@@ -44,50 +43,15 @@ function ShareLinks({ title, slug }: { title: string; slug: string }) {
   );
 }
 
-export function BlogPostPage() {
-  const { slug } = useParams<{ slug: string }>();
+export function BlogPostPage({ slug }: { slug: string }) {
   const post = slug ? getPostBySlug(slug) : undefined;
 
-  if (!post) {
-    return <Navigate to="/blog" replace />;
-  }
+  if (!post) return null;
 
   const related = getRelatedPosts(post, 3);
 
   return (
     <>
-      <Helmet>
-        <title>{post.title} - PNK Digital</title>
-        <meta name="description" content={post.excerpt} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://pnk-digital.com/blog/${post.slug}`} />
-        <meta property="article:published_time" content={post.date} />
-        <meta property="article:author" content={post.author} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.excerpt} />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": post.title,
-          "description": post.excerpt,
-          "datePublished": post.date,
-          "author": {
-            "@type": "Person",
-            "name": post.author,
-            "url": "https://pnk-digital.com/about"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "PNK Digital",
-            "url": "https://pnk-digital.com"
-          },
-          "url": `https://pnk-digital.com/blog/${post.slug}`,
-          "keywords": post.tags.join(", ")
-        })}</script>
-      </Helmet>
 
       {/* Article header */}
       <Section padding="page-header">

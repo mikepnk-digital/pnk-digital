@@ -1,14 +1,13 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
 import { motion } from 'framer-motion';
 import { Phone, MapPin, Code, Zap, Shield, Server, Headphones, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { Section } from '../../components/ui/Section';
 import { GradientText } from '../../components/ui/GradientText';
 import { Button } from '../../components/ui/Button';
 import { ContactForm } from '../../components/sections/ContactForm';
 import { Footer } from '../../components/layout/Footer';
 import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInRight, viewportWithMargin } from '../../utils/animations';
-import logo from '../../assets/pnk-digital-logo.svg';
+import logo from '../../assets/pnk-digital-logo.svg?url';
 
 const usps = [
   {
@@ -63,15 +62,6 @@ const pricingTiers = [
 export function WebDeveloperSurreyPage() {
   return (
     <>
-      <Helmet>
-        <title>Senior Web Developer in Farnham, Surrey | PNK Digital</title>
-        <meta name="description" content="Senior freelance web developer in Farnham, Surrey. 25+ years experience. Custom websites and web apps built with React, Node.js & AWS. No agency markup. Free consultation." />
-        <meta property="og:title" content="Senior Web Developer in Farnham, Surrey | PNK Digital" />
-        <meta property="og:description" content="Custom websites and web apps - direct from the developer, no agency markup. 25+ years experience." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/landing/web-developer-surrey" />
-        <meta name="robots" content="noindex" />
-      </Helmet>
 
       <div className="min-h-screen bg-abyss">
         {/* Header - logo matches site, no nav links (ad landing page) */}

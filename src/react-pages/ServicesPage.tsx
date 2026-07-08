@@ -1,4 +1,3 @@
-import { Helmet } from '@dr.pogodin/react-helmet';
 import { motion } from 'framer-motion';
 import { Section } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
@@ -10,17 +9,6 @@ import { fadeInUp, fadeInUpLarge, viewportWithMargin } from '../utils/animations
 export function ServicesPage() {
   return (
     <>
-      <Helmet>
-        <title>Services - PNK Digital</title>
-        <meta name="description" content="Web application development, cloud infrastructure, AI-powered MVPs, and AI integration services. Senior-level expertise, delivered fast." />
-        <meta property="og:title" content="Services - PNK Digital" />
-        <meta property="og:description" content="Web application development, cloud infrastructure, AI-powered MVPs, and AI integration services. Senior-level expertise, delivered fast." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pnk-digital.com/services" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Services - PNK Digital" />
-        <meta name="twitter:description" content="Web application development, cloud infrastructure, AI-powered MVPs, and AI integration services. Senior-level expertise, delivered fast." />
-      </Helmet>
 
       {/* Page header */}
       <Section padding="page-header">
