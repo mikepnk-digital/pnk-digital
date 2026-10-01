@@ -1,0 +1,144 @@
+---
+// Tech Support Plans, version A (founder voice, warm neutrals). A/B control.
+// Traffic split: CloudFront Function in cdk/lib/stacks/website-stack.ts.
+import LandingLayout from '@/layouts/LandingLayout.astro';
+import LandingHeader from '@/components/landing/LandingHeader.astro';
+import HeroFounder from '@/components/landing/HeroFounder.astro';
+import ProblemGrid from '@/components/landing/ProblemGrid.astro';
+import ServiceGrid from '@/components/landing/ServiceGrid.astro';
+import CtaStrip from '@/components/landing/CtaStrip.astro';
+import PricingSection from '@/components/landing/PricingSection.astro';
+import CompareTable from '@/components/landing/CompareTable.astro';
+import Steps from '@/components/landing/Steps.astro';
+import FounderSection from '@/components/landing/FounderSection.astro';
+import Testimonials from '@/components/landing/Testimonials.astro';
+import FaqSection from '@/components/landing/FaqSection.astro';
+import BookingBand from '@/components/landing/BookingBand.astro';
+import LandingFooter from '@/components/landing/LandingFooter.astro';
+import StickyCta from '@/components/landing/StickyCta.astro';
+import { SHOW_TESTIMONIALS, techSupportContent } from '@/data/tech-support';
+
+const variant = 'a';
+const c = techSupportContent[variant];
+
+const problems = [
+  {
+    title: 'Your website went down. Nobody noticed.',
+    body: "Until a customer rang to ask if you'd closed. Nobody was watching, so enquiries quietly dried up.",
+  },
+  {
+    title: "Your emails land in spam – or someone's faking them.",
+    body: 'Clients miss your invoices, and scammers can send emails that look like they came from you.',
+  },
+  {
+    title: 'Someone left. Do they still have access?',
+    body: 'Old logins to email, files and online accounts linger for months, because nobody keeps a list.',
+  },
+  {
+    title: 'Three suppliers. Nobody owns the problem.',
+    body: "The web host blames the email provider, who blames the IT person. You're stuck in the middle, chasing.",
+  },
+];
+
+const services = [
+  {
+    icon: 'monitor' as const,
+    title: 'Website care',
+    body: 'Hosting, security updates, backups and round-the-clock monitoring, so your site stays fast, safe and online.',
+  },
+  {
+    icon: 'mail' as const,
+    title: 'Email, Microsoft 365 and Google Workspace',
+    body: 'New starters set up, leavers locked out, mailboxes and licences sorted. Your email reaches inboxes, not spam.',
+  },
+  {
+    icon: 'shield-check' as const,
+    title: 'Security',
+    body: "Two-step login (MFA), so a stolen password isn't enough. Email protection against scams. Help getting Cyber Essentials, the government-backed certificate many clients ask for.",
+  },
+  {
+    icon: 'zap' as const,
+    title: 'Automation and AI',
+    body: 'Cut the repetitive admin: forms that update your CRM, quotes drafted for you, reports that arrive on their own.',
+  },
+];
+---
+<LandingLayout
+  theme={variant}
+  title="Tech Support Plans | PNK Digital"
+  description="Your outsourced tech team, for a fixed monthly fee. Mike looks after your website, email, Microsoft 365 or Google Workspace, and security. Book a free 30-minute tech review."
+>
+  <!-- A/B stickiness: remember "a" unless the visitor was forced via ?variant= -->
+  <script is:inline>
+    (function () {
+      if (/(^|;\s*)ts_ab=/.test(document.cookie) || /[?&]variant=/.test(location.search)) return;
+      document.cookie = 'ts_ab=a; Path=/; Max-Age=2592000; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
+    })();
+  </script>
+
+  <LandingHeader />
+
+  <main>
+    <HeroFounder />
+
+    <section class="lp-section" aria-labelledby="problem-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <h2 id="problem-title" class="lp-h2">Sound familiar?</h2>
+          <p class="lp-lead">Most small businesses don't have a tech problem. They have a "nobody's looking after it" problem.</p>
+        </div>
+        <ProblemGrid items={problems} variant="cards" />
+        <CtaStrip text="One person can sort all of this – and keep it sorted." />
+      </div>
+    </section>
+
+    <section class="lp-section lp-section--flush-top" aria-labelledby="cover-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">What we look after</span>
+          <h2 id="cover-title" class="lp-h2">One person looking after the lot</h2>
+        </div>
+        <ServiceGrid items={services} iconStyle="tint" />
+      </div>
+    </section>
+
+    <PricingSection
+      title="Fixed monthly fees. No surprises."
+      lead="Not sure which fits? That's what the free review is for – we'll recommend a plan once we've seen your setup."
+      plans={c.plans}
+      highlight={c.highlight}
+      noteStrong="Extra hours £80/hour."
+      note="Larger projects quoted at a fixed price, with a 10% discount for plan clients."
+      ctaText="Still deciding? Let's work it out together on a free 30-minute call."
+    />
+
+    <section class="lp-section" aria-labelledby="compare-title">
+      <div class="lp-container lp-stack lp-stack--tight">
+        <h2 id="compare-title" class="lp-h2 lp-h2--sm">Compare plans</h2>
+        <CompareTable plans={c.plans} groups={c.compareGroups} highlight={c.highlight} />
+      </div>
+    </section>
+
+    <section id="how" class="lp-section lp-section--surface" aria-labelledby="how-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">How it works</span>
+          <h2 id="how-title" class="lp-h2">Up and running in three steps</h2>
+        </div>
+        <Steps steps={c.steps} />
+      </div>
+    </section>
+
+    <FounderSection />
+
+    {SHOW_TESTIMONIALS && <Testimonials items={c.testimonials} />}
+
+    <FaqSection title="Straight answers" lead="Anything else? Ask on your free review call." items={c.faqs} />
+
+    <BookingBand variant={variant} intro={c.booking.intro} successLine={c.booking.successLine} />
+  </main>
+
+  <LandingFooter />
+  <StickyCta />
+</LandingLayout>
+

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</helmet>
+<section aria-labelledby="heroB-title" style="background:#f4f6f9; padding:clamp(40px,7vw,96px) clamp(20px,5vw,64px) clamp(48px,7vw,104px); font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#1b1720; border-bottom:1px solid #e3e7ed;">
+  <div style="max-width:1160px; margin:0 auto; display:flex; flex-wrap:wrap; gap:clamp(36px,5vw,64px); align-items:center;">
+    <div style="flex:1 1 440px; min-width:0; display:flex; flex-direction:column; gap:24px; align-items:flex-start;">
+      <span style="display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#1f2a37; background:#fff; border:1px solid #d5dbe3; padding:7px 12px; border-radius:8px;"><span style="width:8px; height:8px; border-radius:2px; background:#ec008c;"></span>Managed tech support</span>
+      <h1 id="heroB-title" style="margin:0; font-size:clamp(36px,5.2vw,62px); line-height:1.04; letter-spacing:-0.035em; font-weight:800; text-wrap:balance;">Reliable tech support for growing businesses, at a fixed monthly fee</h1>
+      <p style="margin:0; font-size:clamp(18px,1.6vw,21px); line-height:1.55; color:#4b5563; max-width:560px; text-wrap:pretty;">We look after your website, email, Microsoft 365 or Google Workspace, and security, so your team can get on with their work.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px 28px; align-items:center;">
+        <button type="button" onClick="{{ onBook }}" style="appearance:none; border:0; cursor:pointer; background:#ec008c; color:#fff; font-family:inherit; font-size:19px; font-weight:700; padding:16px 30px; border-radius:12px; min-height:58px;" style-hover="background:#c8007a;" style-focus="outline:3px solid #1f2a37; outline-offset:3px;">Book a free tech review</button>
+        <button type="button" onClick="{{ onPlans }}" style="appearance:none; border:0; background:none; cursor:pointer; color:#1f2a37; font-family:inherit; font-size:18px; font-weight:700; padding:12px 0; min-height:48px; text-decoration:underline; text-decoration-color:#ec008c; text-decoration-thickness:2px; text-underline-offset:7px;" style-hover="color:#b3006b;" style-focus="outline:3px solid #1f2a37; outline-offset:3px; border-radius:4px;">See plans</button>
+      </div>
+      <ul style="list-style:none; margin:4px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:10px 22px; font-size:15px; font-weight:600; color:#4b5563;">
+        <li style="display:flex; gap:8px; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Defined response times</li>
+        <li style="display:flex; gap:8px; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Every request tracked</li>
+        <li style="display:flex; gap:8px; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Cancel with 30 days' notice</li>
+      </ul>
+    </div>
+    <div role="img" aria-label="Illustration of the PNK Digital client portal showing website, backup and email security status, and a list of tracked support requests" style="flex:1 1 400px; max-width:520px; min-width:0; background:#1f2a37; border-radius:24px; padding:clamp(12px,2vw,18px); box-shadow:0 30px 60px -30px rgba(31,42,55,0.6);">
+      <div style="background:#fff; border-radius:14px; overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid #e3e7ed;">
+          <span style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800;"><span style="color:#ec008c;">PNK</span>Client portal</span>
+          <span style="font-size:12px; font-weight:700; color:#4b5563; background:#f4f6f9; padding:3px 8px; border-radius:6px;">Illustrative example</span>
+        </div>
+        <div style="padding:16px; display:flex; flex-direction:column; gap:16px;">
+          <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;">
+            <div style="border:1px solid #e3e7ed; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:4px;"><span style="font-size:12px; font-weight:600; color:#4b5563;">Website</span><span style="display:flex; align-items:center; gap:6px; font-size:14px; font-weight:800;"><span style="width:8px; height:8px; border-radius:50%; background:#15803d;"></span>Online</span></div>
+            <div style="border:1px solid #e3e7ed; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:4px;"><span style="font-size:12px; font-weight:600; color:#4b5563;">Backups</span><span style="display:flex; align-items:center; gap:6px; font-size:14px; font-weight:800;"><span style="width:8px; height:8px; border-radius:50%; background:#15803d;"></span>Daily</span></div>
+            <div style="border:1px solid #e3e7ed; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:4px;"><span style="font-size:12px; font-weight:600; color:#4b5563;">Email security</span><span style="display:flex; align-items:center; gap:6px; font-size:14px; font-weight:800;"><span style="width:8px; height:8px; border-radius:50%; background:#15803d;"></span>Protected</span></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#4b5563;">Website uptime · this month</span>
+            <div aria-hidden="true" style="display:grid; grid-template-columns:repeat(30,minmax(0,1fr)); gap:3px; height:26px;">
+              <span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#15803d; border-radius:2px;"></span><span style="background:#d5dbe3; border-radius:2px;"></span><span style="background:#d5dbe3; border-radius:2px;"></span><span style="background:#d5dbe3; border-radius:2px;"></span><span style="background:#d5dbe3; border-radius:2px;"></span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; border:1px solid #e3e7ed; border-radius:10px; overflow:hidden;">
+            <div style="padding:9px 12px; background:#f4f6f9; font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#4b5563;">Support requests</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 12px; border-top:1px solid #e3e7ed;"><span style="display:flex; flex-direction:column; gap:2px; min-width:0;"><span style="font-size:12px; font-weight:700; color:#4b5563;">REQ-1043</span><span style="font-size:14px; font-weight:700;">Update opening hours on website</span></span><span style="flex:none; font-size:12px; font-weight:800; color:#1f2a37; background:#e8edf3; padding:4px 9px; border-radius:6px;">In progress</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 12px; border-top:1px solid #e3e7ed;"><span style="display:flex; flex-direction:column; gap:2px; min-width:0;"><span style="font-size:12px; font-weight:700; color:#4b5563;">REQ-1042</span><span style="font-size:14px; font-weight:700;">New starter: email and Microsoft 365 access</span></span><span style="flex:none; font-size:12px; font-weight:800; color:#0f5d2e; background:#e3f3e8; padding:4px 9px; border-radius:6px;">Resolved</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 12px; border-top:1px solid #e3e7ed;"><span style="display:flex; flex-direction:column; gap:2px; min-width:0;"><span style="font-size:12px; font-weight:700; color:#4b5563;">REQ-1041</span><span style="font-size:14px; font-weight:700;">Leaver: remove access to all accounts</span></span><span style="flex:none; font-size:12px; font-weight:800; color:#0f5d2e; background:#e3f3e8; padding:4px 9px; border-radius:6px;">Resolved</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:780},&quot;onBook&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;},&quot;onPlans&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}"></script>
+</body>
+</html>

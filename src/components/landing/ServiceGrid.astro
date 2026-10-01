@@ -1,0 +1,79 @@
+---
+// Four services with icons. 'tint' (A): pink-tint icon tiles, no card border.
+// 'solid' (B): bordered cards with solid slate icon tiles and white icons.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+export interface ServiceItem {
+  title: string;
+  body: string;
+  icon: IconName;
+}
+export interface Props {
+  items: ServiceItem[];
+  iconStyle: 'tint' | 'solid';
+}
+const { items, iconStyle } = Astro.props;
+---
+<ul class:list={['grid', iconStyle]}>
+  {
+    items.map((it) => (
+      <li class="item">
+        <span class="icon"><Icon name={it.icon} size={iconStyle === 'tint' ? 28 : 26} /></span>
+        <h3>{it.title}</h3>
+        <p>{it.body}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  }
+  .tint {
+    gap: clamp(24px, 3vw, 40px);
+  }
+  .solid {
+    gap: 20px;
+  }
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .solid .item {
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    padding: 28px;
+  }
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--lp-radius-icon);
+  }
+  .tint .icon {
+    width: 56px;
+    height: 56px;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .solid .icon {
+    width: 52px;
+    height: 52px;
+    background: var(--lp-dark);
+    color: var(--lp-white);
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+</style>

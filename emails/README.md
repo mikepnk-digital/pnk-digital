@@ -9,12 +9,15 @@ Production-ready HTML email templates for outreach campaigns via Brevo (or any E
 | `cold-local-business.html` | Cold outreach to local businesses around Farnham, Surrey | Graphical |
 | `agency-partnership.html` | White-label dev partnership pitch to agencies | Graphical |
 | `tech-startup.html` | Pitch to tech companies/startups needing dev resource | Graphical |
+| `tech-support-service.html` | Managed tech support plans pitch (company voice, links to `/tech-support/service`) | Graphical |
+| `tech-support-auto-reply-a.html` | Auto-reply to a free tech review booking on `/tech-support` (version A: founder voice, warm neutrals) | Graphical |
+| `tech-support-auto-reply.html` | Auto-reply to a free tech review booking on `/tech-support/service` (version B: company voice, slate) | Graphical |
 | `follow-up.html` | Simple follow-up after no reply | Text-only |
 | `nurture.html` | Light check-in / value-share email | Text-only |
 
 ## Structure
 
-**Templates 1-3** have two sections:
+**Graphical templates** (1-3 and `tech-support-service.html`) have two sections:
 - **Top:** Personal plain-text intro with placeholders
 - **Bottom:** Graphical mini landing page (hero, service cards, comparison, process steps, tech stack, testimonial, footer)
 
@@ -36,6 +39,28 @@ Replace these `{{placeholders}}` before sending:
 |-------------|-------------|---------|
 | `{{personal_hook}}` | Opening line referencing something specific about them | `I saw your new store opening on South Street — congrats!` |
 | `{{specific_value}}` | What you could specifically do for them | `I could build you a booking system that saves your team 10+ hours a week on phone calls.` |
+
+### Tech support (`tech-support-service.html`)
+Uses `{{personal_hook}}` and `{{specific_value}}` as above, plus:
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `{{sender_name}}` | Name in the sign-off | `The PNK Digital team` |
+
+Written in version B's company voice ("we"). Keep its honesty rule in any copy you add, including `{{personal_hook}}` and `{{specific_value}}`: no individual's name, team size, locations, years trading, certifications, client counts or statistics. The plan prices and service standards mirror `src/data/tech-support.ts` and `ServiceStandards.astro`; update both if they change. Links carry `utm_source=email&utm_medium=outreach&utm_campaign=tech-support-service`, which the booking form records.
+
+### Tech support auto-replies (`tech-support-auto-reply-a.html`, `tech-support-auto-reply.html`)
+Sent automatically by the `/api/tech-support` Lambda (`cdk/lambda/contact-form/tech-support.ts`) to the person who books, picking the template that matches the page variant. esbuild bundles both files into the Lambda as text, so edits here go live on the next deploy. Uses JS template-literal placeholders like `auto-reply.html`, filled from the booking record:
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `${firstName}` | First word of the `name` field | `Sarah` |
+| `${company}` | The `businessName` field | `Acme Design` |
+
+- **A** mirrors `/tech-support`: first person, signed by Mike, version A colours. Links use `utm_campaign=tech-support`.
+- **B** mirrors `/tech-support/service`: company voice, signed "The PNK Digital team", version B colours and the same honesty rule as `tech-support-service.html`. Links use `utm_campaign=tech-support-service`.
+
+Both links use `utm_source=email&utm_medium=auto-reply`. The plain-text versions live in `tech-support.ts`; keep them in step with the HTML.
 
 ### Follow-up (#4)
 | Placeholder | Description | Example |

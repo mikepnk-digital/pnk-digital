@@ -1,0 +1,105 @@
+---
+// Placeholder testimonial cards. Rendered only when SHOW_TESTIMONIALS is true
+// (src/data/tech-support.ts). Replace with real, approved quotes before enabling.
+import type { Testimonial } from '@/data/tech-support';
+
+export interface Props {
+  items: Testimonial[];
+  placeholder?: boolean;
+}
+const { items, placeholder = true } = Astro.props;
+---
+<section class="lp-section lp-section--surface" aria-labelledby="quotes-title">
+  <div class="lp-container stack">
+    <div class="head">
+      <h2 id="quotes-title" class="lp-h2">What clients say</h2>
+      {placeholder && <span class="flag">Placeholder – add real, approved testimonials before launch</span>}
+    </div>
+    <div class="grid">
+      {
+        items.map((t) => (
+          <figure class:list={['card', { placeholder }]}>
+            {placeholder && <span class="tag">Placeholder</span>}
+            <blockquote>{t.quote}</blockquote>
+            <figcaption>
+              {t.name ? (
+                <>
+                  <strong>{t.name}</strong> · {t.attribution}
+                </>
+              ) : (
+                <strong>{t.attribution}</strong>
+              )}
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 3.5vw, 40px);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .flag {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--lp-dark);
+    background: var(--lp-white);
+    border: 1.5px dashed var(--lp-input-border);
+    padding: 8px 14px;
+    border-radius: var(--lp-radius-badge);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .card.placeholder {
+    border: 2px dashed var(--lp-placeholder-border);
+  }
+  .tag {
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-muted);
+    background: var(--lp-surface-2);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  blockquote {
+    font-size: 18px;
+    line-height: 1.55;
+    font-weight: 600;
+  }
+  .placeholder blockquote,
+  figcaption {
+    color: var(--lp-subtle);
+  }
+  figcaption {
+    font-size: 15px;
+  }
+  figcaption strong {
+    color: var(--lp-muted);
+  }
+</style>

@@ -1,0 +1,351 @@
+---
+// Version B hero: company voice, with an HTML/CSS client-portal mock-up.
+// Honesty rule: the mock-up is labelled "Illustrative example" and contains
+// no percentages, statistics, names or client counts.
+import Icon from './Icon.astro';
+
+const trust = ['Defined response times', 'Every request tracked', "Cancel with 30 days' notice"];
+const status = [
+  { label: 'Website', value: 'Online' },
+  { label: 'Backups', value: 'Daily' },
+  { label: 'Email security', value: 'Protected' },
+];
+// 30 days: 26 elapsed (green), 4 still to come (grey).
+const uptime = Array.from({ length: 30 }, (_, i) => i < 26);
+const requests = [
+  { ref: 'REQ-1043', title: 'Update opening hours on website', state: 'In progress' },
+  { ref: 'REQ-1042', title: 'New starter: email and Microsoft 365 access', state: 'Resolved' },
+  { ref: 'REQ-1041', title: 'Leaver: remove access to all accounts', state: 'Resolved' },
+];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="inner">
+    <div class="copy">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Managed tech support</span>
+      <h1 id="hero-title">Reliable tech support for growing businesses, at a fixed monthly fee</h1>
+      <p class="sub">
+        We look after your website, email, Microsoft 365 or Google Workspace, and security, so your team can get on with their work.
+      </p>
+      <div class="ctas">
+        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>Book a free tech review</a>
+        <a class="see" href="#plans" data-scroll>See plans</a>
+      </div>
+      <ul class="trust">
+        {trust.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
+      </ul>
+    </div>
+
+    <div
+      class="frame"
+      role="img"
+      aria-label="Illustration of the PNK Digital client portal showing website, backup and email security status, and a list of tracked support requests"
+    >
+      <div class="portal">
+        <div class="bar">
+          <span class="title"><span class="pnk">PNK</span>Client portal</span>
+          <span class="example">Illustrative example</span>
+        </div>
+        <div class="content">
+          <div class="tiles">
+            {
+              status.map((s) => (
+                <div class="tile">
+                  <span class="tile-label">{s.label}</span>
+                  <span class="tile-value"><span class="ok-dot" />{s.value}</span>
+                </div>
+              ))
+            }
+          </div>
+          <div class="uptime">
+            <span class="caps">Website uptime · this month</span>
+            <div class="bars">{uptime.map((up) => <span class:list={['day', { up }]} />)}</div>
+          </div>
+          <div class="requests">
+            <div class="caps req-head">Support requests</div>
+            {
+              requests.map((r) => (
+                <div class="req">
+                  <span class="req-text">
+                    <span class="req-ref">{r.ref}</span>
+                    <span class="req-title">{r.title}</span>
+                  </span>
+                  <span class:list={['pill', { done: r.state === 'Resolved' }]}>{r.state}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--lp-surface);
+    padding: clamp(40px, 7vw, 96px) var(--lp-section-x) clamp(48px, 7vw, 104px);
+    border-bottom: 1px solid var(--lp-border);
+  }
+  .inner {
+    max-width: var(--lp-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(36px, 5vw, 64px);
+    align-items: center;
+  }
+  .copy {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lp-dark);
+    background: var(--lp-white);
+    border: 1px solid #d5dbe3;
+    padding: 7px 12px;
+    border-radius: 8px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--lp-pink);
+  }
+  h1 {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .sub {
+    font-size: clamp(18px, 1.6vw, 21px);
+    line-height: 1.55;
+    color: var(--lp-muted);
+    max-width: 560px;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    align-items: center;
+  }
+  .cta {
+    padding: 16px 30px;
+    min-height: 58px;
+  }
+  .see {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--lp-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--lp-pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
+    border-radius: 4px;
+  }
+  .see:hover {
+    color: var(--lp-pink-text);
+  }
+  .see:focus-visible {
+    outline: 3px solid var(--lp-dark);
+    outline-offset: 3px;
+  }
+  .trust {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--lp-muted);
+  }
+  .trust li {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .trust :global(svg) {
+    flex: none;
+    color: var(--lp-pink-text);
+  }
+
+  /* Portal mock-up */
+  .frame {
+    flex: 1 1 400px;
+    max-width: 520px;
+    min-width: 0;
+    background: var(--lp-slate);
+    border-radius: var(--lp-radius-panel);
+    padding: clamp(12px, 2vw, 18px);
+    box-shadow: var(--lp-hero-shadow);
+  }
+  .portal {
+    background: var(--lp-white);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--lp-border);
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  /* 14px text: small pink must use the AA-safe shade. */
+  .pnk {
+    color: var(--lp-pink-text);
+  }
+  .example {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lp-muted);
+    background: var(--lp-surface);
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .tile {
+    border: 1px solid var(--lp-border);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tile-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--lp-muted);
+  }
+  .tile-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  @media (max-width: 420px) {
+    .tiles {
+      gap: 6px;
+    }
+    .tile {
+      padding: 8px;
+    }
+    .tile-value {
+      gap: 5px;
+      font-size: 13px;
+    }
+  }
+  .ok-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lp-success);
+  }
+  .uptime {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .caps {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-muted);
+  }
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(30, minmax(0, 1fr));
+    gap: 3px;
+    height: 26px;
+  }
+  .day {
+    background: #d5dbe3;
+    border-radius: 2px;
+  }
+  .day.up {
+    background: var(--lp-success);
+  }
+  .requests {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--lp-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .req-head {
+    padding: 9px 12px;
+    background: var(--lp-surface);
+  }
+  .req {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-top: 1px solid var(--lp-border);
+  }
+  .req-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .req-ref {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lp-muted);
+  }
+  .req-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pill {
+    flex: none;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--lp-slate);
+    background: #e8edf3;
+    padding: 4px 9px;
+    border-radius: 6px;
+  }
+  .pill.done {
+    color: var(--lp-success-text);
+    background: var(--lp-success-tint);
+  }
+</style>

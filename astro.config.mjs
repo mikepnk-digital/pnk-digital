@@ -24,8 +24,12 @@ export default defineConfig({
   build: { format: 'file' },
   integrations: [
     react(),
-    // Keep noindex outreach pages (/audit/*, /landing/*) out of the sitemap.
-    sitemap({ filter: (page) => !/\/(audit|landing)(\/|$)/.test(page) }),
+    // Keep noindex pages out of the sitemap: outreach (/audit/*, /landing/*)
+    // and the tech-support B variant and no-JS thanks page.
+    sitemap({
+      filter: (page) =>
+        !/\/(audit|landing)(\/|$)/.test(page) && !/\/tech-support\/(service|thanks)(\/|$)/.test(page),
+    }),
   ],
   markdown: {
     // GFM is on by default. Replace the old (unthemed) rehype-highlight with

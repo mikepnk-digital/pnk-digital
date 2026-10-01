@@ -48,3 +48,37 @@ export interface ValidationError {
   field: string;
   message: string;
 }
+
+// Tech Support Plans landing pages (POST /api/tech-support)
+export interface TechSupportBookingInput {
+  name: string;
+  businessName: string;
+  email: string;
+  phone: string;
+  staff: string;
+  plan: string;
+  headache: string;
+  variant: 'a' | 'b';
+  utm: Record<string, string>;
+  website?: string; // Honeypot
+  _t?: number; // Elapsed ms since form became interactive (JS path only)
+}
+
+export interface TechSupportEnquiryRecord {
+  enquiryId: string;
+  createdAt: string;
+  name: string;
+  email: string;
+  company: string;
+  phone?: string;
+  staff?: string;
+  plan: string;
+  message: string;
+  variant: 'a' | 'b';
+  utm?: Record<string, string>;
+  status: 'new' | 'contacted' | 'qualified' | 'closed';
+  source: 'tech-support-plans';
+  ipAddress?: string;
+  userAgent?: string;
+  ttl?: number;
+}

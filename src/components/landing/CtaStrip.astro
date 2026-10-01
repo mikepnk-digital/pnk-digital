@@ -1,0 +1,42 @@
+---
+// Inline CTA bar repeated between sections.
+// `tone`: 'outline' (bordered, white bg) | 'tint' (surface fill) | 'card' (white card + border).
+export interface Props {
+  text: string;
+  tone?: 'outline' | 'tint' | 'card';
+  cta?: string;
+}
+const { text, tone = 'outline', cta = 'Book a free tech review' } = Astro.props;
+---
+<div class:list={['strip', tone]}>
+  <p class="text">{text}</p>
+  <a class="lp-btn lp-btn--pink" href="#book" data-book>{cta}</a>
+</div>
+
+<style>
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px clamp(20px, 3vw, 32px);
+    border-radius: var(--lp-radius-card);
+  }
+  .outline {
+    border: 1px solid var(--lp-border);
+  }
+  .card {
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+  }
+  .tint {
+    background: var(--lp-surface);
+  }
+  .text {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 620px;
+  }
+</style>

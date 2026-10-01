@@ -1,0 +1,148 @@
+---
+// Tech Support Plans, version B (company voice, cool slate neutrals), served at
+// /tech-support/service.
+// noindex + canonical -> /tech-support. Visitors arrive via the CloudFront A/B
+// redirect (cookie ts_ab=b) or directly for QA.
+// Honesty rule: no individual's name, team size, locations, years trading,
+// certifications, client counts or statistics anywhere — copy, meta or alt text.
+// Sole exception: the footer's statutory company disclosure (registered name,
+// number and office), which is a legal requirement, not a trust claim.
+import LandingLayout from '@/layouts/LandingLayout.astro';
+import LandingHeader from '@/components/landing/LandingHeader.astro';
+import HeroCompany from '@/components/landing/HeroCompany.astro';
+import ProblemGrid from '@/components/landing/ProblemGrid.astro';
+import ServiceGrid from '@/components/landing/ServiceGrid.astro';
+import CtaStrip from '@/components/landing/CtaStrip.astro';
+import PricingSection from '@/components/landing/PricingSection.astro';
+import CompareTable from '@/components/landing/CompareTable.astro';
+import Steps from '@/components/landing/Steps.astro';
+import WhySection from '@/components/landing/WhySection.astro';
+import Testimonials from '@/components/landing/Testimonials.astro';
+import FaqSection from '@/components/landing/FaqSection.astro';
+import BookingBand from '@/components/landing/BookingBand.astro';
+import LandingFooter from '@/components/landing/LandingFooter.astro';
+import StickyCta from '@/components/landing/StickyCta.astro';
+import { SHOW_TESTIMONIALS, techSupportContent } from '@/data/tech-support';
+
+const variant = 'b';
+const c = techSupportContent[variant];
+
+const problems = [
+  {
+    icon: 'monitor-x' as const,
+    title: 'Your website went down. Nobody noticed.',
+    body: "Until a customer rang to ask if you'd closed. Without monitoring, enquiries quietly dry up.",
+  },
+  {
+    icon: 'mail' as const,
+    title: 'Emails spoofed or landing in spam.',
+    body: 'Clients miss your invoices, and scammers can send emails that look like they came from you.',
+  },
+  {
+    icon: 'lock' as const,
+    title: 'No record of who has access to what.',
+    body: "When someone leaves, nobody's sure which email, file and online accounts they can still get into.",
+  },
+  {
+    icon: 'network' as const,
+    title: 'Several suppliers. Nobody owns the problem.',
+    body: "The web host blames the email provider, who blames the IT contractor. You're left chasing.",
+  },
+];
+
+const services = [
+  {
+    icon: 'monitor' as const,
+    title: 'Website care',
+    body: 'Managed hosting, security updates, daily backups and 24/7 monitoring, so your site stays fast, safe and online.',
+  },
+  {
+    icon: 'mail' as const,
+    title: 'Email, Microsoft 365 and Google Workspace',
+    body: 'Starters set up, leavers removed, mailboxes and licences managed. Your email reaches inboxes, not spam.',
+  },
+  {
+    icon: 'shield-check' as const,
+    title: 'Security',
+    body: "Two-step login (MFA), so a stolen password isn't enough. Email protection against scams. Preparation for Cyber Essentials, the government-backed certificate many clients ask for.",
+  },
+  {
+    icon: 'zap' as const,
+    title: 'Automation and AI',
+    body: 'Cut repetitive admin: forms that update your CRM, quotes drafted for you, reports that arrive on their own.',
+  },
+];
+---
+<LandingLayout
+  theme={variant}
+  title="Managed Tech Support Plans | PNK Digital"
+  description="Reliable tech support for growing businesses, at a fixed monthly fee. Defined response times and every request tracked. Book a free 30-minute tech review."
+  canonical={new URL('/tech-support', Astro.site).href}
+  robots="noindex, follow"
+>
+  <LandingHeader />
+
+  <main>
+    <HeroCompany />
+
+    <section class="lp-section" aria-labelledby="problem-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">The problem</span>
+          <h2 id="problem-title" class="lp-h2">When nobody owns your tech, things slip</h2>
+          <p class="lp-lead">Most businesses don't need more suppliers. They need one that takes responsibility.</p>
+        </div>
+        <ProblemGrid items={problems} variant="grid" />
+        <CtaStrip text="One accountable provider for all of it – with every request tracked." tone="tint" />
+      </div>
+    </section>
+
+    <section class="lp-section lp-section--flush-top" aria-labelledby="cover-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">What we look after</span>
+          <h2 id="cover-title" class="lp-h2">Everything your business runs on, managed in one place</h2>
+        </div>
+        <ServiceGrid items={services} iconStyle="solid" />
+      </div>
+    </section>
+
+    <PricingSection
+      title="Published prices. Defined service levels."
+      lead="Not sure which fits? The free review is where we recommend a plan, based on your setup."
+      plans={c.plans}
+      highlight={c.highlight}
+      noteStrong="Additional hours £80/hour."
+      note="Projects quoted at a fixed price, with a 10% discount for plan clients."
+      ctaText="Still deciding? We'll recommend the right plan on a free 30-minute review."
+    />
+
+    <section class="lp-section" aria-labelledby="compare-title">
+      <div class="lp-container lp-stack lp-stack--tight">
+        <h2 id="compare-title" class="lp-h2 lp-h2--sm">Compare plans</h2>
+        <CompareTable plans={c.plans} groups={c.compareGroups} highlight={c.highlight} />
+      </div>
+    </section>
+
+    <section id="how" class="lp-section lp-section--surface" aria-labelledby="how-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Our process</span>
+          <h2 id="how-title" class="lp-h2">A clear process, from first call to monthly report</h2>
+        </div>
+        <Steps steps={c.steps} />
+      </div>
+    </section>
+
+    <WhySection />
+
+    {SHOW_TESTIMONIALS && <Testimonials items={c.testimonials} />}
+
+    <FaqSection title="Common questions" lead="Anything else? Ask us on your free review." items={c.faqs} />
+
+    <BookingBand variant={variant} intro={c.booking.intro} successLine={c.booking.successLine} />
+  </main>
+
+  <LandingFooter showLocation={false} />
+  <StickyCta />
+</LandingLayout>

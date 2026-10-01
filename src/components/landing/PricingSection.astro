@@ -1,0 +1,54 @@
+---
+// Plans: heading, three PricingCards, extra-hours note and a CtaStrip.
+import PricingCard from './PricingCard.astro';
+import CtaStrip from './CtaStrip.astro';
+import type { Plan, PlanId } from '@/data/tech-support';
+
+export interface Props {
+  title: string;
+  lead: string;
+  plans: Plan[];
+  highlight: PlanId;
+  /** Bold lead-in, e.g. "Extra hours £80/hour." */
+  noteStrong: string;
+  note: string;
+  ctaText: string;
+}
+const { title, lead, plans, highlight, noteStrong, note, ctaText } = Astro.props;
+---
+<section id="plans" class="lp-section lp-section--surface" aria-labelledby="plans-title">
+  <div class="lp-container lp-stack">
+    <div class="lp-intro intro">
+      <span class="lp-eyebrow">Plans</span>
+      <h2 id="plans-title" class="lp-h2">{title}</h2>
+      <p class="lp-lead">{lead}</p>
+    </div>
+    <div class="cards">
+      {plans.map((p) => <PricingCard plan={p} popular={p.id === highlight} />)}
+    </div>
+    <p class="note"><strong>{noteStrong}</strong> {note}</p>
+    <CtaStrip text={ctaText} tone="card" />
+  </div>
+</section>
+
+<style>
+  .intro {
+    max-width: 700px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+    padding-top: 16px;
+    align-items: stretch;
+  }
+  .note {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+    text-align: center;
+  }
+  .note strong {
+    color: var(--lp-ink);
+  }
+</style>

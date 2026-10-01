@@ -1,0 +1,90 @@
+---
+// FAQ accordion on native <details name="faq">: one open at a time, first open
+// by default, no JS required. The "+" icon rotates 45° when open.
+import Icon from './Icon.astro';
+import type { Faq } from '@/data/tech-support';
+
+export interface Props {
+  items: Faq[];
+}
+const { items } = Astro.props;
+---
+<div class="faq">
+  {
+    items.map((it, i) => (
+      <details name="faq" open={i === 0}>
+        <summary>
+          <span class="q">{it.q}</span>
+          <span class="icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
+        </summary>
+        <div class="a">{it.a}</div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--lp-border);
+  }
+  details {
+    border-bottom: 1px solid var(--lp-border);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 0;
+    min-height: 64px;
+    font-size: clamp(17px, 1.6vw, 19px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--lp-ink);
+    border-radius: 6px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover {
+    color: var(--lp-pink-text);
+  }
+  summary:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 2px;
+  }
+  .icon {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--lp-input-border);
+    color: var(--lp-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+  details[open] .icon {
+    transform: rotate(45deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .icon {
+      transition: none;
+    }
+  }
+  .a {
+    padding: 0 56px 24px 0;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--lp-muted);
+    text-wrap: pretty;
+  }
+  @media (max-width: 759.98px) {
+    .a {
+      padding-right: 0;
+    }
+  }
+</style>

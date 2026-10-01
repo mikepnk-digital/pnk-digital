@@ -1,0 +1,169 @@
+---
+// One plan card. The highlighted plan gets the pink outline, "Most popular"
+// badge and a pink button; others get an outline button that fills on hover.
+// Buttons are #book anchors (work without JS); landing.ts pre-selects the plan.
+import Icon from './Icon.astro';
+import type { Plan } from '@/data/tech-support';
+
+export interface Props {
+  plan: Plan;
+  popular?: boolean;
+}
+const { plan, popular = false } = Astro.props;
+const titleId = `plan-${plan.id}-title`;
+---
+<article class:list={['card', { popular }]} aria-labelledby={titleId}>
+  {popular && <span class="badge">Most popular</span>}
+  <div class="head">
+    <h3 id={titleId}>{plan.name}</h3>
+    <p class="tagline">{plan.tagline}</p>
+  </div>
+  <p class="price">
+    {plan.from && <span class="unit">from</span>}
+    <span class="amount">£{plan.price}</span>
+    <span class="unit">/month</span>
+  </p>
+  <ul class="meta">
+    <li><Icon name="clock" size={18} />{plan.hours}</li>
+    <li><Icon name="arrow" size={18} />{plan.response}</li>
+  </ul>
+  <div class="action">
+    <a
+      class:list={['lp-btn', 'lp-btn--block', popular ? 'lp-btn--pink' : 'lp-btn--outline']}
+      href="#book"
+      data-book
+      data-plan={plan.name}
+      aria-label={`Book a free tech review, ${plan.name} plan`}
+    >Book a free tech review</a>
+    <p class="confirm">We'll confirm the right plan on the call</p>
+  </div>
+  <div class="features">
+    {plan.includes && <p class="includes">{plan.includes}</p>}
+    <ul>
+      {plan.features.map((f) => <li><Icon name="check" size={18} /><span>{f}</span></li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    height: 100%;
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card-lg);
+    padding: 36px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .popular::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 3px solid var(--lp-pink);
+    border-radius: calc(var(--lp-radius-card-lg) + 2px);
+    pointer-events: none;
+  }
+  .badge {
+    position: absolute;
+    top: -15px;
+    left: 26px;
+    background: var(--lp-pink-text);
+    color: var(--lp-white);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    padding: 6px 14px;
+    border-radius: var(--lp-radius-badge);
+  }
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  h3 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .tagline {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--lp-muted);
+  }
+  .price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .amount {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .unit {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--lp-muted);
+  }
+  .meta {
+    padding: 16px 18px;
+    background: var(--lp-surface);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .meta li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .meta :global(svg) {
+    flex: none;
+  }
+  .action {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .confirm {
+    text-align: center;
+    font-size: 14px;
+    color: var(--lp-muted);
+  }
+  .features {
+    border-top: 1px solid var(--lp-header-border);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .includes {
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .features ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .features li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .features :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--lp-pink-text);
+  }
+</style>

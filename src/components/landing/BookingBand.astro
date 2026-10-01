@@ -1,0 +1,86 @@
+---
+// Pink booking band (#book): heading, intro and checks beside the BookingForm.
+import Icon from './Icon.astro';
+import BookingForm from './BookingForm.astro';
+import type { Variant } from '@/data/tech-support';
+
+export interface Props {
+  variant: Variant;
+  intro: string;
+  successLine: string;
+}
+const { variant, intro, successLine } = Astro.props;
+const checks = ['At a time that suits you', 'A plain-English summary afterwards', 'No obligation, no hard sell'];
+---
+<section id="book" class="band" aria-labelledby="book-title" data-booking-band>
+  <div class="inner">
+    <div class="copy">
+      <h2 id="book-title">Find out what your tech really needs: free 30-minute review</h2>
+      <p class="intro">{intro}</p>
+      <ul class="checks">
+        {checks.map((c) => <li><Icon name="check" size={22} />{c}</li>)}
+      </ul>
+    </div>
+    <div class="card">
+      <BookingForm variant={variant} successLine={successLine} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .band {
+    background: var(--lp-pink);
+    padding: var(--lp-section-y) var(--lp-section-x);
+  }
+  .inner {
+    max-width: var(--lp-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(36px, 5vw, 72px);
+    align-items: flex-start;
+  }
+  /* White text on pink is large text only: headings or 20px bold (AA). */
+  .copy {
+    flex: 1 1 380px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: var(--lp-white);
+  }
+  h2 {
+    font-size: clamp(34px, 4.4vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .intro {
+    font-size: 20px;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .checks li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .checks :global(svg) {
+    flex: none;
+  }
+  .card {
+    flex: 1 1 440px;
+    min-width: 0;
+    background: var(--lp-white);
+    border-radius: 28px;
+    padding: clamp(24px, 3.5vw, 40px);
+    box-shadow: var(--lp-form-shadow);
+  }
+</style>

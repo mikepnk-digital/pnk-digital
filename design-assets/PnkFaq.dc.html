@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</helmet>
+<div style="border-top:1px solid #e7e2de; font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#1b1720;">
+  <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+    <div style="border-bottom:1px solid #e7e2de;">
+      <h3 style="margin:0;">
+        <button type="button" id="{{ it.btnId }}" aria-expanded="{{ it.expanded }}" aria-controls="{{ it.panelId }}" onClick="{{ it.toggle }}" style="appearance:none; border:0; background:none; cursor:pointer; width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; gap:20px; padding:22px 0; min-height:64px; font-family:inherit; font-size:clamp(17px,1.6vw,19px); font-weight:700; color:#1b1720; line-height:1.4;" style-hover="color:#b3006b;" style-focus="outline:3px solid #ec008c; outline-offset:2px; border-radius:6px;">
+          <span>{{ it.q }}</span>
+          <span aria-hidden="true" style="flex:none; width:36px; height:36px; border-radius:50%; border:1.5px solid #8a8189; display:flex; align-items:center; justify-content:center; transition:transform .2s ease; transform:rotate({{ it.rot }}deg);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b1720" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>
+        </button>
+      </h3>
+      <sc-if value="{{ it.open }}" hint-placeholder-val="{{ false }}">
+        <div id="{{ it.panelId }}" role="region" aria-labelledby="{{ it.btnId }}" style="padding:0 56px 24px 0; font-size:17px; line-height:1.65; color:#4a4550; text-wrap:pretty;">{{ it.a }}</div>
+      </sc-if>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:800,&quot;height&quot;:600},&quot;items&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{q:string;a:string}[]&quot;}}">
+class Component extends DCLogic {
+  state = { open: 0 };
+  renderVals() {
+    const items = this.props.items || [];
+    return {
+      items: items.map((it, i) => {
+        const open = this.state.open === i;
+        return { ...it, open, expanded: String(open), rot: open ? 45 : 0, btnId: 'faq-q-' + i, panelId: 'faq-a-' + i, toggle: () => this.setState({ open: open ? -1 : i }) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

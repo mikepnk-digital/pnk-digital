@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</helmet>
+<section id="book" aria-labelledby="book-title" style="background:#ec008c; padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px); font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#1b1720;">
+  <div style="max-width:1160px; margin:0 auto; display:flex; flex-wrap:wrap; gap:clamp(36px,5vw,72px); align-items:flex-start;">
+    <div style="flex:1 1 380px; min-width:0; display:flex; flex-direction:column; gap:24px; color:#fff;">
+      <h2 id="book-title" style="margin:0; font-size:clamp(34px,4.4vw,54px); line-height:1.06; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">Find out what your tech really needs: free 30-minute review</h2>
+      <p style="margin:0; font-size:20px; line-height:1.5; font-weight:700; text-wrap:pretty;">{{ intro }}</p>
+      <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; font-size:20px; font-weight:700;">
+        <li style="display:flex; gap:12px; align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>At a time that suits you</li>
+        <li style="display:flex; gap:12px; align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>A plain-English summary afterwards</li>
+        <li style="display:flex; gap:12px; align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>No obligation, no hard sell</li>
+      </ul>
+    </div>
+    <div style="flex:1 1 440px; min-width:0; background:#fff; border-radius:28px; padding:clamp(24px,3.5vw,40px); box-shadow:0 30px 60px -30px rgba(60,0,35,0.55);">
+      <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submit }}" noValidate="{{ true }}" style="display:flex; flex-direction:column; gap:18px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:18px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-name" style="font-size:15px; font-weight:700;">Your name <span style="color:#b3006b;">*</span></label>
+              <input id="bk-name" ref="{{ nameRef }}" type="text" autoComplete="name" required="{{ true }}" value="{{ f.name }}" onChange="{{ onName }}" aria-invalid="{{ inv.name }}" aria-describedby="bk-name-err" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;"></input>
+              <sc-if value="{{ errors.name }}"><p id="bk-name-err" style="margin:0; font-size:14px; font-weight:600; color:#b3006b;">{{ errors.name }}</p></sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-biz" style="font-size:15px; font-weight:700;">Business name <span style="color:#b3006b;">*</span></label>
+              <input id="bk-biz" type="text" autoComplete="organization" required="{{ true }}" value="{{ f.business }}" onChange="{{ onBusiness }}" aria-invalid="{{ inv.business }}" aria-describedby="bk-biz-err" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;"></input>
+              <sc-if value="{{ errors.business }}"><p id="bk-biz-err" style="margin:0; font-size:14px; font-weight:600; color:#b3006b;">{{ errors.business }}</p></sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-email" style="font-size:15px; font-weight:700;">Email <span style="color:#b3006b;">*</span></label>
+              <input id="bk-email" type="email" autoComplete="email" required="{{ true }}" value="{{ f.email }}" onChange="{{ onEmail }}" aria-invalid="{{ inv.email }}" aria-describedby="bk-email-err" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;"></input>
+              <sc-if value="{{ errors.email }}"><p id="bk-email-err" style="margin:0; font-size:14px; font-weight:600; color:#b3006b;">{{ errors.email }}</p></sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-phone" style="font-size:15px; font-weight:700;">Phone <span style="font-weight:500; color:#4a4550;">(optional)</span></label>
+              <input id="bk-phone" type="tel" autoComplete="tel" value="{{ f.phone }}" onChange="{{ onPhone }}" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;"></input>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-staff" style="font-size:15px; font-weight:700;">Number of staff</label>
+              <select id="bk-staff" value="{{ f.staff }}" onChange="{{ onStaff }}" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;">
+                <option value="">Choose…</option>
+                <sc-for list="{{ staffOptions }}" as="o" hint-placeholder-count="0"><option value="{{ o }}">{{ o }}</option></sc-for>
+              </select>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label for="bk-plan" style="font-size:15px; font-weight:700;">Plan of interest</label>
+              <select id="bk-plan" value="{{ f.plan }}" onChange="{{ onPlan }}" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; padding:13px 16px; min-height:52px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;">
+                <sc-for list="{{ planOptions }}" as="o" hint-placeholder-count="0"><option value="{{ o }}">{{ o }}</option></sc-for>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label for="bk-headache" style="font-size:15px; font-weight:700;">What's your biggest tech headache? <span style="font-weight:500; color:#4a4550;">(optional)</span></label>
+            <textarea id="bk-headache" rows="3" value="{{ f.headache }}" onChange="{{ onHeadache }}" placeholder="e.g. Our emails keep going to clients' spam folders" style="width:100%; box-sizing:border-box; font-family:inherit; font-size:17px; line-height:1.5; padding:13px 16px; border:1.5px solid #8a8189; border-radius:12px; background:#fff; color:#1b1720; resize:vertical;" style-focus="outline:3px solid #ec008c; outline-offset:1px; border-color:#1b1720;"></textarea>
+          </div>
+          <button type="submit" style="appearance:none; border:0; cursor:pointer; width:100%; background:#ec008c; color:#fff; font-family:inherit; font-size:19px; font-weight:700; padding:16px 24px; border-radius:999px; min-height:58px; margin-top:4px;" style-hover="background:#c8007a;" style-focus="outline:3px solid #1b1720; outline-offset:3px;">Book my free review</button>
+          <p style="margin:0; text-align:center; font-size:15px; color:#4a4550;">No obligation. We'll reply within one business day.</p>
+        </form>
+      </sc-if>
+      <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="display:flex; flex-direction:column; gap:16px; align-items:flex-start; padding:12px 0;">
+          <span style="width:56px; height:56px; border-radius:50%; background:#fdeef6; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+          <h3 style="margin:0; font-size:28px; font-weight:800; letter-spacing:-0.02em;">Thanks, {{ firstName }} — you're booked in.</h3>
+          <p style="margin:0; font-size:17px; line-height:1.6; color:#4a4550;">{{ successLine }}</p>
+          <button type="button" onClick="{{ reset }}" style="appearance:none; border:0; background:none; cursor:pointer; padding:8px 0; font-family:inherit; font-size:16px; font-weight:700; color:#1b1720; text-decoration:underline; text-underline-offset:5px;" style-focus="outline:3px solid #ec008c; outline-offset:2px;">Send another request</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;plan&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Not sure&quot;,&quot;Essentials&quot;,&quot;Growth&quot;,&quot;Partner&quot;],&quot;default&quot;:&quot;Not sure&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;planNonce&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;intro&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;A relaxed video call with Mike. We'll look at your website, email and security, then recommend what to fix first and which plan fits.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;successLine&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Mike will reply within one business day to arrange a time for your free 30-minute review.&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  blank = { name: '', business: '', email: '', phone: '', staff: '', plan: 'Not sure', headache: '' };
+  state = { f: { ...this.blank }, errors: {}, done: false };
+  nameRef = React.createRef();
+  componentDidMount() { if (this.props.plan) this.setState(s => ({ f: { ...s.f, plan: this.props.plan } })); }
+  componentDidUpdate(p) {
+    if (p.planNonce !== this.props.planNonce) {
+      const plan = this.props.plan;
+      this.setState(s => ({ f: { ...s.f, plan: plan || s.f.plan }, done: false }));
+      clearTimeout(this.t);
+      this.t = setTimeout(() => { const el = this.nameRef.current; if (el) el.focus({ preventScroll: true }); }, 700);
+    }
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  set = k => e => { const v = e.target.value; this.setState(s => ({ f: { ...s.f, [k]: v }, errors: { ...s.errors, [k]: undefined } })); };
+  submit = e => {
+    e.preventDefault();
+    const f = this.state.f, er = {};
+    if (!f.name.trim()) er.name = 'Please enter your name.';
+    if (!f.business.trim()) er.business = 'Please enter your business name.';
+    if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) er.email = 'Please enter a valid email address.';
+    if (Object.keys(er).length) { this.setState({ errors: er }); return; }
+    this.setState({ done: true });
+  };
+  renderVals() {
+    const { f, errors, done } = this.state;
+    return {
+      f, errors, done, notDone: !done,
+      intro: this.props.intro ?? "A relaxed video call with Mike. We'll look at your website, email and security, then recommend what to fix first and which plan fits.",
+      successLine: this.props.successLine ?? 'Mike will reply within one business day to arrange a time for your free 30-minute review.',
+      firstName: f.name.trim().split(/\s+/)[0],
+      inv: { name: String(!!errors.name), business: String(!!errors.business), email: String(!!errors.email) },
+      staffOptions: ['Just me', '2–5', '6–10', '11–25', '26–50', 'More than 50'],
+      planOptions: ['Not sure', 'Essentials', 'Growth', 'Partner'],
+      nameRef: this.nameRef,
+      onName: this.set('name'), onBusiness: this.set('business'), onEmail: this.set('email'), onPhone: this.set('phone'),
+      onStaff: this.set('staff'), onPlan: this.set('plan'), onHeadache: this.set('headache'),
+      submit: this.submit,
+      reset: () => this.setState({ f: { ...this.blank }, errors: {}, done: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

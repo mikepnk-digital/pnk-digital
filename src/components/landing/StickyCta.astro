@@ -1,0 +1,61 @@
+---
+// Mobile-only (<760px) fixed booking bar. Hidden until the page has scrolled
+// 560px, and hidden again while the booking band is on screen. Pure
+// enhancement: without JS it never shows.
+---
+<div class="sticky" role="region" aria-label="Book a review" data-sticky-cta hidden>
+  <span class="label">Free 30-min<br />tech review</span>
+  <a class="lp-btn lp-btn--pink btn" href="#book" data-book>Book a free review</a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const band = document.querySelector<HTMLElement>('[data-booking-band]');
+  if (bar) {
+    const compact = window.matchMedia('(max-width: 759.98px)');
+    let bandVisible = false;
+    const update = () => {
+      bar.hidden = !(compact.matches && window.scrollY > 560 && !bandVisible);
+    };
+    if (band && 'IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        bandVisible = entries.some((e) => e.isIntersecting);
+        update();
+      }).observe(band);
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    compact.addEventListener('change', update);
+    update();
+  }
+</script>
+
+<style>
+  .sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: var(--lp-white);
+    border-top: 1px solid var(--lp-border);
+    box-shadow: var(--lp-sticky-shadow);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sticky[hidden] {
+    display: none;
+  }
+  .label {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--lp-dark);
+  }
+  .btn {
+    padding: 13px 22px;
+    min-height: 52px;
+  }
+</style>

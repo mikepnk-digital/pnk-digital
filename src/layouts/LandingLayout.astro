@@ -1,0 +1,305 @@
+---
+// Isolated shell for standalone landing pages (e.g. /tech-support A/B).
+// Uses only HeadMeta (SEO meta, favicons, gtag): no main-site nav, footer,
+// Tailwind or global theme CSS. Design tokens live on `.landing[data-theme]`,
+// so nothing here leaks into the rest of the site, or the other way round.
+import HeadMeta from '../components/seo/HeadMeta.astro';
+import type { Props as HeadMetaProps } from '../components/seo/HeadMeta.astro';
+
+export type Props = HeadMetaProps & {
+  theme: 'a' | 'b';
+};
+
+const { theme, ...seo } = Astro.props;
+---
+<!doctype html>
+<html lang="en-GB" class="lp-html">
+  <head>
+    <HeadMeta {...seo} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>document.documentElement.classList.add('lp-js');</script>
+  </head>
+  <body class="lp-body">
+    <div class="landing" data-theme={theme}>
+      <slot />
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  /* Page-level rules, limited to landing documents via .lp-html/.lp-body. */
+  .lp-html {
+    scroll-padding-top: 68px;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lp-html {
+      scroll-behavior: smooth;
+    }
+  }
+  .lp-body {
+    margin: 0;
+    background: #fff;
+  }
+
+  /* ---- Design tokens ---------------------------------------------------- */
+  .landing {
+    /* Shared */
+    --lp-pink: #ec008c;
+    --lp-pink-hover: #c8007a;
+    --lp-pink-text: #b3006b;
+    --lp-pink-tint: #fdeef6;
+    --lp-white: #ffffff;
+    --lp-success: #15803d;
+    --lp-success-text: #0f5d2e;
+    --lp-success-tint: #e3f3e8;
+    --lp-footer-logo: #ff5cb0;
+    --lp-ink: #1b1720;
+    --lp-font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --lp-max: 1160px;
+    --lp-header-max: 1288px;
+    --lp-section-y: clamp(56px, 8vw, 112px);
+    --lp-section-x: clamp(20px, 5vw, 64px);
+    --lp-section-gap: clamp(32px, 4vw, 48px);
+    --lp-h2: clamp(30px, 3.8vw, 46px);
+    --lp-form-shadow: 0 30px 60px -30px rgba(60, 0, 35, 0.55);
+  }
+
+  /* Version A: warm neutrals, founder voice */
+  .landing[data-theme='a'] {
+    --lp-muted: #4a4550;
+    --lp-subtle: #6b6470;
+    --lp-surface: #faf7f5;
+    --lp-surface-2: #f1ece8;
+    --lp-border: #e7e2de;
+    --lp-rule: #f0ebe7;
+    --lp-header-border: #eee7e2;
+    --lp-input-border: #8a8189;
+    --lp-placeholder-border: #cfc7c1;
+    --lp-dark: #1b1720;
+    --lp-dark-hover: #3a3340;
+    --lp-on-dark-muted: #d9d3dc;
+    --lp-header-bg: rgba(255, 255, 255, 0.95);
+    --lp-h1: clamp(38px, 5.6vw, 66px);
+    --lp-h1-lh: 1.03;
+    --lp-eyebrow-size: 14px;
+    --lp-eyebrow-weight: 700;
+    --lp-eyebrow-track: 0.06em;
+    --lp-radius-btn: 999px;
+    --lp-radius-header-btn: 999px;
+    --lp-radius-card: 22px;
+    --lp-radius-card-lg: 24px;
+    --lp-radius-panel: 28px;
+    --lp-radius-badge: 999px;
+    --lp-radius-icon: 16px;
+    --lp-hero-shadow: 0 24px 48px -32px rgba(27, 23, 32, 0.35);
+    --lp-sticky-shadow: 0 -10px 30px -12px rgba(27, 23, 32, 0.25);
+  }
+
+  /* Version B: cool slate neutrals, company voice */
+  .landing[data-theme='b'] {
+    --lp-muted: #4b5563;
+    --lp-subtle: #64748b;
+    --lp-surface: #f4f6f9;
+    --lp-surface-2: #eef1f5;
+    --lp-border: #e3e7ed;
+    --lp-rule: #e3e7ed;
+    --lp-header-border: #e3e7ed;
+    --lp-input-border: #64748b;
+    --lp-placeholder-border: #cbd5e1;
+    --lp-slate: #1f2a37;
+    --lp-slate-hover: #334155;
+    --lp-dark: var(--lp-slate);
+    --lp-dark-hover: var(--lp-slate-hover);
+    --lp-on-dark-muted: #cbd5e1;
+    --lp-on-slate-muted: #cbd5e1;
+    --lp-on-slate-rule: #3b4757;
+    --lp-header-bg: rgba(255, 255, 255, 0.96);
+    --lp-h1: clamp(36px, 5.2vw, 62px);
+    --lp-h1-lh: 1.04;
+    --lp-eyebrow-size: 13px;
+    --lp-eyebrow-weight: 800;
+    --lp-eyebrow-track: 0.1em;
+    --lp-radius-btn: 12px;
+    --lp-radius-header-btn: 10px;
+    --lp-radius-card: 20px;
+    --lp-radius-card-lg: 20px;
+    --lp-radius-panel: 24px;
+    --lp-radius-badge: 8px;
+    --lp-radius-icon: 14px;
+    --lp-hero-shadow: 0 30px 60px -30px rgba(31, 42, 55, 0.6);
+    --lp-sticky-shadow: 0 -10px 30px -12px rgba(31, 42, 55, 0.25);
+  }
+
+  /* ---- Minimal reset, scoped to the landing wrapper ---------------------- */
+  .landing {
+    font-family: var(--lp-font);
+    color: var(--lp-ink);
+    background: var(--lp-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+  }
+  .landing *,
+  .landing *::before,
+  .landing *::after {
+    box-sizing: border-box;
+  }
+  .landing :where(h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote) {
+    margin: 0;
+  }
+  .landing :where(ul, ol) {
+    list-style: none;
+    padding: 0;
+  }
+  .landing :where(h1, h2, h3) {
+    text-wrap: balance;
+  }
+  .landing :where(p) {
+    text-wrap: pretty;
+  }
+  .landing :where(img, svg) {
+    display: block;
+    max-width: 100%;
+  }
+  .landing :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+  }
+  .landing :where(a) {
+    color: var(--lp-pink-text);
+  }
+  .landing :where(a:hover) {
+    color: var(--lp-dark);
+  }
+  .landing :where(:focus-visible) {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 2px;
+  }
+  .landing .lp-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ---- Shared primitives used across landing components ----------------- */
+  .landing .lp-section {
+    padding: var(--lp-section-y) var(--lp-section-x);
+  }
+  .landing .lp-section--surface {
+    background: var(--lp-surface);
+  }
+  .landing .lp-container {
+    max-width: var(--lp-max);
+    margin: 0 auto;
+  }
+  .landing .lp-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lp-section-gap);
+  }
+  .landing .lp-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 680px;
+  }
+  .landing .lp-eyebrow {
+    font-size: var(--lp-eyebrow-size);
+    font-weight: var(--lp-eyebrow-weight);
+    letter-spacing: var(--lp-eyebrow-track);
+    text-transform: uppercase;
+    color: var(--lp-pink-text);
+  }
+  .landing .lp-h2 {
+    font-size: var(--lp-h2);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .landing .lp-section--flush-top {
+    padding-top: 0;
+  }
+  .landing .lp-stack--tight {
+    gap: clamp(28px, 3.5vw, 40px);
+  }
+  /* Compare-plans heading: smaller H2 step. */
+  .landing .lp-h2--sm {
+    font-size: clamp(28px, 3.2vw, 38px);
+    line-height: 1.1;
+  }
+  .landing .lp-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+
+  /* Buttons. Pink CTAs keep 19px/700 white text: #ec008c only passes AA as large text. */
+  .landing .lp-btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    border-radius: var(--lp-radius-btn);
+    min-height: 56px;
+    padding: 15px 28px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .landing .lp-btn--pink {
+    background: var(--lp-pink);
+    color: var(--lp-white);
+  }
+  .landing .lp-btn--pink:hover {
+    background: var(--lp-pink-hover);
+    color: var(--lp-white);
+  }
+  .landing .lp-btn--outline {
+    background: var(--lp-white);
+    color: var(--lp-dark);
+    border: 2px solid var(--lp-dark);
+    padding: 13px 20px;
+  }
+  .landing .lp-btn--outline:hover {
+    background: var(--lp-dark);
+    color: var(--lp-white);
+  }
+  .landing .lp-btn--pink:focus-visible {
+    outline: 3px solid var(--lp-dark);
+    outline-offset: 3px;
+  }
+  .landing .lp-btn--outline:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 3px;
+  }
+  .landing .lp-btn--block {
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing *,
+    .landing *::before,
+    .landing *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+</style>

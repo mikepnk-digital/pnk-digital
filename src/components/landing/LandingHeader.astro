@@ -1,0 +1,147 @@
+---
+// Sticky landing header: logo, in-page section links (≥760px) and a
+// "Book a free review" button. Plain anchors, so it works without JS;
+// BookingForm.astro adds the 68px-offset scroll for the book button; section
+// links use CSS scroll-padding-top.
+import logo from '@/assets/pnk-digital-logo.svg';
+const links = [
+  { href: '#plans', label: 'Plans' },
+  { href: '#how', label: 'How it works' },
+  { href: '#faq', label: 'FAQ' },
+];
+---
+<header class="header">
+  <div class="inner">
+    <a class="logo" href="/">
+      <img src={logo.src} width="33" height="40" alt="" />
+      <span>PNK Digital</span>
+    </a>
+    <nav aria-label="Page sections" class="nav">
+      <ul class="links">
+        {links.map((l) => <li><a href={l.href} data-scroll>{l.label}</a></li>)}
+      </ul>
+      <a class="book" href="#book" data-book>Book a free review</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--lp-header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--lp-header-border);
+  }
+  .inner {
+    max-width: var(--lp-header-max);
+    margin: 0 auto;
+    padding: 12px var(--lp-section-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 68px;
+  }
+  /* Mirrors the main site nav: mark + "PNK Digital", 12px gap. */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+    color: var(--lp-dark);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 4px;
+  }
+  .logo:hover {
+    color: var(--lp-dark);
+  }
+  .logo img {
+    height: 40px;
+    width: auto;
+  }
+  .logo:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 4px;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2.4vw, 32px);
+  }
+  .links {
+    display: none;
+    gap: clamp(12px, 2.4vw, 32px);
+  }
+  @media (min-width: 760px) {
+    .links {
+      display: flex;
+    }
+  }
+  .links a {
+    display: inline-block;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--lp-dark);
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  .links a:hover {
+    color: var(--lp-pink-text);
+  }
+  .book {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px 20px;
+    border-radius: var(--lp-radius-header-btn);
+    background: var(--lp-dark);
+    color: var(--lp-white);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+  .book:hover {
+    background: var(--lp-dark-hover);
+    color: var(--lp-white);
+  }
+  .book:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 3px;
+  }
+  /* Small phones: keep mark + name + book button on one line, no overflow. */
+  @media (max-width: 380px) {
+    .inner {
+      gap: 10px;
+      padding-inline: 16px;
+    }
+    .logo {
+      gap: 6px;
+      font-size: 16px;
+    }
+    .logo img {
+      height: 28px;
+    }
+    .book {
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 340px) {
+    .logo {
+      font-size: 15px;
+    }
+    .logo img {
+      height: 24px;
+    }
+  }
+</style>

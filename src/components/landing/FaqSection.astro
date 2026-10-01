@@ -1,0 +1,49 @@
+---
+// FAQ section: intro column beside the <details> accordion.
+import Faq from './Faq.astro';
+import type { Faq as FaqItem } from '@/data/tech-support';
+
+export interface Props {
+  title: string;
+  lead: string;
+  items: FaqItem[];
+}
+const { title, lead, items } = Astro.props;
+---
+<section id="faq" class="lp-section" aria-labelledby="faq-title">
+  <div class="lp-container row">
+    <div class="intro">
+      <span class="lp-eyebrow">FAQ</span>
+      <h2 id="faq-title" class="lp-h2">{title}</h2>
+      <p class="lead">{lead}</p>
+    </div>
+    <div class="list">
+      <Faq items={items} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: flex-start;
+  }
+  .intro {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .lead {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .list {
+    flex: 2 1 520px;
+    min-width: 0;
+  }
+</style>

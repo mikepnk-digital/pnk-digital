@@ -1,112 +1,16 @@
 ---
-// Site-wide <head>: favicons, manifest, gtag, fonts + per-page SEO meta.
-// Used by Layout.astro and directly by layout-less pages (landing, audit).
+// Site-wide <head>: HeadMeta (favicons, manifest, gtag, SEO meta) + the main
+// site theme (global CSS and Inter). Used by Layout.astro, BareLayout.astro and
+// directly by layout-less pages (landing, audit).
 import '../../index.css';
+import HeadMeta from './HeadMeta.astro';
+import type { Props as HeadMetaProps } from './HeadMeta.astro';
 
-export interface Props {
-  title: string;
-  description: string;
-  /** Absolute canonical URL. Defaults to the current page URL on `site`. */
-  canonical?: string;
-  /** OG image path (served from /public) or absolute URL. */
-  ogImage?: string;
-  /** Twitter image path (served from /public) or absolute URL. */
-  twitterImage?: string;
-  ogType?: 'website' | 'article';
-  /** JSON-LD structured data (object or array), rendered as ld+json. */
-  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
-  /** Emit noindex,nofollow (e.g. private audit reports). */
-  noindex?: boolean;
-}
-
-const {
-  title,
-  description,
-  canonical,
-  ogImage = '/og-image.png',
-  twitterImage = '/twitter-card.png',
-  ogType = 'website',
-  jsonLd,
-  noindex = false,
-} = Astro.props;
-
-// Astro.site comes from `site` in astro.config.mjs. `file` build format makes
-// Astro.url end in `.html`; strip it (and any trailing slash) so the canonical
-// is the clean served URL (/about, not /about.html) and matches the sitemap.
-const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/+$/, '') || '/';
-const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
-const ogImageURL = new URL(ogImage, Astro.site).href;
-const twitterImageURL = new URL(twitterImage, Astro.site).href;
+export type Props = HeadMetaProps;
 ---
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="generator" content={Astro.generator} />
-
-<title>{title}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={canonicalURL} />
-{noindex && <meta name="robots" content="noindex, nofollow" />}
-
-<!-- Favicon - Standard -->
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="48x48" href="/icon-48x48.png" />
-
-<!-- Favicon - Modern Browsers -->
-<link rel="icon" type="image/png" sizes="96x96" href="/icon-96x96.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
-
-<!-- Apple Touch Icons -->
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png" />
-
-<!-- Safari Pinned Tab -->
-<link rel="mask-icon" href="/safari-pinned-tab.png" color="#ec008c" />
-
-<!-- Web App Manifest -->
-<link rel="manifest" href="/site.webmanifest" />
-
-<!-- Microsoft Tiles -->
-<meta name="msapplication-TileColor" content="#ec008c" />
-<meta name="msapplication-TileImage" content="/mstile-150x150.png" />
-<meta name="msapplication-config" content="/browserconfig.xml" />
-
-<!-- Theme Color -->
-<meta name="theme-color" content="#ec008c" />
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content={ogType} />
-<meta property="og:url" content={canonicalURL} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={ogImageURL} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="PNK Digital" />
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content={canonicalURL} />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={twitterImageURL} />
-<meta name="twitter:image:alt" content="PNK Digital" />
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17989609549"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-17989609549');
-</script>
+<HeadMeta {...Astro.props} />
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-{jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}

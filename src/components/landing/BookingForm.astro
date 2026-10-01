@@ -1,0 +1,385 @@
+---
+// Free tech review booking form.
+// - With JS: custom validation (messages per README), JSON POST to
+//   /api/tech-support, inline success state, gtag event.
+// - Without JS: native required/email validation and a urlencoded POST; the
+//   API answers with a 303 to /tech-support/thanks.
+// Plan pre-selection: any [data-book][data-plan] control on the page sets the
+// Plan select, scrolls here (68px header offset) and focuses Name after ~700ms.
+import Icon from './Icon.astro';
+import { PLAN_OPTIONS, STAFF_OPTIONS } from '@/data/tech-support';
+import type { Variant } from '@/data/tech-support';
+
+export interface Props {
+  variant: Variant;
+  successLine: string;
+}
+const { variant, successLine } = Astro.props;
+
+const apiUrl: string = import.meta.env.VITE_API_URL || '';
+const action = apiUrl ? `${apiUrl}/api/tech-support` : '';
+const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+---
+<div class="booking" data-booking data-variant={variant}>
+  <form class="form" method="post" action={action || undefined} data-form>
+    <input type="hidden" name="variant" value={variant} />
+    <input type="hidden" name="source" value="tech-support-plans" />
+    {utmKeys.map((k) => <input type="hidden" name={k} value="" data-utm={k} />)}
+    <div class="hp" aria-hidden="true">
+      <label for="bk-website">Website</label>
+      <input id="bk-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="fields">
+      <div class="field">
+        <label for="bk-name">Your name <span class="req" aria-hidden="true">*</span></label>
+        <input id="bk-name" name="name" type="text" autocomplete="name" required data-field="name" />
+        <p id="bk-name-err" class="err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-biz">Business name <span class="req" aria-hidden="true">*</span></label>
+        <input id="bk-biz" name="businessName" type="text" autocomplete="organization" required data-field="business" />
+        <p id="bk-biz-err" class="err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-email">Email <span class="req" aria-hidden="true">*</span></label>
+        <input id="bk-email" name="email" type="email" autocomplete="email" required data-field="email" />
+        <p id="bk-email-err" class="err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-phone">Phone <span class="opt">(optional)</span></label>
+        <input id="bk-phone" name="phone" type="tel" autocomplete="tel" />
+      </div>
+      <div class="field">
+        <label for="bk-staff">Number of staff</label>
+        <select id="bk-staff" name="staff">
+          <option value="">Choose…</option>
+          {STAFF_OPTIONS.map((o) => <option value={o}>{o}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="bk-plan">Plan of interest</label>
+        <select id="bk-plan" name="plan" data-plan-select>
+          {PLAN_OPTIONS.map((o) => <option value={o} selected={o === 'Not sure'}>{o}</option>)}
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="bk-headache">What's your biggest tech headache? <span class="opt">(optional)</span></label>
+      <textarea id="bk-headache" name="headache" rows="3" placeholder="e.g. Our emails keep going to clients' spam folders"></textarea>
+    </div>
+
+    <button type="submit" class="lp-btn lp-btn--pink lp-btn--block submit">Book my free review</button>
+    <p class="err form-err" role="alert" data-form-error hidden></p>
+    <p class="small">No obligation. We'll reply within one business day.</p>
+    <p class="small">How we use your details: <a href="/privacy-policy">privacy policy</a>.</p>
+  </form>
+
+  <div class="success" role="status" data-success hidden>
+    <span class="tick"><Icon name="check" size={28} /></span>
+    <h3 tabindex="-1" data-success-title>Thanks – you're booked in.</h3>
+    <p>{successLine}</p>
+    <button type="button" class="again" data-reset>Send another request</button>
+  </div>
+</div>
+
+<script>
+  type FieldKey = 'name' | 'business' | 'email';
+  const MESSAGES: Record<FieldKey, string> = {
+    name: 'Please enter your name.',
+    business: 'Please enter your business name.',
+    email: 'Please enter a valid email address.',
+  };
+  const HEADER_OFFSET = 68;
+  const FOCUS_DELAY = 700;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const root = document.querySelector<HTMLElement>('[data-booking]');
+  const form = root?.querySelector<HTMLFormElement>('[data-form]');
+
+  if (root && form) {
+    const success = root.querySelector<HTMLElement>('[data-success]')!;
+    const successTitle = root.querySelector<HTMLElement>('[data-success-title]')!;
+    const formError = root.querySelector<HTMLElement>('[data-form-error]')!;
+    const planSelect = form.querySelector<HTMLSelectElement>('[data-plan-select]')!;
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const nameInput = form.querySelector<HTMLInputElement>('#bk-name')!;
+    const fields = Array.from(form.querySelectorAll<HTMLInputElement>('[data-field]'));
+    const variant = root.dataset.variant ?? 'a';
+    const startedAt = Date.now();
+
+    // Custom validation replaces native bubbles (native stays for no-JS).
+    form.noValidate = true;
+
+    // Carry UTM parameters from the URL into hidden fields.
+    const params = new URLSearchParams(window.location.search);
+    form.querySelectorAll<HTMLInputElement>('[data-utm]').forEach((input) => {
+      input.value = params.get(input.dataset.utm!) ?? '';
+    });
+
+    const errorEl = (input: HTMLInputElement) => document.getElementById(`${input.id}-err`)!;
+
+    const setError = (input: HTMLInputElement, message: string | null) => {
+      const el = errorEl(input);
+      if (message) {
+        el.textContent = message;
+        el.hidden = false;
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', el.id);
+      } else {
+        el.textContent = '';
+        el.hidden = true;
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-describedby');
+      }
+    };
+
+    const validate = (input: HTMLInputElement): string | null => {
+      const key = input.dataset.field as FieldKey;
+      const value = input.value.trim();
+      if (key === 'email') return /^\S+@\S+\.\S+$/.test(value) ? null : MESSAGES.email;
+      return value ? null : MESSAGES[key];
+    };
+
+    // Clear a field's error as soon as the user types in it.
+    fields.forEach((input) => input.addEventListener('input', () => setError(input, null)));
+
+    const showSuccess = (firstName: string) => {
+      successTitle.textContent = `Thanks, ${firstName} – you're booked in.`;
+      form.hidden = true;
+      success.hidden = false;
+      successTitle.focus();
+    };
+
+    const resetForm = () => {
+      form.reset();
+      fields.forEach((input) => setError(input, null));
+      formError.hidden = true;
+      success.hidden = true;
+      form.hidden = false;
+    };
+
+    root.querySelector('[data-reset]')!.addEventListener('click', () => {
+      resetForm();
+      nameInput.focus();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      formError.hidden = true;
+      let firstInvalid: HTMLInputElement | null = null;
+      for (const input of fields) {
+        const message = validate(input);
+        setError(input, message);
+        if (message && !firstInvalid) firstInvalid = input;
+      }
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      const payload = { ...data, _t: Date.now() - startedAt };
+      const plan = data.plan || 'Not sure';
+      submitBtn.disabled = true;
+      try {
+        const endpoint = form.getAttribute('action');
+        if (endpoint) {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        } else {
+          // No API configured (local dev): simulate success.
+          console.warn('VITE_API_URL not configured. Simulating booking submission.', payload);
+          await new Promise((r) => setTimeout(r, 600));
+        }
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'tech_review_booked', { variant, plan });
+          // TODO: add a Google Ads conversion for this goal once a label exists, e.g.
+          // window.gtag('event', 'conversion', { send_to: 'AW-17989609549/<label>' });
+        }
+        showSuccess(data.name.trim().split(/\s+/)[0]);
+      } catch (err) {
+        console.error('Booking submission failed', err);
+        formError.textContent = 'Sorry, something went wrong sending your request. Please try again.';
+        formError.hidden = false;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Plan pre-selection + scroll for every "book" control on the page.
+    let focusTimer: number | undefined;
+    document.querySelectorAll<HTMLAnchorElement>('[data-book]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (!success.hidden) resetForm();
+        const plan = link.dataset.plan;
+        if (plan) planSelect.value = plan;
+        const band = document.getElementById('book');
+        if (band) {
+          const top = band.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+          window.scrollTo({ top, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+        }
+        history.replaceState(null, '', '#book');
+        window.clearTimeout(focusTimer);
+        focusTimer = window.setTimeout(
+          () => nameInput.focus({ preventScroll: true }),
+          reduceMotion.matches ? 0 : FOCUS_DELAY
+        );
+      });
+    });
+  }
+</script>
+
+<style>
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: var(--lp-ink);
+  }
+  .form[hidden],
+  .success[hidden] {
+    display: none;
+  }
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 18px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  label {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .req {
+    color: var(--lp-pink-text);
+  }
+  .opt {
+    font-weight: 500;
+    color: var(--lp-muted);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font-size: 17px;
+    padding: 13px 16px;
+    min-height: 52px;
+    border: 1.5px solid var(--lp-input-border);
+    border-radius: 12px;
+    background: var(--lp-white);
+    color: var(--lp-ink);
+  }
+  textarea {
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 0;
+  }
+  ::placeholder {
+    color: var(--lp-subtle);
+    opacity: 1;
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 1px;
+    border-color: var(--lp-ink);
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--lp-pink-text);
+  }
+  .err {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lp-pink-text);
+  }
+  .err[hidden] {
+    display: none;
+  }
+  .submit {
+    margin-top: 4px;
+    padding: 16px 24px;
+    min-height: 58px;
+  }
+  .submit:disabled {
+    cursor: progress;
+    opacity: 0.8;
+  }
+  .small {
+    text-align: center;
+    font-size: 15px;
+    color: var(--lp-muted);
+  }
+  .small + .small {
+    margin-top: -10px;
+    font-size: 14px;
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .success {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 12px 0;
+  }
+  .tick {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .success h3 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .success h3:focus {
+    outline: none;
+  }
+  .success p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .again {
+    appearance: none;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: 8px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--lp-ink);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+  .again:hover {
+    color: var(--lp-pink-text);
+  }
+  .again:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 2px;
+  }
+</style>

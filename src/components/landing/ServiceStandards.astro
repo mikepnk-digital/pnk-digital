@@ -1,0 +1,71 @@
+---
+// Version B: dark "Our service standards" panel (<dl> of response times).
+const rows: [string, string][] = [
+  ['Essentials response', 'Next business day'],
+  ['Growth response', 'Same business day'],
+  ['Partner response', 'Within 4 business hours'],
+  ['Support hours', 'Mon–Fri, 9am–5:30pm'],
+  ['Website monitoring', '24/7'],
+  ['Every request', 'Reference and status updates'],
+  ['Reporting', 'Monthly health report'],
+];
+---
+<div class="panel">
+  <h3 id="standards-title">Our service standards</h3>
+  <dl>
+    {
+      rows.map(([dt, dd]) => (
+        <div class="row">
+          <dt>{dt}</dt>
+          <dd>{dd}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  <p class="foot">Excluding UK bank holidays.</p>
+</div>
+
+<style>
+  .panel {
+    flex: 1 1 340px;
+    min-width: 0;
+    max-width: 460px;
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    border-radius: var(--lp-radius-panel);
+    padding: clamp(24px, 3vw, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  dl {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--lp-on-slate-rule);
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--lp-on-slate-rule);
+    font-size: 16px;
+  }
+  dt {
+    color: var(--lp-on-slate-muted);
+  }
+  dd {
+    font-weight: 700;
+    text-align: right;
+  }
+  .foot {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--lp-on-slate-muted);
+  }
+</style>

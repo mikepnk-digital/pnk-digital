@@ -8,7 +8,9 @@ import {
   EnquiryRecord,
   ApiResponse,
   ValidationError,
+  TechSupportEnquiryRecord,
 } from './types';
+import { handleTechSupport } from './tech-support';
 
 const dynamoClient = new DynamoDBClient({});
 const sesClient = new SESClient(
@@ -19,6 +21,7 @@ const TABLE_NAME = process.env.TABLE_NAME!;
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL!;
 const FROM_EMAIL = process.env.FROM_EMAIL!;
 const ENVIRONMENT = process.env.ENVIRONMENT || 'dev';
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '*').split(',');
 
 // CORS headers
 const corsHeaders = {
@@ -44,6 +47,20 @@ export const handler = async (
 
   try {
     const path = event.rawPath;
+
+    // Tech Support Plans booking form (JSON or native form post)
+    if (path.includes('/tech-support')) {
+      return await handleTechSupport(event, {
+        isRateLimited,
+        save: saveEnquiry,
+        sendNotification,
+        sendConfirmation: sendEmailTo,
+        corsHeaders,
+        allowedOrigins: ALLOWED_ORIGINS,
+        generateId: generateUUID,
+      });
+    }
+
     const body = event.body ? JSON.parse(event.body) : {};
     const isQuoteRequest = path.includes('/quote');
 
@@ -67,19 +84,7 @@ export const handler = async (
 
     // Layer 4: Per-IP rate limiting — max 3 submissions per hour
     const clientIp = event.requestContext.http.sourceIp;
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const recentSubmissions = await dynamoClient.send(new QueryCommand({
-      TableName: TABLE_NAME,
-      IndexName: 'ip-createdAt-index',
-      KeyConditionExpression: 'ipAddress = :ip AND createdAt > :since',
-      ExpressionAttributeValues: {
-        ':ip': { S: clientIp },
-        ':since': { S: oneHourAgo },
-      },
-      Select: 'COUNT',
-    }));
-
-    if ((recentSubmissions.Count ?? 0) >= 3) {
+    if (await isRateLimited(clientIp)) {
       console.log('IP rate limit exceeded:', clientIp);
       return createResponse(429, {
         success: false,
@@ -130,6 +135,22 @@ export const handler = async (
     });
   }
 };
+
+// Per-IP rate limiting — max 3 submissions per hour
+async function isRateLimited(clientIp: string): Promise<boolean> {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const recentSubmissions = await dynamoClient.send(new QueryCommand({
+    TableName: TABLE_NAME,
+    IndexName: 'ip-createdAt-index',
+    KeyConditionExpression: 'ipAddress = :ip AND createdAt > :since',
+    ExpressionAttributeValues: {
+      ':ip': { S: clientIp },
+      ':since': { S: oneHourAgo },
+    },
+    Select: 'COUNT',
+  }));
+  return (recentSubmissions.Count ?? 0) >= 3;
+}
 
 function validateInput(
   input: ContactFormInput | QuoteRequestInput,
@@ -213,7 +234,7 @@ function generateUUID(): string {
   });
 }
 
-async function saveEnquiry(enquiry: EnquiryRecord): Promise<void> {
+async function saveEnquiry(enquiry: EnquiryRecord | TechSupportEnquiryRecord): Promise<void> {
   // Remove undefined values for DynamoDB
   const cleanEnquiry = Object.fromEntries(
     Object.entries(enquiry).filter(([_, v]) => v !== undefined)
@@ -230,10 +251,10 @@ async function saveEnquiry(enquiry: EnquiryRecord): Promise<void> {
 
 async function sendNotificationEmail(enquiry: EnquiryRecord): Promise<void> {
   const subject = `[PNK Digital] New ${enquiry.source === 'quote-request' ? 'Quote Request' : 'Contact Form'} from ${enquiry.name}`;
+  await sendNotification(subject, buildNotificationEmailHtml(enquiry), buildNotificationEmailText(enquiry));
+}
 
-  const htmlBody = buildNotificationEmailHtml(enquiry);
-  const textBody = buildNotificationEmailText(enquiry);
-
+async function sendNotification(subject: string, htmlBody: string, textBody: string): Promise<void> {
   const command = new SendEmailCommand({
     Source: FROM_EMAIL,
     Destination: {
@@ -259,6 +280,23 @@ async function sendNotificationEmail(enquiry: EnquiryRecord): Promise<void> {
 
   await sesClient.send(command);
   console.log('Notification email sent to:', NOTIFICATION_EMAIL);
+}
+
+async function sendEmailTo(to: string, subject: string, htmlBody: string, textBody: string): Promise<void> {
+  await sesClient.send(
+    new SendEmailCommand({
+      Source: FROM_EMAIL,
+      Destination: { ToAddresses: [to] },
+      Message: {
+        Subject: { Data: subject, Charset: 'UTF-8' },
+        Body: {
+          Html: { Data: htmlBody, Charset: 'UTF-8' },
+          Text: { Data: textBody, Charset: 'UTF-8' },
+        },
+      },
+    })
+  );
+  console.log('Confirmation email sent to:', to);
 }
 
 async function sendConfirmationEmail(enquiry: EnquiryRecord): Promise<void> {

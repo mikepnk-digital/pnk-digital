@@ -1,0 +1,217 @@
+---
+// Landing footer: same content and structure as the main site footer
+// (src/components/layout/Footer.jsx), rebuilt with landing tokens so no
+// Tailwind, site theme, React or JS reaches the landing pages.
+// Dark background follows the theme (ink in A, slate in B).
+// Keep the link lists and legal lines in sync with Footer.jsx.
+import logo from '@/assets/pnk-digital-logo.svg';
+
+export interface Props {
+  /**
+   * Show the "Surrey, UK" contact line. Off for version B (no-locations rule).
+   * The registered-office line stays on every page: it's a statutory
+   * company disclosure, not a marketing claim.
+   */
+  showLocation?: boolean;
+}
+const { showLocation = true } = Astro.props;
+
+const columns = [
+  {
+    title: 'Services',
+    links: [
+      { name: 'Web App Development', href: '/services' },
+      { name: 'AWS Integration', href: '/services' },
+      { name: 'AI-Powered MVPs', href: '/services' },
+      { name: 'AI Integration', href: '/services' },
+    ],
+  },
+  {
+    title: 'Navigation',
+    links: [
+      { name: 'Home', href: '/' },
+      { name: 'About', href: '/about' },
+      { name: 'Blog', href: '/blog' },
+      { name: 'Contact', href: '/contact' },
+    ],
+  },
+];
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="inner">
+    <div class="grid">
+      <div class="brand">
+        <a class="brand-link" href="/">
+          <img src={logo.src} width="33" height="40" alt="" />
+          <span>PNK Digital</span>
+        </a>
+        <p class="tagline">Senior full-stack development, accelerated by AI.</p>
+      </div>
+
+      <nav class="links" aria-label="Footer">
+        {
+          columns.map((col) => (
+            <div class="col">
+              <h2 class="col-title">{col.title}</h2>
+              <ul>
+                {col.links.map((l) => (
+                  <li>
+                    <a href={l.href}>{l.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+
+      <div class="col">
+        <h2 class="col-title">Get in Touch</h2>
+        <ul>
+          <li><a href="mailto:hello@pnk-digital.com">hello@pnk-digital.com</a></li>
+          {showLocation && <li class="muted">Surrey, UK</li>}
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div>
+        <p class="copy">&copy; {year} PNK Digital. All rights reserved.</p>
+        <p class="legal">
+          PNK Digital is a trading name of Mike Pink Ltd.<br />Registered in England &amp; Wales &middot; Company No.
+          09029124 &middot; Registered Office: 7 Jubilee Lane, Farnham, Surrey GU104SZ
+        </p>
+      </div>
+      <ul class="policies">
+        <li><a href="/privacy-policy">Privacy Policy</a></li>
+        <li><a href="/terms-of-service">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--lp-dark);
+    color: var(--lp-white);
+    padding: clamp(56px, 7vw, 80px) var(--lp-section-x) 32px;
+  }
+  /* Room for the sticky mobile CTA so it never covers content. */
+  @media (max-width: 759.98px) {
+    .footer {
+      padding-bottom: calc(32px + 84px + env(safe-area-inset-bottom));
+    }
+  }
+  .inner {
+    max-width: var(--lp-max);
+    margin: 0 auto;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  @media (min-width: 760px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: 4fr 4fr 2fr;
+      gap: 32px;
+    }
+  }
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: var(--lp-white);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  .brand-link img {
+    height: 40px;
+    width: auto;
+  }
+  .tagline {
+    max-width: 280px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--lp-on-dark-muted);
+  }
+  .links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .col-title {
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-white);
+  }
+  .col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .footer a {
+    color: var(--lp-on-dark-muted);
+    font-size: 15px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .footer a:hover {
+    color: var(--lp-footer-logo);
+  }
+  .footer .brand-link,
+  .footer .brand-link:hover {
+    color: var(--lp-white);
+    font-size: 20px;
+  }
+  .footer a:focus-visible {
+    outline: 3px solid var(--lp-footer-logo);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .muted {
+    font-size: 15px;
+    color: var(--lp-on-dark-muted);
+  }
+  .bottom {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px 32px;
+  }
+  .copy {
+    font-size: 14px;
+    color: var(--lp-on-dark-muted);
+  }
+  .legal {
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--lp-on-dark-muted);
+  }
+  .policies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+  .policies a {
+    font-size: 14px;
+  }
+</style>

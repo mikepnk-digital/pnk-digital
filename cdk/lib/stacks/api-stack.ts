@@ -55,6 +55,8 @@ export class ApiStack extends cdk.Stack {
         NOTIFICATION_EMAIL: config.notificationEmail,
         FROM_EMAIL: config.fromEmail,
         ENVIRONMENT: config.environmentName,
+        // Origins the no-JS tech-support form may redirect back to
+        ALLOWED_ORIGINS: allowedOrigins.join(','),
         ...(config.sesRegion && { SES_REGION: config.sesRegion }),
       },
       tracing: lambda.Tracing.ACTIVE,
@@ -63,6 +65,8 @@ export class ApiStack extends cdk.Stack {
         minify: true,
         sourceMap: true,
         externalModules: [],
+        // Lets the Lambda import the auto-reply template from /emails as a string
+        loader: { '.html': 'text' },
       },
     });
 
@@ -119,6 +123,13 @@ export class ApiStack extends cdk.Stack {
     // POST /api/quote endpoint (for project builder)
     this.api.addRoutes({
       path: '/api/quote',
+      methods: [apigateway.HttpMethod.POST],
+      integration: contactFormIntegration,
+    });
+
+    // POST /api/tech-support endpoint (Tech Support Plans landing pages)
+    this.api.addRoutes({
+      path: '/api/tech-support',
       methods: [apigateway.HttpMethod.POST],
       integration: contactFormIntegration,
     });

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Tech Support Plans — PNK Digital</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+*{box-sizing:border-box}
+html{scroll-padding-top:80px}
+body{margin:0;background:#fff;color:#1b1720;font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#b3006b}
+a:hover{color:#1b1720}
+</style>
+</helmet>
+<div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#1b1720; background:#fff;">
+
+  <header style="position:sticky; top:0; z-index:40; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); border-bottom:1px solid #eee7e2;">
+    <div style="max-width:1288px; margin:0 auto; padding:12px clamp(20px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:68px;">
+      <a href="https://pnk-digital.com" style="text-decoration:none; color:#1b1720; display:flex; align-items:baseline; gap:6px; font-weight:800; font-size:22px; letter-spacing:-0.02em;" style-focus="outline:3px solid #ec008c; outline-offset:4px; border-radius:4px;"><span style="color:#ec008c;">PNK</span><span>Digital</span></a>
+      <nav aria-label="Page sections" style="display:flex; align-items:center; gap:clamp(12px,2.4vw,32px);">
+        <sc-if value="{{ notCompact }}" hint-placeholder-val="{{ true }}">
+          <button type="button" onClick="{{ goPlans }}" style="appearance:none; border:0; background:none; cursor:pointer; font-family:inherit; font-size:16px; font-weight:600; color:#1b1720; padding:10px 0;" style-hover="color:#b3006b;" style-focus="outline:3px solid #ec008c; outline-offset:2px; border-radius:4px;">Plans</button>
+          <button type="button" onClick="{{ goHow }}" style="appearance:none; border:0; background:none; cursor:pointer; font-family:inherit; font-size:16px; font-weight:600; color:#1b1720; padding:10px 0;" style-hover="color:#b3006b;" style-focus="outline:3px solid #ec008c; outline-offset:2px; border-radius:4px;">How it works</button>
+          <button type="button" onClick="{{ goFaq }}" style="appearance:none; border:0; background:none; cursor:pointer; font-family:inherit; font-size:16px; font-weight:600; color:#1b1720; padding:10px 0;" style-hover="color:#b3006b;" style-focus="outline:3px solid #ec008c; outline-offset:2px; border-radius:4px;">FAQ</button>
+        </sc-if>
+        <button type="button" onClick="{{ bookAny }}" style="appearance:none; border:0; cursor:pointer; background:#1b1720; color:#fff; font-family:inherit; font-size:15px; font-weight:700; padding:12px 20px; border-radius:999px; min-height:44px;" style-hover="background:#3a3340;" style-focus="outline:3px solid #ec008c; outline-offset:3px;">Book a free review</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <dc-import name="PnkHero" on-book="{{ bookAny }}" on-plans="{{ goPlans }}" hint-size="100%,720px"></dc-import>
+
+    <section aria-labelledby="problem-title" style="padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(32px,4vw,48px);">
+        <div style="display:flex; flex-direction:column; gap:14px; max-width:680px;">
+          <h2 id="problem-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">Sound familiar?</h2>
+          <p style="margin:0; font-size:18px; line-height:1.6; color:#4a4550;">Most small businesses don't have a tech problem. They have a "nobody's looking after it" problem.</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:20px;">
+          <div style="background:#faf7f5; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:12px;">
+            <span style="font-size:15px; font-weight:800; color:#b3006b;">01</span>
+            <h3 style="margin:0; font-size:20px; line-height:1.3; font-weight:800; letter-spacing:-0.01em;">Your website went down. Nobody noticed.</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Until a customer rang to ask if you'd closed. Nobody was watching, so enquiries quietly dried up.</p>
+          </div>
+          <div style="background:#faf7f5; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:12px;">
+            <span style="font-size:15px; font-weight:800; color:#b3006b;">02</span>
+            <h3 style="margin:0; font-size:20px; line-height:1.3; font-weight:800; letter-spacing:-0.01em;">Your emails land in spam — or someone's faking them.</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Clients miss your invoices, and scammers can send emails that look like they came from you.</p>
+          </div>
+          <div style="background:#faf7f5; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:12px;">
+            <span style="font-size:15px; font-weight:800; color:#b3006b;">03</span>
+            <h3 style="margin:0; font-size:20px; line-height:1.3; font-weight:800; letter-spacing:-0.01em;">Someone left. Do they still have access?</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Old logins to email, files and online accounts linger for months, because nobody keeps a list.</p>
+          </div>
+          <div style="background:#faf7f5; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:12px;">
+            <span style="font-size:15px; font-weight:800; color:#b3006b;">04</span>
+            <h3 style="margin:0; font-size:20px; line-height:1.3; font-weight:800; letter-spacing:-0.01em;">Three suppliers. Nobody owns the problem.</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">The web host blames the email provider, who blames the IT person. You're stuck in the middle, chasing.</p>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px; padding:24px clamp(20px,3vw,32px); border:1px solid #e7e2de; border-radius:22px;">
+          <p style="margin:0; font-size:19px; font-weight:700; line-height:1.4; max-width:620px;">One person can sort all of this — and keep it sorted.</p>
+          <button type="button" onClick="{{ bookAny }}" style="appearance:none; border:0; cursor:pointer; background:#ec008c; color:#fff; font-family:inherit; font-size:19px; font-weight:700; padding:15px 28px; border-radius:999px; min-height:56px;" style-hover="background:#c8007a;" style-focus="outline:3px solid #1b1720; outline-offset:3px;">Book a free tech review</button>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="cover-title" style="padding:0 clamp(20px,5vw,64px) clamp(56px,8vw,112px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(32px,4vw,48px);">
+        <div style="display:flex; flex-direction:column; gap:14px; max-width:680px;">
+          <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#b3006b;">What we look after</span>
+          <h2 id="cover-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">One person looking after the lot</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:clamp(24px,3vw,40px);">
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <span style="width:56px; height:56px; border-radius:16px; background:#fdeef6; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg></span>
+            <h3 style="margin:0; font-size:20px; font-weight:800;">Website care</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Hosting, security updates, backups and round-the-clock monitoring, so your site stays fast, safe and online.</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <span style="width:56px; height:56px; border-radius:16px; background:#fdeef6; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
+            <h3 style="margin:0; font-size:20px; font-weight:800;">Email, Microsoft 365 and Google Workspace</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">New starters set up, leavers locked out, mailboxes and licences sorted. Your email reaches inboxes, not spam.</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <span style="width:56px; height:56px; border-radius:16px; background:#fdeef6; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+            <h3 style="margin:0; font-size:20px; font-weight:800;">Security</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Two-step login (MFA), so a stolen password isn't enough. Email protection against scams. Help getting Cyber Essentials, the government-backed certificate many clients ask for.</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <span style="width:56px; height:56px; border-radius:16px; background:#fdeef6; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6l1-8Z"></path></svg></span>
+            <h3 style="margin:0; font-size:20px; font-weight:800;">Automation and AI</h3>
+            <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Cut the repetitive admin: forms that update your CRM, quotes drafted for you, reports that arrive on their own.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section ref="{{ plansRef }}" id="plans" aria-labelledby="plans-title" style="background:#faf7f5; padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(32px,4vw,48px);">
+        <div style="display:flex; flex-direction:column; gap:14px; max-width:700px;">
+          <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#b3006b;">Plans</span>
+          <h2 id="plans-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">Fixed monthly fees. No surprises.</h2>
+          <p style="margin:0; font-size:18px; line-height:1.6; color:#4a4550; text-wrap:pretty;">Not sure which fits? That's what the free review is for — we'll recommend a plan once we've seen your setup.</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:24px; padding-top:16px; align-items:stretch;">
+          <sc-for list="{{ plans }}" as="plan" hint-placeholder-count="3">
+            <dc-import name="PnkPricingCard" plan="{{ plan }}" style="height:100%;" hint-size="100%,820px"></dc-import>
+          </sc-for>
+        </div>
+        <p style="margin:0; font-size:16px; line-height:1.6; color:#4a4550; text-align:center;"><strong style="color:#1b1720;">Extra hours £80/hour.</strong> Larger projects quoted at a fixed price, with a 10% discount for plan clients.</p>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px; padding:24px clamp(20px,3vw,32px); background:#fff; border:1px solid #e7e2de; border-radius:22px;">
+          <p style="margin:0; font-size:19px; font-weight:700; line-height:1.4; max-width:620px;">Still deciding? Let's work it out together on a free 30-minute call.</p>
+          <button type="button" onClick="{{ bookAny }}" style="appearance:none; border:0; cursor:pointer; background:#ec008c; color:#fff; font-family:inherit; font-size:19px; font-weight:700; padding:15px 28px; border-radius:999px; min-height:56px;" style-hover="background:#c8007a;" style-focus="outline:3px solid #1b1720; outline-offset:3px;">Book a free tech review</button>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="compare-title" style="padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(28px,3.5vw,40px);">
+        <h2 id="compare-title" style="margin:0; font-size:clamp(28px,3.2vw,38px); line-height:1.1; letter-spacing:-0.03em; font-weight:800;">Compare plans</h2>
+        <dc-import name="PnkCompareTable" plans="{{ compareHead }}" groups="{{ compareGroups }}" highlight="{{ highlightIndex }}" compact="{{ compact }}" hint-size="100%,900px"></dc-import>
+      </div>
+    </section>
+
+    <section ref="{{ howRef }}" aria-labelledby="how-title" style="background:#faf7f5; padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(32px,4vw,48px);">
+        <div style="display:flex; flex-direction:column; gap:14px; max-width:680px;">
+          <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#b3006b;">How it works</span>
+          <h2 id="how-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">Up and running in three steps</h2>
+        </div>
+        <dc-import name="PnkSteps" hint-size="100%,320px"></dc-import>
+      </div>
+    </section>
+
+    <section aria-labelledby="why-title" style="padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-wrap:wrap; gap:clamp(36px,6vw,80px); align-items:center;">
+        <div style="flex:1 1 320px; max-width:460px; min-width:0;">
+          <image-slot id="mike-founder" shape="rounded" radius="28" placeholder="Photo of Mike" style="width:100%; height:clamp(340px,40vw,480px); display:block;"></image-slot>
+        </div>
+        <div style="flex:1 1 420px; min-width:0; display:flex; flex-direction:column; gap:24px;">
+          <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#b3006b;">Why PNK Digital</span>
+          <h2 id="why-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">You deal directly with the person doing the work</h2>
+          <p style="margin:0; font-size:18px; line-height:1.65; color:#4a4550; text-wrap:pretty;">I'm Mike. I've spent 27 years building systems in financial services and insurance. PNK Digital brings that same standard to local businesses — without the corporate price tag or the call centre.</p>
+          <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:18px;">
+            <li style="display:flex; gap:14px; align-items:flex-start;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; margin-top:2px;"><path d="m5 12 5 5 9-10"></path></svg><span style="font-size:17px; line-height:1.55; color:#4a4550;"><strong style="color:#1b1720;">Built where it matters.</strong> 27 years in financial services and insurance, where security and reliability aren't optional.</span></li>
+            <li style="display:flex; gap:14px; align-items:flex-start;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; margin-top:2px;"><path d="m5 12 5 5 9-10"></path></svg><span style="font-size:17px; line-height:1.55; color:#4a4550;"><strong style="color:#1b1720;">One person, start to finish.</strong> No account managers or ticket queues. The person you email is the person who fixes it.</span></li>
+            <li style="display:flex; gap:14px; align-items:flex-start;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b3006b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; margin-top:2px;"><path d="m5 12 5 5 9-10"></path></svg><span style="font-size:17px; line-height:1.55; color:#4a4550;"><strong style="color:#1b1720;">Plain English, always.</strong> You'll know what was done, why, and anything you need to decide.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <sc-if value="{{ showTestimonials }}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="quotes-title" style="background:#faf7f5; padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+        <div style="max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(28px,3.5vw,40px);">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px;">
+            <h2 id="quotes-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800;">What clients say</h2>
+            <span style="font-size:14px; font-weight:700; color:#1b1720; background:#fff; border:1.5px dashed #8a8189; padding:8px 14px; border-radius:999px;">Placeholder — add real, approved testimonials before launch</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:20px;">
+            <figure style="margin:0; background:#fff; border:2px dashed #cfc7c1; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:20px;">
+              <span style="align-self:flex-start; font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#4a4550; background:#f1ece8; padding:4px 10px; border-radius:6px;">Placeholder</span>
+              <blockquote style="margin:0; font-size:18px; line-height:1.55; font-weight:600; color:#6b6470;">Client quote goes here. Use a real quote, with the client's permission.</blockquote>
+              <figcaption style="font-size:15px; color:#6b6470;"><strong style="color:#4a4550;">Client name</strong> · Role, Business name</figcaption>
+            </figure>
+            <figure style="margin:0; background:#fff; border:2px dashed #cfc7c1; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:20px;">
+              <span style="align-self:flex-start; font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#4a4550; background:#f1ece8; padding:4px 10px; border-radius:6px;">Placeholder</span>
+              <blockquote style="margin:0; font-size:18px; line-height:1.55; font-weight:600; color:#6b6470;">Client quote goes here. Use a real quote, with the client's permission.</blockquote>
+              <figcaption style="font-size:15px; color:#6b6470;"><strong style="color:#4a4550;">Client name</strong> · Role, Business name</figcaption>
+            </figure>
+            <figure style="margin:0; background:#fff; border:2px dashed #cfc7c1; border-radius:22px; padding:28px; display:flex; flex-direction:column; gap:20px;">
+              <span style="align-self:flex-start; font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#4a4550; background:#f1ece8; padding:4px 10px; border-radius:6px;">Placeholder</span>
+              <blockquote style="margin:0; font-size:18px; line-height:1.55; font-weight:600; color:#6b6470;">Client quote goes here. Use a real quote, with the client's permission.</blockquote>
+              <figcaption style="font-size:15px; color:#6b6470;"><strong style="color:#4a4550;">Client name</strong> · Role, Business name</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <section ref="{{ faqRef }}" aria-labelledby="faq-title" style="padding:clamp(56px,8vw,112px) clamp(20px,5vw,64px);">
+      <div style="max-width:1160px; margin:0 auto; display:flex; flex-wrap:wrap; gap:clamp(28px,5vw,72px); align-items:flex-start;">
+        <div style="flex:1 1 280px; min-width:0; display:flex; flex-direction:column; gap:14px;">
+          <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#b3006b;">FAQ</span>
+          <h2 id="faq-title" style="margin:0; font-size:clamp(30px,3.8vw,46px); line-height:1.08; letter-spacing:-0.03em; font-weight:800; text-wrap:balance;">Straight answers</h2>
+          <p style="margin:0; font-size:17px; line-height:1.6; color:#4a4550;">Anything else? Ask on your free review call.</p>
+        </div>
+        <div style="flex:2 1 520px; min-width:0;">
+          <dc-import name="PnkFaq" items="{{ faqs }}" hint-size="100%,520px"></dc-import>
+        </div>
+      </div>
+    </section>
+
+    <div ref="{{ formRef }}">
+      <dc-import name="PnkBookingBand" plan="{{ plan }}" plan-nonce="{{ planNonce }}" hint-size="100%,900px"></dc-import>
+    </div>
+  </main>
+
+  <footer style="background:#1b1720; color:#fff; padding:40px clamp(20px,5vw,64px);">
+    <div style="max-width:1160px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px; font-size:15px;">
+      <span style="display:flex; align-items:baseline; gap:6px; font-weight:800; font-size:20px;"><span style="color:#ff5cb0;">PNK</span><span>Digital</span></span>
+      <span style="color:#d9d3dc;">UK tech consultancy · pnk-digital.com · © 2026 PNK Digital</span>
+    </div>
+    <sc-if value="{{ compact }}" hint-placeholder-val="{{ false }}"><div style="height:84px;"></div></sc-if>
+  </footer>
+
+  <sc-if value="{{ showSticky }}" hint-placeholder-val="{{ false }}">
+    <div role="region" aria-label="Book a review" style="position:fixed; left:0; right:0; bottom:0; z-index:50; background:#fff; border-top:1px solid #e7e2de; box-shadow:0 -10px 30px -12px rgba(27,23,32,0.25); padding:12px 16px calc(12px + env(safe-area-inset-bottom)); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <span style="font-size:15px; font-weight:700; line-height:1.3;">Free 30-min<br>tech review</span>
+      <button type="button" onClick="{{ bookAny }}" style="appearance:none; border:0; cursor:pointer; background:#ec008c; color:#fff; font-family:inherit; font-size:19px; font-weight:700; padding:13px 22px; border-radius:999px; min-height:52px;" style-hover="background:#c8007a;" style-focus="outline:3px solid #1b1720; outline-offset:3px;">Book a free review</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;highlightPlan&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Essentials&quot;,&quot;Growth&quot;,&quot;Partner&quot;],&quot;default&quot;:&quot;Growth&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Plans&quot;},&quot;stickyBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Mobile&quot;},&quot;showTestimonials&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { compact: false, sticky: false, plan: 'Not sure', planNonce: 0 };
+  plansRef = React.createRef(); howRef = React.createRef(); faqRef = React.createRef(); formRef = React.createRef();
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onResize();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('scroll', this.onScroll);
+  }
+  onResize = () => {
+    const c = window.innerWidth < 760;
+    if (c !== this.state.compact) this.setState({ compact: c });
+    this.onScroll();
+  };
+  onScroll = () => {
+    let s = window.scrollY > 560;
+    const f = this.formRef.current;
+    if (f) { const r = f.getBoundingClientRect(); if (r.top < window.innerHeight && r.bottom > 0) s = false; }
+    if (s !== this.state.sticky) this.setState({ sticky: s });
+  };
+  go(ref) {
+    const el = ref.current; if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 68, behavior: 'smooth' });
+  }
+  book(plan) {
+    this.setState(s => ({ plan: plan || s.plan, planNonce: s.planNonce + 1 }));
+    this.go(this.formRef);
+  }
+  renderVals() {
+    const hl = this.props.highlightPlan ?? 'Growth';
+    const base = [
+      { name: 'Essentials', price: '125', tagline: 'For businesses that mainly need their website looked after.', hours: 'Up to 1 hour of small changes a month', response: 'Next business day response', includes: '',
+        features: ['Website hosting, SSL (the padlock that keeps visitors safe) and domain renewals managed', 'Daily backups and monthly updates', '24/7 uptime monitoring — we know if your site goes down', 'Monthly health email'] },
+      { name: 'Growth', price: '375', tagline: 'For teams that rely on email and Microsoft 365 or Google Workspace every day.', hours: 'Up to 4 hours a month', response: 'Same business day response', includes: 'Everything in Essentials, plus:',
+        features: ['Microsoft 365 or Google Workspace admin — starters, leavers, mailboxes, licences', "Email security (SPF, DKIM, DMARC), so your email isn't spoofed or sent to spam", 'Two-step login (MFA) and password manager rollout', 'Monthly analytics and search check', 'Quarterly review call'] },
+      { name: 'Partner', price: '950', from: true, tagline: 'For businesses ready to cut admin and plan their tech properly.', hours: 'Up to 10 priority hours a month', response: 'Response within 4 business hours', includes: 'Everything in Growth, plus:',
+        features: ['Automation and AI projects — forms, quotes, reporting, CRM integrations', 'Supplier management — we deal with your other providers', 'Cyber Essentials preparation', '12-month tech roadmap'] }
+    ];
+    const plans = base.map(p => ({ ...p, popular: p.name === hl, notPopular: p.name !== hl, select: () => this.book(p.name) }));
+    return {
+      compact: this.state.compact,
+      notCompact: !this.state.compact,
+      showSticky: this.state.compact && this.state.sticky && (this.props.stickyBar ?? true),
+      showTestimonials: this.props.showTestimonials ?? true,
+      plans,
+      plan: this.state.plan,
+      planNonce: this.state.planNonce,
+      highlightIndex: Math.max(0, base.findIndex(p => p.name === hl)),
+      compareHead: [{ name: 'Essentials', price: '£125/mo' }, { name: 'Growth', price: '£375/mo' }, { name: 'Partner', price: 'from £950/mo' }],
+      compareGroups: [
+        { title: 'Website', rows: [
+          { label: 'Hosting, SSL and domain renewals managed', v: [true, true, true] },
+          { label: 'Daily backups and monthly updates', v: [true, true, true] },
+          { label: '24/7 uptime monitoring', v: [true, true, true] },
+          { label: 'Monthly health email', v: [true, true, true] },
+          { label: 'Monthly analytics and search check', v: [false, true, true] } ] },
+        { title: 'Email and accounts', rows: [
+          { label: 'Microsoft 365 / Google Workspace admin', v: [false, true, true] },
+          { label: 'Email security, so you stay out of spam', v: [false, true, true] } ] },
+        { title: 'Security', rows: [
+          { label: 'Two-step login (MFA) and password manager', v: [false, true, true] },
+          { label: 'Cyber Essentials preparation', v: [false, false, true] } ] },
+        { title: 'Projects and planning', rows: [
+          { label: 'Quarterly review call', v: [false, true, true] },
+          { label: 'Automation and AI projects', v: [false, false, true] },
+          { label: 'Supplier management', v: [false, false, true] },
+          { label: '12-month tech roadmap', v: [false, false, true] } ] },
+        { title: 'Support', rows: [
+          { label: 'Hours included each month', v: ['1 hour', '4 hours', '10 priority hours'] },
+          { label: 'Response time', v: ['Next business day', 'Same business day', 'Within 4 business hours'] } ] }
+      ],
+      faqs: [
+        { q: 'What happens if I go over my hours?', a: "We'll always tell you before it happens — nothing over your plan's hours is done without your OK. Extra time is £80 an hour. If you regularly need more, we'll look at whether a different plan works out cheaper." },
+        { q: 'Do unused hours roll over?', a: "No. Hours reset each month. That's what keeps the fee fixed and guarantees time is set aside for you." },
+        { q: "What's the minimum term?", a: "Three months to start, so onboarding has time to pay off. After that it's rolling monthly — cancel with 30 days' notice." },
+        { q: 'Can I change plans?', a: 'Yes. Move up or down whenever you like, and the change applies from your next billing date.' },
+        { q: 'What are your support hours?', a: 'Monday to Friday, 9am to 5:30pm, excluding UK bank holidays. Website monitoring runs 24/7, so problems are spotted even when the office is closed.' },
+        { q: "What isn't included?", a: "Hardware, printers, on-site visits and 24/7 emergency cover. If you need any of those, we can recommend trusted partners." }
+      ],
+      plansRef: this.plansRef, howRef: this.howRef, faqRef: this.faqRef, formRef: this.formRef,
+      bookAny: () => this.book(),
+      goPlans: () => this.go(this.plansRef),
+      goHow: () => this.go(this.howRef),
+      goFaq: () => this.go(this.faqRef)
+    };
+  }
+}
+</script>
+</body>
+</html>
