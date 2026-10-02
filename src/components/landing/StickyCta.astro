@@ -2,10 +2,16 @@
 // Mobile-only (<760px) fixed booking bar. Hidden until the page has scrolled
 // 560px, and hidden again while the booking band is on screen. Pure
 // enhancement: without JS it never shows.
+export interface Props {
+  /** Two-line label; each entry is one line. */
+  label?: [string, string];
+  cta?: string;
+}
+const { label = ['Free 30-min', 'tech review'], cta = 'Book a free review' } = Astro.props;
 ---
 <div class="sticky" role="region" aria-label="Book a review" data-sticky-cta hidden>
-  <span class="label">Free 30-min<br />tech review</span>
-  <a class="lp-btn lp-btn--pink btn" href="#book" data-book>Book a free review</a>
+  <span class="label">{label[0]}<br />{label[1]}</span>
+  <a class="lp-btn lp-btn--pink btn" href="#book" data-book>{cta}</a>
 </div>
 
 <script>

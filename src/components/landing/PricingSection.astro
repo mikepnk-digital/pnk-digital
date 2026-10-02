@@ -1,33 +1,56 @@
 ---
-// Plans: heading, three PricingCards, extra-hours note and a CtaStrip.
+// Plans: heading, three PricingCards, then an optional note, any slotted
+// content and an optional CtaStrip.
 import PricingCard from './PricingCard.astro';
 import CtaStrip from './CtaStrip.astro';
 import type { Plan, PlanId } from '@/data/tech-support';
 
 export interface Props {
+  eyebrow?: string;
   title: string;
   lead: string;
   plans: Plan[];
   highlight: PlanId;
   /** Bold lead-in, e.g. "Extra hours £80/hour." */
-  noteStrong: string;
-  note: string;
-  ctaText: string;
+  noteStrong?: string;
+  note?: string;
+  ctaText?: string;
+  /** Passed to every PricingCard (defaults live there). */
+  badge?: string;
+  cardCta?: string;
+  cardConfirm?: string;
 }
-const { title, lead, plans, highlight, noteStrong, note, ctaText } = Astro.props;
+const {
+  eyebrow = 'Plans',
+  title,
+  lead,
+  plans,
+  highlight,
+  noteStrong,
+  note,
+  ctaText,
+  badge,
+  cardCta,
+  cardConfirm,
+} = Astro.props;
 ---
 <section id="plans" class="lp-section lp-section--surface" aria-labelledby="plans-title">
   <div class="lp-container lp-stack">
     <div class="lp-intro intro">
-      <span class="lp-eyebrow">Plans</span>
+      <span class="lp-eyebrow">{eyebrow}</span>
       <h2 id="plans-title" class="lp-h2">{title}</h2>
       <p class="lp-lead">{lead}</p>
     </div>
     <div class="cards">
-      {plans.map((p) => <PricingCard plan={p} popular={p.id === highlight} />)}
+      {
+        plans.map((p) => (
+          <PricingCard plan={p} popular={p.id === highlight} badge={badge} ctaLabel={cardCta} confirm={cardConfirm} />
+        ))
+      }
     </div>
-    <p class="note"><strong>{noteStrong}</strong> {note}</p>
-    <CtaStrip text={ctaText} tone="card" />
+    {(noteStrong || note) && <p class="note"><strong>{noteStrong}</strong> {note}</p>}
+    <slot />
+    {ctaText && <CtaStrip text={ctaText} tone="card" />}
   </div>
 </section>
 

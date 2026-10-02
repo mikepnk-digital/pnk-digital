@@ -3,8 +3,9 @@
 // Honesty rule: the mock-up is labelled "Illustrative example" and contains
 // no percentages, statistics, names or client counts.
 import Icon from './Icon.astro';
+import { PHONE_DISPLAY, PHONE_HREF, PRIMARY_CTA } from '@/data/tech-support-service';
 
-const trust = ['Defined response times', 'Every request tracked', "Cancel with 30 days' notice"];
+const reassurance = ['No IT department to hire.', 'No juggling different suppliers.', 'No wondering who to call when something goes wrong.'];
 const status = [
   { label: 'Website', value: 'Online' },
   { label: 'Backups', value: 'Daily' },
@@ -21,18 +22,22 @@ const requests = [
 <section class="hero" aria-labelledby="hero-title">
   <div class="inner">
     <div class="copy">
-      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Managed tech support</span>
-      <h1 id="hero-title">Reliable tech support for growing businesses, at a fixed monthly fee</h1>
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>For businesses without an IT department</span>
+      <h1 id="hero-title">Your business technology, taken care of.</h1>
       <p class="sub">
-        We look after your website, email, Microsoft 365 or Google Workspace, and security, so your team can get on with their work.
+        Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner.
       </p>
-      <div class="ctas">
-        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>Book a free tech review</a>
-        <a class="see" href="#plans" data-scroll>See plans</a>
-      </div>
       <ul class="trust">
-        {trust.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
+        {reassurance.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
       </ul>
+      <div class="ctas">
+        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>{PRIMARY_CTA}</a>
+        <a class="call" href={PHONE_HREF} data-phone>
+          <Icon name="phone" size={18} />
+          <span>Call PNK Digital <span class="num">{PHONE_DISPLAY}</span></span>
+        </a>
+      </div>
+      <p class="fine">No obligation. No hard sell.</p>
     </div>
 
     <div
@@ -144,9 +149,10 @@ const requests = [
     padding: 16px 30px;
     min-height: 58px;
   }
-  .see {
+  .call {
     display: inline-flex;
     align-items: center;
+    gap: 10px;
     min-height: 48px;
     padding: 12px 0;
     font-size: 18px;
@@ -158,21 +164,41 @@ const requests = [
     text-underline-offset: 7px;
     border-radius: 4px;
   }
-  .see:hover {
+  .call :global(svg) {
+    flex: none;
     color: var(--lp-pink-text);
   }
-  .see:focus-visible {
+  .num {
+    font-weight: 600;
+    color: var(--lp-muted);
+    margin-left: 4px;
+  }
+  .call:hover {
+    color: var(--lp-pink-text);
+  }
+  .call:focus-visible {
     outline: 3px solid var(--lp-dark);
     outline-offset: 3px;
   }
-  .trust {
-    margin-top: 4px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 22px;
+  .fine {
+    margin-top: -8px;
     font-size: 15px;
     font-weight: 600;
     color: var(--lp-muted);
+  }
+  .trust {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--lp-ink);
+  }
+  /* On phones the long CTA label fills the width instead of wrapping awkwardly. */
+  @media (max-width: 559.98px) {
+    .cta {
+      width: 100%;
+    }
   }
   .trust li {
     display: flex;

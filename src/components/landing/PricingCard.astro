@@ -8,14 +8,25 @@ import type { Plan } from '@/data/tech-support';
 export interface Props {
   plan: Plan;
   popular?: boolean;
+  badge?: string;
+  ctaLabel?: string;
+  /** Small line under the button; omitted when empty. */
+  confirm?: string;
 }
-const { plan, popular = false } = Astro.props;
+const {
+  plan,
+  popular = false,
+  badge = 'Most popular',
+  ctaLabel = 'Book a free tech review',
+  confirm = "We'll confirm the right plan on the call",
+} = Astro.props;
 const titleId = `plan-${plan.id}-title`;
 ---
 <article class:list={['card', { popular }]} aria-labelledby={titleId}>
-  {popular && <span class="badge">Most popular</span>}
+  {popular && <span class="badge">{badge}</span>}
   <div class="head">
     <h3 id={titleId}>{plan.name}</h3>
+    {plan.positioning && <p class="positioning">{plan.positioning}</p>}
     <p class="tagline">{plan.tagline}</p>
   </div>
   <p class="price">
@@ -23,25 +34,31 @@ const titleId = `plan-${plan.id}-title`;
     <span class="amount">£{plan.price}</span>
     <span class="unit">/month</span>
   </p>
-  <ul class="meta">
-    <li><Icon name="clock" size={18} />{plan.hours}</li>
-    <li><Icon name="arrow" size={18} />{plan.response}</li>
-  </ul>
+  {
+    (plan.hours || plan.response) && (
+      <ul class="meta">
+        {plan.hours && <li><Icon name="clock" size={18} />{plan.hours}</li>}
+        {plan.response && <li><Icon name="arrow" size={18} />{plan.response}</li>}
+      </ul>
+    )
+  }
   <div class="action">
     <a
       class:list={['lp-btn', 'lp-btn--block', popular ? 'lp-btn--pink' : 'lp-btn--outline']}
       href="#book"
       data-book
       data-plan={plan.name}
-      aria-label={`Book a free tech review, ${plan.name} plan`}
-    >Book a free tech review</a>
-    <p class="confirm">We'll confirm the right plan on the call</p>
+      aria-label={`${ctaLabel}, ${plan.name} plan`}
+    >{ctaLabel}</a>
+    {confirm && <p class="confirm">{confirm}</p>}
   </div>
   <div class="features">
     {plan.includes && <p class="includes">{plan.includes}</p>}
     <ul>
       {plan.features.map((f) => <li><Icon name="check" size={18} /><span>{f}</span></li>)}
     </ul>
+    {plan.detail && <p class="detail">{plan.detail}</p>}
+    {plan.note && <p class="note">{plan.note}</p>}
   </div>
 </article>
 
@@ -87,6 +104,12 @@ const titleId = `plan-${plan.id}-title`;
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.3;
+  }
+  .positioning {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--lp-pink-text);
   }
   .tagline {
     font-size: 16px;
@@ -160,6 +183,25 @@ const titleId = `plan-${plan.id}-title`;
     align-items: flex-start;
     font-size: 16px;
     line-height: 1.45;
+  }
+  .detail {
+    margin-top: auto;
+    padding-top: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--lp-muted);
+  }
+  .detail + .note {
+    margin-top: 0;
+    padding-top: 0;
+  }
+  .note {
+    margin-top: auto;
+    padding-top: 6px;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--lp-muted);
   }
   .features :global(svg) {
     flex: none;

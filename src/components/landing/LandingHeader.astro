@@ -4,11 +4,18 @@
 // BookingForm.astro adds the 68px-offset scroll for the book button; section
 // links use CSS scroll-padding-top.
 import logo from '@/assets/pnk-digital-logo.svg';
-const links = [
-  { href: '#plans', label: 'Plans' },
-  { href: '#how', label: 'How it works' },
-  { href: '#faq', label: 'FAQ' },
-];
+
+export interface Props {
+  /** In-page section links (shown from 760px). */
+  links?: { href: string; label: string }[];
+}
+const {
+  links = [
+    { href: '#plans', label: 'Plans' },
+    { href: '#how', label: 'How it works' },
+    { href: '#faq', label: 'FAQ' },
+  ],
+} = Astro.props;
 ---
 <header class="header">
   <div class="inner">

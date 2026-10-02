@@ -1,0 +1,116 @@
+---
+// One client testimonial as <figure><blockquote> + <figcaption>.
+// 'card' (default): bordered card matching ServiceGrid's solid cards, with
+//   name, role, company and an optional services label.
+// 'pull': quiet pull-quote – left rule, italic, no card – attributed
+//   "Name, Company". The rule colour comes from --quote-rule (default brand
+//   pink) so it can stay visible on coloured backgrounds.
+// Optional `logo` slot for a client logo later; nothing renders when empty.
+export interface Props {
+  quote: string;
+  name: string;
+  role?: string;
+  company: string;
+  services?: string;
+  variant?: 'card' | 'pull';
+}
+const { quote, name, role, company, services, variant = 'card' } = Astro.props;
+const hasLogo = Astro.slots.has('logo');
+---
+<figure class:list={['quote', variant]}>
+  {hasLogo && <div class="logo"><slot name="logo" /></div>}
+  <blockquote>
+    <p>“{quote}”</p>
+  </blockquote>
+  <figcaption>
+    {
+      variant === 'pull' ? (
+        <span class="who">
+          {name}, <cite>{company}</cite>
+        </span>
+      ) : (
+        <>
+          <span class="who">{name}</span>
+          <span class="role">
+            {role && <>{role}, </>}
+            <cite>{company}</cite>
+          </span>
+          {services && <span class="services">{services}</span>}
+        </>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .quote {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  cite {
+    font-style: normal;
+  }
+
+  /* Card */
+  .card {
+    height: 100%;
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    padding: 28px;
+    gap: 20px;
+  }
+  .card blockquote {
+    flex: 1;
+  }
+  .card blockquote p {
+    font-size: 18px;
+    line-height: 1.6;
+    font-weight: 600;
+    color: var(--lp-ink);
+  }
+  .card figcaption {
+    border-top: 1px solid var(--lp-border);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .card .who {
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .card .role {
+    font-size: 15px;
+    color: var(--lp-muted);
+  }
+  .card .services {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--lp-pink-text);
+  }
+
+  /* Pull-quote */
+  .pull {
+    border-left: 4px solid var(--quote-rule, var(--lp-pink));
+    padding: 4px 0 4px 20px;
+    gap: 8px;
+  }
+  .pull blockquote p {
+    font-size: 21px;
+    line-height: 1.4;
+    font-weight: 700;
+    font-style: italic;
+  }
+  /* 19px bold: white-on-pink needs large text for AA. */
+  .pull figcaption {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .logo:empty {
+    display: none;
+  }
+</style>

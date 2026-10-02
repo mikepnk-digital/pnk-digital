@@ -12,10 +12,12 @@ export interface ServiceItem {
 export interface Props {
   items: ServiceItem[];
   iconStyle: 'tint' | 'solid';
+  /** Fixed 3-up on wide screens (e.g. six items) instead of auto-fit. */
+  columns?: 3;
 }
-const { items, iconStyle } = Astro.props;
+const { items, iconStyle, columns } = Astro.props;
 ---
-<ul class:list={['grid', iconStyle]}>
+<ul class:list={['grid', iconStyle, { three: columns === 3 }]}>
   {
     items.map((it) => (
       <li class="item">
@@ -31,6 +33,11 @@ const { items, iconStyle } = Astro.props;
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  }
+  @media (min-width: 900px) {
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   .tint {
     gap: clamp(24px, 3vw, 40px);

@@ -14,7 +14,7 @@ const { steps } = Astro.props;
       <li class="step">
         <div class="top">
           <span class="n" aria-hidden="true">{i + 1}</span>
-          <span class="when">{s.when}</span>
+          {s.when && <span class="when">{s.when}</span>}
         </div>
         <h3><span class="lp-sr-only">Step {i + 1}: </span>{s.title}</h3>
         <p>{s.body}</p>

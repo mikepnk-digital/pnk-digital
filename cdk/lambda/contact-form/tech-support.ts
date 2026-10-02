@@ -21,7 +21,8 @@ export interface TechSupportDeps {
 }
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
-const PLANS = ['Not sure', 'Essentials', 'Growth', 'Partner'];
+// Essentials/Growth: version A. Website Care/Business: version B (/tech-support/service).
+const PLANS = ['Not sure', 'Essentials', 'Growth', 'Partner', 'Website Care', 'Business'];
 const STAFF = ['', 'Just me', '2–5', '6–10', '11–25', '26–50', 'More than 50'];
 const FALLBACK_ORIGIN = 'https://pnk-digital.com';
 
@@ -110,7 +111,7 @@ export async function handleTechSupport(
   try {
     await deps.sendConfirmation(
       record.email,
-      record.variant === 'b' ? 'Your free tech review request – PNK Digital' : 'Your free tech review with Mike – PNK Digital',
+      record.variant === 'b' ? 'Your free technology review request – PNK Digital' : 'Your free tech review with Mike – PNK Digital',
       buildConfirmationHtml(record),
       buildConfirmationText(record)
     );
@@ -275,24 +276,35 @@ Registered Office: 7 Jubilee Lane, Farnham, Surrey GU104SZ
 
 function buildConfirmationTextB(r: TechSupportEnquiryRecord): string {
   const firstName = r.name.split(' ')[0];
-  return `Thanks, ${firstName}. Your free tech review is requested.
+  return `Thanks, ${firstName}. Your free technology review is requested.
 
-We've received your request for ${r.company}. On a 30-minute video call, we'll review your website, email and security, then recommend what to fix first and which plan fits. No obligation, no hard sell.
+We've received your request for ${r.company}. In your free 30-minute technology review, we'll talk through the technology your business relies on: your website, business email, Microsoft 365 or Google Workspace, domains and DNS, security, backups and user access, and where technology could save your team time.
+
+You'll leave with a clearer picture of what's working, what needs attention and where you could improve. No obligation. No hard sell. Just straightforward advice.
 
 We'll reply within one business day to arrange a time.
 
-WHAT HAPPENS NEXT
-1. Free tech review (30 minutes, free): a written summary of what needs attention.
-2. Structured onboarding (within two weeks): systems audited, documented and secured, urgent issues fixed first.
-3. Ongoing support (every month): a reference and status updates for every request.
+GETTING STARTED IS SIMPLE
+1. Let's talk (free, 30 minutes): what's working, and what's causing problems.
+2. We take over: if you decide to work with us, we bring your website, email, domains and other technology under control.
+3. We look after it: someone to call when something goes wrong, and someone looking for ways to make your technology work better.
+
+ONE PARTNER FOR YOUR BUSINESS TECHNOLOGY
+Website, email & Microsoft 365, domains & DNS, security, technical support, and automation & AI.
+One person. One point of contact. One place to go when technology gets in the way.
 
 PLANS AT A GLANCE
-- Essentials, £125/mo: up to 1 hour a month, next business day response.
-- Growth, £375/mo: up to 4 hours a month, same business day response.
-- Partner, from £950/mo: up to 10 priority hours, response within 4 business hours.
-Additional hours £80/hour. Support hours Mon–Fri, 9am–5:30pm (excluding UK bank holidays), with 24/7 website monitoring.
+- Website Care, £125/mo: for businesses that want their website properly looked after.
+- Business, £375/mo (recommended): your outsourced technology department. Includes up to 4 hours of hands-on work each month.
+- Partner, from £950/mo: a hands-on technology partner for businesses that need things built, not just supported. Around 10 hours of hands-on work each month.
+Need more than your plan includes? We'll tell you before we do it and quote it as a fixed price. Plan clients get 10% off project work. No unexpected invoices.
+
+MORE THAN IT SUPPORT
+If something can be fixed, we'll fix it. If something can be simplified, we'll simplify it. If something can be automated, we'll automate it. And if your business needs something that doesn't exist yet, we can build it.
 
 In the meantime, if there's anything you'd like us to look at on the call, just reply to this email.
+
+Prefer to talk? Call us on 01252 279059.
 
 Speak soon,
 The PNK Digital team

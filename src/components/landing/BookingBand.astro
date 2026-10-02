@@ -1,28 +1,40 @@
 ---
 // Pink booking band (#book): heading, intro and checks beside the BookingForm.
+// A `copy` slot replaces the default copy column (it must contain the
+// #book-title heading); `form` props are passed through to BookingForm.
 import Icon from './Icon.astro';
 import BookingForm from './BookingForm.astro';
+import type { Props as BookingFormProps } from './BookingForm.astro';
 import type { Variant } from '@/data/tech-support';
 
 export interface Props {
   variant: Variant;
-  intro: string;
+  intro?: string;
   successLine: string;
+  form?: Omit<BookingFormProps, 'variant' | 'successLine'>;
 }
-const { variant, intro, successLine } = Astro.props;
+const { variant, intro, successLine, form = {} } = Astro.props;
 const checks = ['At a time that suits you', 'A plain-English summary afterwards', 'No obligation, no hard sell'];
 ---
 <section id="book" class="band" aria-labelledby="book-title" data-booking-band>
   <div class="inner">
-    <div class="copy">
-      <h2 id="book-title">Find out what your tech really needs: free 30-minute review</h2>
-      <p class="intro">{intro}</p>
-      <ul class="checks">
-        {checks.map((c) => <li><Icon name="check" size={22} />{c}</li>)}
-      </ul>
-    </div>
+    {
+      Astro.slots.has('copy') ? (
+        <div class="copy">
+          <slot name="copy" />
+        </div>
+      ) : (
+        <div class="copy">
+          <h2 id="book-title">Find out what your tech really needs: free 30-minute review</h2>
+          <p class="intro">{intro}</p>
+          <ul class="checks">
+            {checks.map((c) => <li><Icon name="check" size={22} />{c}</li>)}
+          </ul>
+        </div>
+      )
+    }
     <div class="card">
-      <BookingForm variant={variant} successLine={successLine} />
+      <BookingForm variant={variant} successLine={successLine} {...form} />
     </div>
   </div>
 </section>

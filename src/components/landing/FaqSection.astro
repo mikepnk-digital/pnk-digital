@@ -7,10 +7,12 @@ export interface Props {
   title: string;
   lead: string;
   items: FaqItem[];
+  /** Surface (tinted) background instead of white. */
+  surface?: boolean;
 }
-const { title, lead, items } = Astro.props;
+const { title, lead, items, surface = false } = Astro.props;
 ---
-<section id="faq" class="lp-section" aria-labelledby="faq-title">
+<section id="faq" class:list={['lp-section', { 'lp-section--surface': surface }]} aria-labelledby="faq-title">
   <div class="lp-container row">
     <div class="intro">
       <span class="lp-eyebrow">FAQ</span>

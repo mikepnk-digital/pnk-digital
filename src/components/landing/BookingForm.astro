@@ -6,6 +6,8 @@
 //   API answers with a 303 to /tech-support/thanks.
 // Plan pre-selection: any [data-book][data-plan] control on the page sets the
 // Plan select, scrolls here (68px header offset) and focuses Name after ~700ms.
+// `compact` (version B): name, business, email and one optional message only;
+// the plan is carried in a hidden field so plan buttons still pre-select it.
 import Icon from './Icon.astro';
 import { PLAN_OPTIONS, STAFF_OPTIONS } from '@/data/tech-support';
 import type { Variant } from '@/data/tech-support';
@@ -13,8 +15,22 @@ import type { Variant } from '@/data/tech-support';
 export interface Props {
   variant: Variant;
   successLine: string;
+  compact?: boolean;
+  messageLabel?: string;
+  messagePlaceholder?: string;
+  submitLabel?: string;
+  /** First small line under the submit button. */
+  reassurance?: string;
 }
-const { variant, successLine } = Astro.props;
+const {
+  variant,
+  successLine,
+  compact = false,
+  messageLabel = "What's your biggest tech headache?",
+  messagePlaceholder = "e.g. Our emails keep going to clients' spam folders",
+  submitLabel = 'Book my free review',
+  reassurance = "No obligation. We'll reply within one business day.",
+} = Astro.props;
 
 const apiUrl: string = import.meta.env.VITE_API_URL || '';
 const action = apiUrl ? `${apiUrl}/api/tech-support` : '';
@@ -46,32 +62,40 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
         <input id="bk-email" name="email" type="email" autocomplete="email" required data-field="email" />
         <p id="bk-email-err" class="err" hidden></p>
       </div>
-      <div class="field">
-        <label for="bk-phone">Phone <span class="opt">(optional)</span></label>
-        <input id="bk-phone" name="phone" type="tel" autocomplete="tel" />
-      </div>
-      <div class="field">
-        <label for="bk-staff">Number of staff</label>
-        <select id="bk-staff" name="staff">
-          <option value="">Choose…</option>
-          {STAFF_OPTIONS.map((o) => <option value={o}>{o}</option>)}
-        </select>
-      </div>
-      <div class="field">
-        <label for="bk-plan">Plan of interest</label>
-        <select id="bk-plan" name="plan" data-plan-select>
-          {PLAN_OPTIONS.map((o) => <option value={o} selected={o === 'Not sure'}>{o}</option>)}
-        </select>
-      </div>
+      {
+        compact ? (
+          <input type="hidden" name="plan" value="Not sure" data-plan-select />
+        ) : (
+          <>
+            <div class="field">
+              <label for="bk-phone">Phone <span class="opt">(optional)</span></label>
+              <input id="bk-phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+            <div class="field">
+              <label for="bk-staff">Number of staff</label>
+              <select id="bk-staff" name="staff">
+                <option value="">Choose…</option>
+                {STAFF_OPTIONS.map((o) => <option value={o}>{o}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="bk-plan">Plan of interest</label>
+              <select id="bk-plan" name="plan" data-plan-select>
+                {PLAN_OPTIONS.map((o) => <option value={o} selected={o === 'Not sure'}>{o}</option>)}
+              </select>
+            </div>
+          </>
+        )
+      }
     </div>
     <div class="field">
-      <label for="bk-headache">What's your biggest tech headache? <span class="opt">(optional)</span></label>
-      <textarea id="bk-headache" name="headache" rows="3" placeholder="e.g. Our emails keep going to clients' spam folders"></textarea>
+      <label for="bk-headache">{messageLabel} <span class="opt">(optional)</span></label>
+      <textarea id="bk-headache" name="headache" rows="3" placeholder={messagePlaceholder}></textarea>
     </div>
 
-    <button type="submit" class="lp-btn lp-btn--pink lp-btn--block submit">Book my free review</button>
+    <button type="submit" class="lp-btn lp-btn--pink lp-btn--block submit">{submitLabel}</button>
     <p class="err form-err" role="alert" data-form-error hidden></p>
-    <p class="small">No obligation. We'll reply within one business day.</p>
+    <p class="small">{reassurance}</p>
     <p class="small">How we use your details: <a href="/privacy-policy">privacy policy</a>.</p>
   </form>
 
@@ -101,7 +125,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
     const success = root.querySelector<HTMLElement>('[data-success]')!;
     const successTitle = root.querySelector<HTMLElement>('[data-success-title]')!;
     const formError = root.querySelector<HTMLElement>('[data-form-error]')!;
-    const planSelect = form.querySelector<HTMLSelectElement>('[data-plan-select]')!;
+    const planSelect = form.querySelector<HTMLInputElement | HTMLSelectElement>('[data-plan-select]')!;
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const nameInput = form.querySelector<HTMLInputElement>('#bk-name')!;
     const fields = Array.from(form.querySelectorAll<HTMLInputElement>('[data-field]'));
