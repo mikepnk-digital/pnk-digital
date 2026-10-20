@@ -26,8 +26,7 @@ export function ContactPage({ children }: ContactPageProps) {
           </motion.h1>
 
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed">
-            Whether you have a specific project in mind or just want to explore what's possible,
-            we'd love to hear from you. No obligation, no hard sell.
+            Book a free 30-minute call below, or send us a message. No obligation, no hard sell.
           </motion.p>
         </motion.div>
       </Section>
@@ -49,7 +48,7 @@ export function ContactPage({ children }: ContactPageProps) {
         </Section>
       )}
 
-      {/* Call details + Contact Form */}
+      {/* Contact Form + details */}
       <Section padding="sm">
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
 
@@ -74,10 +73,10 @@ export function ContactPage({ children }: ContactPageProps) {
               Tell us what you're working on and we'll get back to you {RESPONSE_PROMISE}.
             </motion.p>
 
-            <ContactForm />
+            <ContactForm withTopics />
           </div>
 
-          {/* Right: Call details + Contact Info */}
+          {/* Right: Contact Info */}
           <motion.div
             variants={fadeInRight}
             initial="hidden"
@@ -85,39 +84,6 @@ export function ContactPage({ children }: ContactPageProps) {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-8"
           >
-            {/* Free Call Card */}
-            <div className="
-              bg-midnight/60 backdrop-blur-sm
-              rounded-2xl border border-neon-cyan/20
-              p-8
-              hover:border-neon-cyan/40
-              transition-colors duration-300
-            ">
-              <div className="flex items-center gap-3 mb-4">
-                <Calendar className="w-6 h-6 text-neon-cyan" />
-                <h3 className="text-xl font-semibold text-text-primary">Your Free 30-Minute Call</h3>
-              </div>
-
-              <p className="text-text-secondary text-sm leading-relaxed mb-6">
-                A 30-minute conversation to understand your project, explore options,
-                and see if we're a good fit. No obligation, no hard sell - just a
-                straightforward chat about what you're building.
-              </p>
-
-              <ul className="space-y-3 mb-6">
-                {[
-                  'Understand your goals and timeline',
-                  'Discuss the right technical approach',
-                  'Get a realistic scope and estimate',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-text-secondary text-sm">
-                    <span className="text-neon-cyan mt-0.5">&#10003;</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Contact Details */}
             <div className="
               bg-midnight/60 backdrop-blur-sm
