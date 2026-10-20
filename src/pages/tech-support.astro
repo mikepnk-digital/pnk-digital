@@ -77,7 +77,15 @@ const navLinks = [
   { href: '#faq', label: 'FAQ' },
 ];
 ---
-<LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>
+<LandingLayout
+  theme={variant}
+  title={TITLE}
+  description={DESCRIPTION}
+  canonical={CANONICAL}
+  ogImage="/og/tech-support.png"
+  twitterImage="/og/tech-support.png"
+  jsonLd={jsonLd}
+>
   <LandingHeader links={navLinks} />
 
   <main>

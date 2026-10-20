@@ -80,7 +80,15 @@ const jsonLd = [
   }),
 ];
 ---
-<LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>
+<LandingLayout
+  theme={variant}
+  title={TITLE}
+  description={DESCRIPTION}
+  canonical={CANONICAL}
+  ogImage="/og/ai-consulting.png"
+  twitterImage="/og/ai-consulting.png"
+  jsonLd={jsonLd}
+>
   <LandingHeader links={navLinks} />
 
   <main>
