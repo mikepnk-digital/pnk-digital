@@ -93,13 +93,15 @@ export class WebsiteStack extends cdk.Stack {
     // the matching .html object. Assets (with a file extension) pass through.
     //
     // It also 301s retired routes in REDIRECTS (query string kept), e.g. the old
-    // /tech-support/service A/B page, still linked from sent outreach emails.
+    // /tech-support/service A/B page, still linked from sent outreach emails, and
+    // /services/ai-employees, folded into /ai-consulting.
     const urlRewriteFunction = new cloudfront.Function(this, 'UrlRewriteFunction', {
       functionName: `pnk-digital-url-rewrite-${config.environmentName}`,
       comment: 'Rewrite clean routes to Astro .html files; 301 retired routes',
       code: cloudfront.FunctionCode.fromInline(`
 var REDIRECTS = {
-  '/tech-support/service': '/tech-support'
+  '/tech-support/service': '/tech-support',
+  '/services/ai-employees': '/ai-consulting'
 };
 
 function serializeQuery(qs) {
@@ -232,13 +234,16 @@ function handler(event) {
   private buildCSP(): string {
     // Allow API Gateway endpoints in the connect-src
     // Using wildcard for execute-api since the actual URL is a CloudFormation token at synth time
+    // Cal.com: the BookingEmbed loads app.cal.com/embed/embed.js, which renders
+    // the calendar in an app.cal.com iframe.
     const directives = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.cal.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://*.execute-api.eu-west-2.amazonaws.com",
+      "connect-src 'self' https://*.execute-api.eu-west-2.amazonaws.com https://app.cal.com",
+      "frame-src https://app.cal.com https://cal.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
