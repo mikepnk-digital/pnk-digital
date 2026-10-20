@@ -1,4 +1,4 @@
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import type { CaseStudy, Service } from './case-studies';
 
 /**
@@ -6,10 +6,11 @@ import type { CaseStudy, Service } from './case-studies';
  * are included (and badged) so the layouts can be checked before content lands.
  */
 export async function getCaseStudies(): Promise<CaseStudy[]> {
-  const entries = await getCollection('case-studies', ({ data }) => import.meta.env.DEV || !data.draft);
+  type Entry = CollectionEntry<'case-studies'>;
+  const entries: Entry[] = await getCollection('case-studies', ({ data }: Entry) => import.meta.env.DEV || !data.draft);
   return entries
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-    .map(({ id, data, body }) => ({ ...data, slug: id, date: data.date.toISOString(), body: body?.trim() ?? '' }));
+    .sort((a: Entry, b: Entry) => b.data.date.getTime() - a.data.date.getTime())
+    .map(({ id, data, body }: Entry) => ({ ...data, slug: id, date: data.date.toISOString(), body: body?.trim() ?? '' }));
 }
 
 /** The newest case study for one service (one per landing page). */

@@ -51,10 +51,10 @@ export function localBusinessJsonLd() {
     email: EMAIL,
     address: {
       '@type': 'PostalAddress',
-      ...(STREET_ADDRESS && { streetAddress: STREET_ADDRESS }),
+      ...(STREET_ADDRESS ? { streetAddress: STREET_ADDRESS } : {}),
       addressLocality: town,
       addressRegion: county,
-      ...(POSTCODE && { postalCode: POSTCODE }),
+      ...(POSTCODE ? { postalCode: POSTCODE } : {}),
       addressCountry: 'GB',
     },
     // SERVICE_AREA: the town, the county, remote across the UK.
