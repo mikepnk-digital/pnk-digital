@@ -7,7 +7,7 @@
 import Icon from './Icon.astro';
 import BookingForm from './BookingForm.astro';
 import BookingEmbed from './BookingEmbed.astro';
-import { CAL_LINK } from '@/config/site';
+import { CAL_LINK, CALL_LABEL } from '@/config/site';
 import type { Props as BookingFormProps } from './BookingForm.astro';
 import type { Variant } from '@/data/tech-support';
 
@@ -45,7 +45,7 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
           <div class="card cal-card">
             <h3 class="card-title">Pick a time</h3>
             <p class="card-text">See the live calendar and book a slot that suits you.</p>
-            <BookingEmbed linkClass="lp-btn lp-btn--pink" />
+            <BookingEmbed linkClass="lp-btn lp-btn--pink lp-btn--block" label={CALL_LABEL} />
           </div>
         )
       }

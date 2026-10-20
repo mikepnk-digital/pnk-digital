@@ -104,7 +104,7 @@ export function Navbar({ currentPath }) {
               <Phone className="w-4 h-4" />
               <span className="hidden xl:inline">{PHONE_DISPLAY}</span>
             </a>
-            <Link to="/contact">
+            <Link to="/contact" data-book>
               <Button size="sm" className="whitespace-nowrap">{CALL_LABEL}</Button>
             </Link>
           </div>
@@ -180,6 +180,7 @@ export function Navbar({ currentPath }) {
               >
                 <Link
                   to="/contact"
+                  data-book
                   onClick={closeMobileMenu}
                   className="block touch-action-manipulation"
                 >

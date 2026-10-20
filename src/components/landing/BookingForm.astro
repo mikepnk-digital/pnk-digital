@@ -5,11 +5,13 @@
 // - Without JS: native required/email validation and a urlencoded POST; the
 //   API answers with a 303 to /tech-support/thanks.
 // Plan pre-selection: any [data-book][data-plan] control on the page sets the
-// Plan select, scrolls here (68px header offset) and focuses Name after ~700ms.
+// Plan select. When the page has a Cal.com modal, BookingEmbed opens it for
+// those controls; otherwise they scroll here (68px header offset) and focus
+// Name after ~700ms.
 // `compact` (version B): name, business, email and one optional message only;
 // the plan is carried in a hidden field so plan buttons still pre-select it.
 import Icon from './Icon.astro';
-import { CALL_LABEL, RESPONSE_PROMISE } from '@/config/site';
+import { RESPONSE_PROMISE } from '@/config/site';
 import { PLAN_OPTIONS, STAFF_OPTIONS } from '@/data/tech-support';
 import type { Variant } from '@/data/tech-support';
 
@@ -35,7 +37,7 @@ const {
   compact = false,
   messageLabel = "What's your biggest tech headache?",
   messagePlaceholder = "e.g. Our emails keep going to clients' spam folders",
-  submitLabel = CALL_LABEL,
+  submitLabel = 'Send message',
   reassurance = `No obligation. We'll reply ${RESPONSE_PROMISE}.`,
 } = Astro.props;
 
@@ -100,7 +102,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
       <textarea id="bk-headache" name="headache" rows="3" placeholder={messagePlaceholder}></textarea>
     </div>
 
-    <button type="submit" class="lp-btn lp-btn--pink lp-btn--block submit">{submitLabel}</button>
+    <button type="submit" class="lp-btn lp-btn--outline lp-btn--block submit">{submitLabel}</button>
     <p class="err form-err" role="alert" data-form-error hidden></p>
     <p class="small">{reassurance}</p>
     <p class="small">How we use your details: <a href="/privacy-policy">privacy policy</a>.</p>
@@ -108,14 +110,15 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
 
   <div class="success" role="status" data-success hidden>
     <span class="tick"><Icon name="check" size={28} /></span>
-    <h3 tabindex="-1" data-success-title>Thanks – you're booked in.</h3>
+    <h3 tabindex="-1" data-success-title>Thanks – we've got your message.</h3>
     <p>{successLine}</p>
-    <button type="button" class="again" data-reset>Send another request</button>
+    <button type="button" class="again" data-reset>Send another message</button>
   </div>
 </div>
 
 <script>
   import { track } from '@/lib/analytics';
+  import { calEmbedWithDialog } from '@/lib/booking-dialog';
 
   type FieldKey = 'name' | 'business' | 'email';
   const MESSAGES: Record<FieldKey, string> = {
@@ -179,7 +182,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
     fields.forEach((input) => input.addEventListener('input', () => setError(input, null)));
 
     const showSuccess = (firstName: string) => {
-      successTitle.textContent = `Thanks, ${firstName} – you're booked in.`;
+      successTitle.textContent = `Thanks, ${firstName} – we've got your message.`;
       form.hidden = true;
       success.hidden = false;
       successTitle.focus();
@@ -254,6 +257,8 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
         if (!success.hidden) resetForm();
         const plan = link.dataset.plan;
         if (plan) planSelect.value = plan;
+        // BookingEmbed opens the calendar instead; the plan stays selected here.
+        if (calEmbedWithDialog()) return;
         const band = document.getElementById('book');
         if (band) {
           const top = band.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;

@@ -71,7 +71,7 @@ export function Hero() {
             variants={fadeInUpLarge}
             className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
           >
-            <Link to="#book">
+            <Link to="#book" data-book>
               <Button size="lg" className="group min-w-[200px]">
                 {CALL_LABEL}
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

@@ -5,7 +5,9 @@
 // React home and /contact pages as passed-in children.
 // - Without JS: the button is a link to the Cal.com page.
 // - With JS: the button opens a <dialog>; Cal's embed script loads on the
-//   first open and fills it with the inline calendar.
+//   first open and fills it with the inline calendar. Every [data-book]
+//   control on the page ("Book a free 30-minute call") opens it too; without
+//   JS or <dialog> support those stay #book links.
 // Renders nothing while CAL_LINK is empty.
 import { CAL_LINK } from '@/config/site';
 
@@ -50,6 +52,7 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
 
 <script>
   import { track } from '@/lib/analytics';
+  import { calEmbedWithDialog } from '@/lib/booking-dialog';
 
   // Cal.com's loader snippet (defines window.Cal and queues calls until
   // https://app.cal.com/embed/embed.js arrives), run once per page.
@@ -109,6 +112,11 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
     });
   }
 
+  function openDialog(el: HTMLElement) {
+    el.querySelector<HTMLDialogElement>('[data-cal-dialog]')!.showModal();
+    mount(el);
+  }
+
   // Delegated, so it still works after a React island around the calendar
   // hydrates. Without <dialog> support the link opens Cal.com instead.
   document.addEventListener('click', (e) => {
@@ -119,8 +127,15 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
       const dialog = el?.querySelector<HTMLDialogElement>('[data-cal-dialog]');
       if (!el || !dialog || typeof dialog.showModal !== 'function') return;
       e.preventDefault();
-      dialog.showModal();
-      mount(el);
+      openDialog(el);
+      return;
+    }
+    // "Book a free 30-minute call" anywhere on the page opens the calendar.
+    if (target.closest('[data-book]')) {
+      const el = calEmbedWithDialog();
+      if (!el) return;
+      e.preventDefault();
+      openDialog(el);
       return;
     }
     const dialog = target.closest<HTMLDialogElement>('[data-cal-dialog]');

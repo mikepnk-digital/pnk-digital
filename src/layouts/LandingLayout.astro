@@ -51,6 +51,9 @@ const { theme, ...seo } = Astro.props;
   .landing {
     /* Shared */
     --lp-pink: #ec008c;
+    /* Button fills only: white text passes AA at any size (4.85:1), so button
+       text can be 17px. Bands and accents stay --lp-pink. */
+    --lp-pink-cta: #db0082;
     --lp-pink-hover: #c8007a;
     --lp-pink-text: #b3006b;
     --lp-pink-tint: #fdeef6;
@@ -255,7 +258,7 @@ const { theme, ...seo } = Astro.props;
     border: 0;
     cursor: pointer;
     font-family: inherit;
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 700;
     line-height: 1.2;
     text-decoration: none;
@@ -265,7 +268,7 @@ const { theme, ...seo } = Astro.props;
     transition: background-color 0.15s ease, color 0.15s ease;
   }
   .landing .lp-btn--pink {
-    background: var(--lp-pink);
+    background: var(--lp-pink-cta);
     color: var(--lp-white);
   }
   .landing .lp-btn--pink:hover {
@@ -292,6 +295,13 @@ const { theme, ...seo } = Astro.props;
   }
   .landing .lp-btn--block {
     width: 100%;
+  }
+  /* Phones: "Book a free 30-minute call" (about 220px at 17px) fits on one
+     line in pricing cards and the booking band from 360px. */
+  @media (max-width: 479.98px) {
+    .landing .lp-btn {
+      padding-inline: 16px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
