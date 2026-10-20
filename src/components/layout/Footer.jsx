@@ -5,11 +5,12 @@ import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {
   Services: [
+    { name: 'Tech Support', to: '/tech-support' },
+    { name: 'AI Consulting', to: '/ai-consulting' },
     { name: 'Web App Development', to: '/services' },
     { name: 'AWS Integration', to: '/services' },
     { name: 'AI-Powered MVPs', to: '/services' },
     { name: 'AI Integration', to: '/services' },
-    { name: 'AI Consulting', to: '/ai-consulting' },
   ],
   Navigation: [
     { name: 'Home', to: '/' },

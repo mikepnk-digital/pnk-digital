@@ -1,13 +1,28 @@
 import { Link } from '@/lib/router';
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Code2, Cloud, Zap, Cpu } from 'lucide-react';
+import { Code2, Cloud, Zap, Cpu, LifeBuoy, Sparkles } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { orbPresets } from '../ui/orbPresets';
 import { SectionHeading } from '../ui/SectionHeading';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
+// The first two link to their landing pages; copy is from those pages' heroes.
 const services = [
+  {
+    icon: LifeBuoy,
+    title: 'Tech Support Plans',
+    description: 'Your business technology, taken care of. Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner. Plans from £125/month.',
+    color: 'neon-cyan',
+    href: '/tech-support',
+  },
+  {
+    icon: Sparkles,
+    title: 'AI Consulting',
+    description: 'AI that actually does the work. We find the processes AI can take off your team, build the first one into the tools you already use, and hand it over. Fixed prices from £1,950.',
+    color: 'brand-pink',
+    href: '/ai-consulting',
+  },
   {
     icon: Code2,
     title: 'Web Application Development',
@@ -31,7 +46,6 @@ const services = [
     title: 'AI Integration',
     description: 'Embed intelligent capabilities into your existing products. From chatbots to content generation to workflow automation - AI that actually solves problems.',
     color: 'neon-green',
-    href: '/ai-consulting',
   },
 ];
 
@@ -78,7 +92,7 @@ export function ServicesOverview() {
     <Section id="services-overview" orbs={orbPresets.servicesLeft}>
       <SectionHeading title="What I Build" gradient />
       <p className="text-text-secondary text-center max-w-2xl mx-auto mb-12 -mt-4">
-        Four things I do really well.
+        Six things I do really well.
       </p>
 
       <motion.div
@@ -121,6 +135,12 @@ export function ServicesOverview() {
                   <p className="text-text-secondary text-sm leading-relaxed">
                     {service.description}
                   </p>
+
+                  {service.href && (
+                    <span className={`inline-flex items-center gap-2 mt-4 text-sm font-medium ${colors.text}`}>
+                      Learn more <span aria-hidden="true">→</span>
+                    </span>
+                  )}
                 </div>
               </div>
               </CardWrapper>
