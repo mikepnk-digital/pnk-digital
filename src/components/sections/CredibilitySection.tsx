@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Section, orbPresets } from '../ui/Section';
+import { Section } from '../ui/Section';
+import { orbPresets } from '../ui/orbPresets';
 import { SectionHeading } from '../ui/SectionHeading';
 import { staggerContainer, fadeInUp, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 import mikePinkPhoto from '../../assets/mike-pink.jpg?url';

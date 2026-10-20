@@ -2,7 +2,8 @@ import { Link } from '@/lib/router';
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Cloud, Zap, Cpu } from 'lucide-react';
-import { Section, orbPresets } from '../ui/Section';
+import { Section } from '../ui/Section';
+import { orbPresets } from '../ui/orbPresets';
 import { SectionHeading } from '../ui/SectionHeading';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 

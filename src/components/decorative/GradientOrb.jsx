@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export function GradientOrb({
@@ -12,6 +13,9 @@ export function GradientOrb({
   animate = true,
   delay = 0,
 }) {
+  // Random once per orb (lazy initial state) so renders stay pure.
+  const [duration] = useState(() => 10 + Math.random() * 4);
+
   const colors = {
     cyan: 'bg-neon-cyan',
     purple: 'bg-neon-purple',
@@ -49,7 +53,7 @@ export function GradientOrb({
       animate={animate ? 'animate' : 'initial'}
       variants={animationVariants}
       transition={{
-        duration: 10 + Math.random() * 4,
+        duration,
         repeat: Infinity,
         ease: 'easeInOut',
         delay,
