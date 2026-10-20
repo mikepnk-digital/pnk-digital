@@ -23,7 +23,7 @@ import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
 import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
 import { getCaseStudyFor } from '@/lib/case-studies-collection';
-import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
+import { LOCATION, RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
   PHONE_DISPLAY,
@@ -51,7 +51,7 @@ import {
 
 const variant = 'b';
 const caseStudy = await getCaseStudyFor('ai');
-const TITLE = 'AI Consulting for Small Businesses | PNK Digital';
+const TITLE = `AI Consulting for Small Businesses in ${LOCATION.split(',')[1].trim()} & the UK | PNK Digital`;
 const DESCRIPTION =
   'We find the processes AI can take off your team, build the first one into the tools you already use, and hand it over. Fixed prices from £1,950. Book a free 30-minute AI Fit Call.';
 const CANONICAL = 'https://pnk-digital.com/ai-consulting';

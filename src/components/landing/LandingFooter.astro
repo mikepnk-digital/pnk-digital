@@ -5,7 +5,19 @@
 // Dark background follows the theme (ink in A, slate in B).
 // Keep the link lists and legal lines in sync with Footer.jsx.
 import logo from '@/assets/pnk-digital-logo.svg';
-import { EMAIL, EMAIL_HREF, LINKEDIN_URL, LOCATION, PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
+import {
+  EMAIL,
+  EMAIL_HREF,
+  LINKEDIN_URL,
+  LOCATION,
+  MAPS_URL,
+  OPENING_HOURS,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  POSTCODE,
+  STREET_ADDRESS,
+} from '@/config/site';
+import { localBusinessJsonLd } from '@/lib/structured-data';
 
 const columns = [
   {
@@ -60,12 +72,22 @@ const year = new Date().getFullYear();
 
       <div class="col">
         <h2 class="col-title">Get in Touch</h2>
-        <ul>
-          <li><a href={PHONE_HREF} data-phone>{PHONE_DISPLAY}</a></li>
-          <li><a href={EMAIL_HREF}>{EMAIL}</a></li>
-          <li class="muted">{LOCATION}</li>
-          {LINKEDIN_URL && <li><a href={LINKEDIN_URL} rel="me noopener" target="_blank">LinkedIn</a></li>}
-        </ul>
+        <!-- NAP block: matches localBusinessJsonLd() below. -->
+        <address>
+          <ul>
+            <li class="muted">
+              PNK Digital
+              {STREET_ADDRESS && <><br />{STREET_ADDRESS}</>}
+              <br />{LOCATION}
+              {POSTCODE && <><br />{POSTCODE}</>}
+            </li>
+            <li><a href={PHONE_HREF} data-phone>{PHONE_DISPLAY}</a></li>
+            <li><a href={EMAIL_HREF}>{EMAIL}</a></li>
+            {OPENING_HOURS.map((h) => <li class="muted">{h.label}</li>)}
+            <li><a href={MAPS_URL} rel="noopener" target="_blank">View on Google Maps</a></li>
+            {LINKEDIN_URL && <li><a href={LINKEDIN_URL} rel="me noopener" target="_blank">LinkedIn</a></li>}
+          </ul>
+        </address>
       </div>
     </div>
 
@@ -83,6 +105,7 @@ const year = new Date().getFullYear();
       </ul>
     </div>
   </div>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(localBusinessJsonLd())} />
 </footer>
 
 <style>
@@ -175,6 +198,9 @@ const year = new Date().getFullYear();
     outline: 3px solid var(--lp-footer-logo);
     outline-offset: 3px;
     border-radius: 4px;
+  }
+  address {
+    font-style: normal;
   }
   .muted {
     font-size: 15px;

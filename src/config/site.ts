@@ -24,3 +24,24 @@ export const CALL_LABEL = 'Book a free 30-minute call';
 
 /** Not supplied yet: the footer link is hidden while empty. */
 export const LINKEDIN_URL = '';
+
+/* ---- Local SEO (NAP block in both footers + LocalBusiness JSON-LD) ------- */
+
+/** Public street address and postcode for the NAP block. Not supplied yet: only LOCATION shows. */
+export const STREET_ADDRESS = '';
+export const POSTCODE = '';
+
+/**
+ * Opening hours. Not supplied yet: hidden in the footer and left out of the
+ * LocalBusiness markup. `spec` is schema.org openingHours format, e.g.
+ * { label: 'Monday to Friday, 9am–5.30pm', spec: 'Mo-Fr 09:00-17:30' }.
+ */
+export const OPENING_HOURS: { label: string; spec: string }[] = [];
+
+/** Google Business Profile reviews link for /contact. Not supplied yet: hidden while empty. */
+export const GOOGLE_REVIEWS_URL = '';
+
+/** The footer map link: a Google Maps search for the NAP address (swap in the Business Profile's Maps link once it exists). */
+export const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  ['PNK Digital', STREET_ADDRESS, LOCATION, POSTCODE].filter(Boolean).join(', ')
+)}`;

@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Clock, Calendar, Phone } from 'lucide-react';
+import { Mail, MapPin, Clock, Calendar, Phone, Star } from 'lucide-react';
 import { Section } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
 import { ContactForm } from '../components/sections/ContactForm';
 import { fadeInUp, fadeInUpLarge, fadeInRight } from '../utils/animations';
-import { EMAIL, EMAIL_HREF, LOCATION, PHONE_DISPLAY, PHONE_HREF, RESPONSE_PROMISE } from '../config/site';
+import { EMAIL, EMAIL_HREF, GOOGLE_REVIEWS_URL, LOCATION, PHONE_DISPLAY, PHONE_HREF, RESPONSE_PROMISE } from '../config/site';
 
 const responsePromise = RESPONSE_PROMISE.charAt(0).toUpperCase() + RESPONSE_PROMISE.slice(1);
 
@@ -145,6 +145,26 @@ export function ContactPage({ children }: ContactPageProps) {
                     <div className="text-text-muted text-xs mt-0.5">Usually much faster</div>
                   </div>
                 </div>
+
+                {/* Google Business Profile reviews: hidden until GOOGLE_REVIEWS_URL is set. */}
+                {GOOGLE_REVIEWS_URL && (
+                  <a
+                    href={GOOGLE_REVIEWS_URL}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-start gap-4 group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-neon-purple/10 flex items-center justify-center flex-shrink-0">
+                      <Star className="w-5 h-5 text-neon-purple" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-text-muted mb-0.5">Reviews</div>
+                      <div className="text-text-primary group-hover:text-neon-cyan transition-colors font-medium">
+                        Read our Google reviews
+                      </div>
+                    </div>
+                  </a>
+                )}
               </div>
             </div>
           </motion.div>

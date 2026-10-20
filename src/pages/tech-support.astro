@@ -27,7 +27,7 @@ import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
 import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
 import { getCaseStudyFor } from '@/lib/case-studies-collection';
-import { RESPONSE_PROMISE } from '@/config/site';
+import { LOCATION, RESPONSE_PROMISE } from '@/config/site';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -60,14 +60,16 @@ const navLinks = [
 ---
 <LandingLayout
   theme={variant}
-  title="Business Technology Support for Small Businesses | PNK Digital"
+  title={`IT Support for Small Businesses in ${LOCATION} | PNK Digital`}
   description="Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner. Book a free 30-minute technology review."
 >
   <LandingHeader links={navLinks} />
 
   <main>
     <!-- 1. Hero -->
-    <HeroCompany />
+    <HeroCompany
+      sub={`Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner, based in ${LOCATION}.`}
+    />
 
     <!-- 2. Problem -->
     <section class="lp-section" aria-labelledby="problem-title">
@@ -339,6 +341,28 @@ const navLinks = [
           <p class="list-card-title"><Icon name="zap" size={22} />We'll look at how your team works and find ways to:</p>
           <ul class="ticks">
             {automationItems.map((s) => <li><Icon name="check" size={18} />{s}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11b. Local to you -->
+    <section class="lp-section" aria-labelledby="local-title">
+      <div class="lp-container split">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Local to you</span>
+          <h2 id="local-title" class="lp-h2">Based in {LOCATION.split(',')[0]}. Supporting businesses across the UK.</h2>
+          <p class="lp-lead">
+            Most technical issues can be resolved remotely, wherever your business is. When something needs someone on
+            site, we'll come to you.
+          </p>
+        </div>
+        <div class="list-card">
+          <p class="list-card-title"><Icon name="globe" size={22} />Where we work:</p>
+          <ul class="ticks">
+            <li><Icon name="check" size={18} />Based in {LOCATION}</li>
+            <li><Icon name="check" size={18} />On-site across Surrey and Hampshire when needed</li>
+            <li><Icon name="check" size={18} />Remote support across the UK</li>
           </ul>
         </div>
       </div>
