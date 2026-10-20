@@ -283,7 +283,7 @@ const { theme, ...seo } = Astro.props;
     color: var(--lp-white);
   }
   .landing .lp-btn--pink:focus-visible {
-    outline: 3px solid var(--lp-dark);
+    outline: 3px solid var(--lp-focus-on-pink, var(--lp-dark));
     outline-offset: 3px;
   }
   .landing .lp-btn--outline:focus-visible {

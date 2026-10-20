@@ -11,7 +11,7 @@ export interface Props {
 }
 const { label, cta = CALL_LABEL } = Astro.props;
 ---
-<div class="sticky" role="region" aria-label="Book a review" data-sticky-cta hidden>
+<div class="sticky" role="region" aria-label="Book a call" data-sticky-cta hidden>
   {label && <span class="label">{label[0]}<br />{label[1]}</span>}
   <a class="lp-btn lp-btn--pink btn" href="#book" data-book>{cta}</a>
 </div>

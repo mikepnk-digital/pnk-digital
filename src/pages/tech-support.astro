@@ -71,8 +71,8 @@ const jsonLd = [
   }),
 ];
 const navLinks = [
-  { href: '#plans', label: 'Plans' },
   { href: '#clients', label: 'Clients' },
+  { href: '#plans', label: 'Plans' },
   { href: '#how', label: 'How it works' },
   { href: '#faq', label: 'FAQ' },
 ];
@@ -880,6 +880,8 @@ const navLinks = [
   .final {
     background: var(--lp-slate);
     color: var(--lp-white);
+    /* Pink-button focus ring would be slate-on-slate (1:1) here. */
+    --lp-focus-on-pink: var(--lp-white);
   }
   .final-inner {
     max-width: 820px;

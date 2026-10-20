@@ -59,9 +59,9 @@ const CANONICAL = 'https://pnk-digital.com/ai-consulting';
 
 const pull = testimonials.find((t) => t.pullQuote)!;
 const navLinks = [
-  { href: '#how', label: 'How it works' },
-  { href: '#pricing', label: 'Pricing' },
   { href: '#clients', label: 'Clients' },
+  { href: '#pricing', label: 'Pricing' },
+  { href: '#how', label: 'How it works' },
   { href: '#faq', label: 'FAQ' },
 ];
 
@@ -923,6 +923,8 @@ const jsonLd = [
   .final {
     background: var(--lp-slate);
     color: var(--lp-white);
+    /* Pink-button focus ring would be slate-on-slate (1:1) here. */
+    --lp-focus-on-pink: var(--lp-white);
   }
   .final-inner {
     max-width: 820px;
