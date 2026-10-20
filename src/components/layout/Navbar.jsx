@@ -8,11 +8,11 @@ import logo from '../../assets/pnk-digital-logo.svg?url';
 import { CALL_LABEL, PHONE_DISPLAY, PHONE_HREF } from '../../config/site';
 
 const navLinks = [
-  { name: 'Home', to: '/' },
   { name: 'Services', to: '/services' },
-  { name: 'Blog', to: '/blog' },
+  { name: 'Tech Support', to: '/tech-support' },
+  { name: 'AI Consulting', to: '/ai-consulting' },
   { name: 'About', to: '/about' },
-  { name: 'Contact', to: '/contact' },
+  { name: 'Blog', to: '/blog' },
 ];
 
 export function Navbar({ currentPath }) {
@@ -25,7 +25,7 @@ export function Navbar({ currentPath }) {
 
   // Close mobile menu on desktop resize
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
-  useResponsiveClose(768, closeMobileMenu);
+  useResponsiveClose(1024, closeMobileMenu);
 
   return (
     <motion.nav
@@ -58,15 +58,14 @@ export function Navbar({ currentPath }) {
                 alt="PNK Digital"
                 className="h-10 w-auto"
               />
-              {/* Mark only from md to lg, where the links and call button need the room. */}
-              <span className="text-white font-semibold text-xl tracking-tight whitespace-nowrap md:hidden lg:inline">
+              <span className="text-white font-semibold text-xl tracking-tight whitespace-nowrap">
                 PNK Digital
               </span>
             </Link>
           </motion.div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-5 lg:gap-8">
+          {/* Desktop Navigation: from lg, where the five links, phone and call button fit. */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) => {
               const isActive = link.to === '/'
                 ? pathname === '/'
@@ -114,7 +113,7 @@ export function Navbar({ currentPath }) {
           <button
             type="button"
             className="
-              md:hidden p-3 rounded-lg
+              lg:hidden p-3 rounded-lg
               text-text-primary
               hover:bg-white/5
               active:bg-white/10
@@ -140,7 +139,7 @@ export function Navbar({ currentPath }) {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden bg-void/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
+            className="lg:hidden bg-void/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
           >
             <div className="px-4 py-6 space-y-2">
               {navLinks.map((link, index) => {

@@ -8,10 +8,9 @@ const footerLinks = {
   Services: [
     { name: 'Tech Support', to: '/tech-support' },
     { name: 'AI Consulting', to: '/ai-consulting' },
-    { name: 'Web App Development', to: '/services' },
-    { name: 'AWS Integration', to: '/services' },
-    { name: 'AI-Powered MVPs', to: '/services' },
-    { name: 'AI Integration', to: '/services' },
+    { name: 'Web App Development', to: '/services#web-application-development' },
+    { name: 'AWS Integration', to: '/services#aws-infrastructure' },
+    { name: 'AI-Powered MVPs', to: '/services#ai-mvps' },
   ],
   Navigation: [
     { name: 'Home', to: '/' },
