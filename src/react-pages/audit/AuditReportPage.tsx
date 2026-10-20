@@ -13,6 +13,7 @@ import { MockupFrame } from '../../components/audit/MockupFrame';
 import { MockupRenderer } from '../../components/audit/mockups';
 import { getProspectBySlug } from '../../data/prospects';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
+import { YEARS_EXPERIENCE } from '../../config/site';
 
 export function AuditReportPage({ slug }: { slug: string }) {
   const prospect = slug ? getProspectBySlug(slug) : undefined;
@@ -210,9 +211,9 @@ export function AuditReportPage({ slug }: { slug: string }) {
               Ready to Discuss Your <GradientText>New Website</GradientText>?
             </h2>
             <p className="text-text-secondary mb-2">
-              I'm Mike, a freelance web developer based in Surrey with over 25 years of experience building
-              websites and web applications with React, Node.js, and AWS. I'd love to chat about how we
-              can transform your online presence.
+              PNK Digital is run by Mike Pink, a freelance web developer based in Surrey with over {YEARS_EXPERIENCE} years
+              of experience building websites and web applications with React, Node.js, and AWS. We'd love to chat about
+              how we can transform your online presence.
             </p>
           </motion.div>
 

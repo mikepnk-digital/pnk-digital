@@ -1,11 +1,20 @@
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Clock, Calendar, ExternalLink } from 'lucide-react';
+import { Mail, MapPin, Clock, Calendar, Phone } from 'lucide-react';
 import { Section } from '../components/ui/Section';
 import { GradientText } from '../components/ui/GradientText';
 import { ContactForm } from '../components/sections/ContactForm';
-import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInRight, viewportWithMargin } from '../utils/animations';
+import { fadeInUp, fadeInUpLarge, fadeInRight } from '../utils/animations';
+import { EMAIL, EMAIL_HREF, LOCATION, PHONE_DISPLAY, PHONE_HREF, RESPONSE_PROMISE } from '../config/site';
 
-export function ContactPage() {
+const responsePromise = RESPONSE_PROMISE.charAt(0).toUpperCase() + RESPONSE_PROMISE.slice(1);
+
+interface ContactPageProps {
+  /** The booking calendar (BookingEmbed, rendered by contact.astro). */
+  children?: ReactNode;
+}
+
+export function ContactPage({ children }: ContactPageProps) {
   return (
     <>
 
@@ -18,12 +27,29 @@ export function ContactPage() {
 
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed">
             Whether you have a specific project in mind or just want to explore what's possible,
-            I'd love to hear from you. No obligation, no hard sell.
+            we'd love to hear from you. No obligation, no hard sell.
           </motion.p>
         </motion.div>
       </Section>
 
-      {/* Discovery Call + Contact Form */}
+      {/* Booking calendar */}
+      {children && (
+        <Section padding="sm">
+          <div className="
+            bg-midnight/60 backdrop-blur-sm
+            rounded-2xl border border-neon-cyan/20
+            p-4 sm:p-8
+          ">
+            <div className="flex items-center gap-3 mb-6 px-2 sm:px-0">
+              <Calendar className="w-6 h-6 text-neon-cyan" />
+              <h2 className="text-2xl font-bold text-text-primary">Book a Free 30-Minute Call</h2>
+            </div>
+            {children}
+          </div>
+        </Section>
+      )}
+
+      {/* Call details + Contact Form */}
       <Section padding="sm">
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
 
@@ -45,13 +71,13 @@ export function ContactPage() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-text-secondary mb-8"
             >
-              Tell me what you're working on and I'll get back to you within 24 hours.
+              Tell us what you're working on and we'll get back to you {RESPONSE_PROMISE}.
             </motion.p>
 
             <ContactForm />
           </div>
 
-          {/* Right: Discovery Call + Contact Info */}
+          {/* Right: Call details + Contact Info */}
           <motion.div
             variants={fadeInRight}
             initial="hidden"
@@ -59,7 +85,7 @@ export function ContactPage() {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-8"
           >
-            {/* Discovery Call Card */}
+            {/* Free Call Card */}
             <div className="
               bg-midnight/60 backdrop-blur-sm
               rounded-2xl border border-neon-cyan/20
@@ -69,7 +95,7 @@ export function ContactPage() {
             ">
               <div className="flex items-center gap-3 mb-4">
                 <Calendar className="w-6 h-6 text-neon-cyan" />
-                <h3 className="text-xl font-semibold text-text-primary">Book a Discovery Call</h3>
+                <h3 className="text-xl font-semibold text-text-primary">Your Free 30-Minute Call</h3>
               </div>
 
               <p className="text-text-secondary text-sm leading-relaxed mb-6">
@@ -104,7 +130,22 @@ export function ContactPage() {
 
               <div className="space-y-5">
                 <a
-                  href="mailto:hello@pnk-digital.com"
+                  href={PHONE_HREF}
+                  className="flex items-start gap-4 group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-neon-cyan/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-neon-cyan" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-text-muted mb-0.5">Phone</div>
+                    <div className="text-text-primary group-hover:text-neon-cyan transition-colors font-medium">
+                      {PHONE_DISPLAY}
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href={EMAIL_HREF}
                   className="flex items-start gap-4 group"
                 >
                   <div className="w-10 h-10 rounded-lg bg-neon-cyan/10 flex items-center justify-center flex-shrink-0">
@@ -113,7 +154,7 @@ export function ContactPage() {
                   <div>
                     <div className="text-sm text-text-muted mb-0.5">Email</div>
                     <div className="text-text-primary group-hover:text-neon-cyan transition-colors font-medium">
-                      hello@pnk-digital.com
+                      {EMAIL}
                     </div>
                   </div>
                 </a>
@@ -124,7 +165,7 @@ export function ContactPage() {
                   </div>
                   <div>
                     <div className="text-sm text-text-muted mb-0.5">Location</div>
-                    <div className="text-text-primary font-medium">Surrey, UK</div>
+                    <div className="text-text-primary font-medium">{LOCATION}</div>
                   </div>
                 </div>
 
@@ -134,7 +175,7 @@ export function ContactPage() {
                   </div>
                   <div>
                     <div className="text-sm text-text-muted mb-0.5">Response Time</div>
-                    <div className="text-text-primary font-medium">Within 24 hours</div>
+                    <div className="text-text-primary font-medium">{responsePromise}</div>
                     <div className="text-text-muted text-xs mt-0.5">Usually much faster</div>
                   </div>
                 </div>

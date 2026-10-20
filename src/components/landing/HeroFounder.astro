@@ -2,8 +2,9 @@
 // Version A hero: founder voice, photo card of Mike.
 import Icon from './Icon.astro';
 import LandingPhoto from './LandingPhoto.astro';
+import { CALL_LABEL, YEARS_EXPERIENCE } from '@/config/site';
 
-const trust = ['27 years in financial services tech', 'No call centres', "Cancel with 30 days' notice"];
+const trust = [`${YEARS_EXPERIENCE} years in financial services tech`, 'No call centres', "Cancel with 30 days' notice"];
 const cardPoints = ['Website, email and security in one place', 'An update on every request', 'Fixed monthly fee, from £125'];
 ---
 <section class="hero" aria-labelledby="hero-title">
@@ -15,7 +16,7 @@ const cardPoints = ['Website, email and security in one place', 'An update on ev
         One person who looks after your website, email, Microsoft 365 or Google Workspace, and security – and fixes things properly.
       </p>
       <div class="ctas">
-        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>Book a free tech review</a>
+        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>{CALL_LABEL}</a>
         <a class="see" href="#plans" data-scroll>See plans</a>
       </div>
       <ul class="trust">
@@ -33,7 +34,7 @@ const cardPoints = ['Website, email and security in one place', 'An update on ev
         />
       </div>
       <div class="body">
-        <p class="hi">Hi, I'm Mike – your tech person.</p>
+        <p class="hi">PNK Digital is run by Mike Pink, your tech person.</p>
         <p class="line">I answer, I fix it, and I tell you what happened in plain English.</p>
         <ul class="points">
           {cardPoints.map((p) => <li><Icon name="check" size={18} />{p}</li>)}

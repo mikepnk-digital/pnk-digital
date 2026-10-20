@@ -1,10 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { ContactPage } from '../react-pages/ContactPage';
+import BookingEmbed from '../components/landing/BookingEmbed.astro';
 ---
 <Layout
   title="Contact - PNK Digital"
-  description="Get in touch to discuss your project. Book a discovery call or send a message. No obligation, no hard sell."
+  description="Get in touch to discuss your project. Book a free 30-minute call or send a message. No obligation, no hard sell."
 >
-  <ContactPage client:load />
+  <ContactPage client:load>
+    <BookingEmbed
+      theme="dark"
+      linkClass="inline-flex items-center px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:bg-brand-pink/90 transition-colors"
+    />
+  </ContactPage>
 </Layout>

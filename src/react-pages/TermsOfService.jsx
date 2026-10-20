@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Mail, MapPin } from 'lucide-react';
 import { Section } from '../components/ui/Section';
 import { fadeInUp } from '../utils/animations';
+import { EMAIL } from '../config/site';
 
 export function TermsOfService() {
   const lastUpdated = '16 January 2026';
@@ -89,7 +90,7 @@ export function TermsOfService() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-neon-purple" />
-                    <span>Email: hello@pnk-digital.com</span>
+                    <span>Email: {EMAIL}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin size={18} className="text-neon-purple" />

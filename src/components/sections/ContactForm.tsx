@@ -4,6 +4,7 @@ import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input, Textarea } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { submitContactForm, ApiError } from '../../utils/api';
+import { RESPONSE_PROMISE } from '../../config/site';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
 
 const COOLDOWN_SECONDS = 60;
@@ -74,7 +75,7 @@ export function ContactForm() {
     // Layer 1: Honeypot — if filled, fake success without calling API
     if (honeypot) {
       setSubmitStatus('success');
-      setSubmitMessage("Thanks for reaching out. I'll get back to you within 24 hours.");
+      setSubmitMessage(`Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`);
       setFormData(initialFormState);
       setIsSubmitting(false);
       return;
@@ -84,7 +85,7 @@ export function ContactForm() {
     const elapsed = Date.now() - mountTimeRef.current;
     if (elapsed < 3000) {
       setSubmitStatus('success');
-      setSubmitMessage("Thanks for reaching out. I'll get back to you within 24 hours.");
+      setSubmitMessage(`Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`);
       setFormData(initialFormState);
       setIsSubmitting(false);
       return;
@@ -96,7 +97,7 @@ export function ContactForm() {
         _t: elapsed,
       });
       setSubmitStatus('success');
-      setSubmitMessage(response.message || "Thanks for reaching out. I'll get back to you within 24 hours.");
+      setSubmitMessage(response.message || `Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`);
       setFormData(initialFormState);
       startCooldown();
 

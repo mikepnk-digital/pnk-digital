@@ -58,7 +58,8 @@ export function Navbar({ currentPath }) {
                 alt="PNK Digital"
                 className="h-10 w-auto"
               />
-              <span className="text-white font-semibold text-xl tracking-tight">
+              {/* Mark only from md to lg, where the links and call button need the room. */}
+              <span className="text-white font-semibold text-xl tracking-tight whitespace-nowrap md:hidden lg:inline">
                 PNK Digital
               </span>
             </Link>

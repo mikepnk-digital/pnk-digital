@@ -48,6 +48,9 @@ interface ServiceCardProps {
 export function ServiceCard({ service, index }: ServiceCardProps) {
   const colors = colorMap[service.color] || colorMap['neon-cyan'];
   const isReversed = index % 2 === 1;
+  // "Discuss a Web project", "Discuss an AWS project", "Discuss an AI project".
+  const subject = service.title.split(/[\s-]/)[0];
+  const article = /^[AEIOU]/.test(subject) ? 'an' : 'a';
 
   return (
     <motion.div
@@ -97,7 +100,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         {/* CTA */}
         <Link to={service.link || '/contact'}>
           <Button variant="secondary" size="sm" className="group">
-            {service.link ? 'Learn More' : `Discuss a ${service.title.split(' ')[0]} project`}
+            {service.link ? 'Learn More' : `Discuss ${article} ${subject} project`}
             <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>
