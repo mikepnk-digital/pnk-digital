@@ -6,10 +6,11 @@
 
 import type { Faq, Plan, Step } from './tech-support';
 import type { IconItem } from './tech-support-service';
+import { CALL_LABEL, RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 
 export { PHONE_DISPLAY, PHONE_HREF, testimonials } from './tech-support-service';
 
-export const PRIMARY_CTA = 'Book a free 30-minute AI Fit Call';
+export const PRIMARY_CTA = CALL_LABEL;
 
 /** Hidden `source` on the booking form; the API picks the auto-reply by it. */
 export const BOOKING_SOURCE = 'ai-consulting';
@@ -113,7 +114,7 @@ export const compare: { columns: CompareColumn[]; rows: CompareRow[]; source: st
     },
     {
       label: 'Knows your sector',
-      values: ['Sometimes', 'Rarely', '27 years in financial and professional services'],
+      values: ['Sometimes', 'Rarely', `${YEARS_EXPERIENCE} years in financial and professional services`],
     },
     {
       label: 'Who owns the result',
@@ -293,5 +294,5 @@ export const faqs: Faq[] = [
 ];
 
 export const booking = {
-  successLine: "We'll reply within one business day to arrange your free 30-minute AI Fit Call.",
+  successLine: `We'll reply ${RESPONSE_PROMISE} to arrange your free 30-minute AI Fit Call.`,
 };

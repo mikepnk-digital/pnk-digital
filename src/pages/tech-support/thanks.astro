@@ -1,6 +1,7 @@
 ---
 // No-JS fallback destination: the booking form's native POST to
 // /api/tech-support answers with a 303 redirect here. Variant-neutral copy.
+import { RESPONSE_PROMISE } from '@/config/site';
 import LandingLayout from '@/layouts/LandingLayout.astro';
 import LandingFooter from '@/components/landing/LandingFooter.astro';
 import Icon from '@/components/landing/Icon.astro';
@@ -15,11 +16,11 @@ import Icon from '@/components/landing/Icon.astro';
     <div class="lp-container inner">
       <span class="tick"><Icon name="check" size={28} /></span>
       <h1>Thanks – you're booked in.</h1>
-      <p class="lp-lead">We'll reply within one business day to arrange your free 30-minute review.</p>
+      <p class="lp-lead">We'll reply {RESPONSE_PROMISE} to arrange your free 30-minute review.</p>
       <a class="back" href="/tech-support">Back to Tech Support Plans</a>
     </div>
   </main>
-  <LandingFooter showLocation={false} />
+  <LandingFooter />
 </LandingLayout>
 
 <style>

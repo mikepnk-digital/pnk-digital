@@ -5,6 +5,7 @@
 // Price reads "[from] £1,950 <suffix>", suffix defaulting to "/month".
 import Icon from './Icon.astro';
 import type { Plan } from '@/data/tech-support';
+import { CALL_LABEL } from '@/config/site';
 
 export interface Props {
   plan: Plan;
@@ -18,7 +19,7 @@ const {
   plan,
   popular = false,
   badge = 'Most popular',
-  ctaLabel = 'Book a free tech review',
+  ctaLabel = CALL_LABEL,
   confirm = "We'll confirm the right plan on the call",
 } = Astro.props;
 const titleId = `plan-${plan.id}-title`;

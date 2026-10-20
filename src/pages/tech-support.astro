@@ -23,6 +23,7 @@ import LandingFooter from '@/components/landing/LandingFooter.astro';
 import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
+import { RESPONSE_PROMISE } from '@/config/site';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -189,7 +190,7 @@ const navLinks = [
       plans={plans}
       highlight="business"
       badge="Recommended"
-      cardCta="Book a free technology review"
+      cardCta={PRIMARY_CTA}
       cardConfirm=""
     >
       <div class="more">
@@ -221,13 +222,14 @@ const navLinks = [
     <!-- 8. Free technology review (booking form) -->
     <BookingBand
       variant={variant}
+      calendar
       successLine={booking.successLine}
       form={{
         compact: true,
         messageLabel: 'What do you need help with?',
         messagePlaceholder: 'e.g. Nobody is sure who manages our domain, and new starters take days to set up',
-        submitLabel: 'Book my free technology review',
-        reassurance: "No obligation. No hard sell. We'll reply within one business day.",
+        submitLabel: PRIMARY_CTA,
+        reassurance: `No obligation. No hard sell. We'll reply ${RESPONSE_PROMISE}.`,
       }}
     >
       <Fragment slot="copy">
@@ -359,8 +361,8 @@ const navLinks = [
     </section>
   </main>
 
-  <LandingFooter showLocation={false} />
-  <StickyCta label={['Free 30-minute', 'technology review']} cta="Book free review" />
+  <LandingFooter />
+  <StickyCta />
 </LandingLayout>
 
 <script>

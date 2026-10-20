@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
 import { Link, useLocation } from '@/lib/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useScrollState, useResponsiveClose } from '../../hooks';
 import logo from '../../assets/pnk-digital-logo.svg?url';
+import { CALL_LABEL, PHONE_DISPLAY, PHONE_HREF } from '../../config/site';
 
 const navLinks = [
   { name: 'Home', to: '/' },
@@ -64,7 +65,7 @@ export function Navbar({ currentPath }) {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-5 lg:gap-8">
             {navLinks.map((link) => {
               const isActive = link.to === '/'
                 ? pathname === '/'
@@ -95,8 +96,16 @@ export function Navbar({ currentPath }) {
                 </motion.div>
               );
             })}
+            <a
+              href={PHONE_HREF}
+              className="flex items-center gap-2 text-text-secondary hover:text-brand-pink transition-colors duration-300 whitespace-nowrap"
+              aria-label={`Call ${PHONE_DISPLAY}`}
+            >
+              <Phone className="w-4 h-4" />
+              <span className="hidden xl:inline">{PHONE_DISPLAY}</span>
+            </a>
             <Link to="/contact">
-              <Button size="sm">Let's Talk</Button>
+              <Button size="sm" className="whitespace-nowrap">{CALL_LABEL}</Button>
             </Link>
           </div>
 
@@ -175,9 +184,17 @@ export function Navbar({ currentPath }) {
                   className="block touch-action-manipulation"
                 >
                   <Button size="md" className="w-full">
-                    Let's Talk
+                    {CALL_LABEL}
                   </Button>
                 </Link>
+                <a
+                  href={PHONE_HREF}
+                  onClick={closeMobileMenu}
+                  className="mt-3 flex items-center justify-center gap-2 py-3 text-text-secondary hover:text-brand-pink transition-colors duration-300"
+                >
+                  <Phone className="w-4 h-4" />
+                  {PHONE_DISPLAY}
+                </a>
               </motion.div>
             </div>
           </motion.div>

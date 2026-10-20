@@ -2,15 +2,17 @@
 // Mobile-only (<760px) fixed booking bar. Hidden until the page has scrolled
 // 560px, and hidden again while the booking band is on screen. Pure
 // enhancement: without JS it never shows.
+import { CALL_LABEL } from '@/config/site';
+
 export interface Props {
-  /** Two-line label; each entry is one line. */
+  /** Optional two-line label beside the button; without it the button is full width. */
   label?: [string, string];
   cta?: string;
 }
-const { label = ['Free 30-min', 'tech review'], cta = 'Book a free review' } = Astro.props;
+const { label, cta = CALL_LABEL } = Astro.props;
 ---
 <div class="sticky" role="region" aria-label="Book a review" data-sticky-cta hidden>
-  <span class="label">{label[0]}<br />{label[1]}</span>
+  {label && <span class="label">{label[0]}<br />{label[1]}</span>}
   <a class="lp-btn lp-btn--pink btn" href="#book" data-book>{cta}</a>
 </div>
 
@@ -61,6 +63,7 @@ const { label = ['Free 30-min', 'tech review'], cta = 'Book a free review' } = A
     color: var(--lp-dark);
   }
   .btn {
+    flex: 1 1 auto;
     padding: 13px 22px;
     min-height: 52px;
   }

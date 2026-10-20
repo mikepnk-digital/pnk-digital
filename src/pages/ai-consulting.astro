@@ -20,6 +20,7 @@ import LandingFooter from '@/components/landing/LandingFooter.astro';
 import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
+import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
   PHONE_DISPLAY,
@@ -96,7 +97,7 @@ const jsonLd = [
 ];
 ---
 <LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>
-  <LandingHeader links={navLinks} cta="Book a free AI Fit Call" />
+  <LandingHeader links={navLinks} />
 
   <main>
     <!-- 1. Hero -->
@@ -173,7 +174,7 @@ const jsonLd = [
             PNK Digital isn't a marketing consultancy that learned prompting last year, and it isn't a helpdesk.
           </p>
           <p>
-            We're software engineers with <strong>27 years of delivering systems in financial services</strong> — insurance
+            We're software engineers with <strong>{YEARS_EXPERIENCE} years of delivering systems in financial services</strong> — insurance
             claims, pensions, life insurance — where data is sensitive and compliance is not optional. And we build with AI
             every day: agentic coding, multi-agent workflows, self-hosted models, document retrieval.
           </p>
@@ -281,6 +282,7 @@ const jsonLd = [
     <!-- 10. Book (booking form) -->
     <BookingBand
       variant={variant}
+      calendar
       successLine={booking.successLine}
       form={{
         compact: true,
@@ -288,8 +290,8 @@ const jsonLd = [
         analyticsPage: 'ai-consulting',
         messageLabel: "What takes up most of your team's time?",
         messagePlaceholder: '',
-        submitLabel: 'Book my free AI Fit Call',
-        reassurance: "No obligation. No hard sell. We'll reply within one business day.",
+        submitLabel: PRIMARY_CTA,
+        reassurance: `No obligation. No hard sell. We'll reply ${RESPONSE_PROMISE}.`,
       }}
     >
       <Fragment slot="copy">
@@ -343,7 +345,7 @@ const jsonLd = [
           <span class="lp-eyebrow">Experience</span>
           <h2 id="exp-title" class="lp-h2">Technology expertise you can rely on.</h2>
           <p class="lp-lead">
-            PNK Digital is built on 27 years of designing and delivering software for businesses, most of it in financial
+            PNK Digital is built on {YEARS_EXPERIENCE} years of designing and delivering software for businesses, most of it in financial
             services. Our experience spans:
           </p>
         </div>
@@ -392,8 +394,8 @@ const jsonLd = [
     </section>
   </main>
 
-  <LandingFooter showLocation={false} />
-  <StickyCta label={['Free 30-minute', 'AI Fit Call']} cta="Book free call" />
+  <LandingFooter />
+  <StickyCta />
 </LandingLayout>
 
 <script>

@@ -2,6 +2,7 @@
 // No-JS fallback destination for the /ai-consulting booking form: the API
 // answers a native POST with source=ai-consulting with a 303 redirect here.
 // Mirrors tech-support/thanks.astro.
+import { RESPONSE_PROMISE } from '@/config/site';
 import LandingLayout from '@/layouts/LandingLayout.astro';
 import LandingFooter from '@/components/landing/LandingFooter.astro';
 import Icon from '@/components/landing/Icon.astro';
@@ -16,11 +17,11 @@ import Icon from '@/components/landing/Icon.astro';
     <div class="lp-container inner">
       <span class="tick"><Icon name="check" size={28} /></span>
       <h1>Thanks – you're booked in.</h1>
-      <p class="lp-lead">We'll reply within one business day to arrange your free 30-minute AI Fit Call.</p>
+      <p class="lp-lead">We'll reply {RESPONSE_PROMISE} to arrange your free 30-minute AI Fit Call.</p>
       <a class="back" href="/ai-consulting">Back to AI consulting</a>
     </div>
   </main>
-  <LandingFooter showLocation={false} />
+  <LandingFooter />
 </LandingLayout>
 
 <style>

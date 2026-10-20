@@ -5,11 +5,11 @@
 
 import type { Faq, Plan, Step } from './tech-support';
 import type { IconName } from '@/components/landing/Icon.astro';
+import { CALL_LABEL, RESPONSE_PROMISE } from '@/config/site';
 
-export const PHONE_DISPLAY = '01252 279059';
-export const PHONE_HREF = 'tel:+441252279059';
+export { PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
 
-export const PRIMARY_CTA = 'Book a free 30-minute technology review';
+export const PRIMARY_CTA = CALL_LABEL;
 
 export type IconItem = { icon: IconName; title: string; body: string };
 
@@ -227,7 +227,7 @@ export const faqs: Faq[] = [
 ];
 
 export const booking = {
-  successLine: "We'll reply within one business day to arrange your free 30-minute technology review.",
+  successLine: `We'll reply ${RESPONSE_PROMISE} to arrange your free 30-minute technology review.`,
 };
 
 export type ClientTestimonial = {

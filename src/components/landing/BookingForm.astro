@@ -9,6 +9,7 @@
 // `compact` (version B): name, business, email and one optional message only;
 // the plan is carried in a hidden field so plan buttons still pre-select it.
 import Icon from './Icon.astro';
+import { CALL_LABEL, RESPONSE_PROMISE } from '@/config/site';
 import { PLAN_OPTIONS, STAFF_OPTIONS } from '@/data/tech-support';
 import type { Variant } from '@/data/tech-support';
 
@@ -34,8 +35,8 @@ const {
   compact = false,
   messageLabel = "What's your biggest tech headache?",
   messagePlaceholder = "e.g. Our emails keep going to clients' spam folders",
-  submitLabel = 'Book my free review',
-  reassurance = "No obligation. We'll reply within one business day.",
+  submitLabel = CALL_LABEL,
+  reassurance = `No obligation. We'll reply ${RESPONSE_PROMISE}.`,
 } = Astro.props;
 
 const apiUrl: string = import.meta.env.VITE_API_URL || '';
