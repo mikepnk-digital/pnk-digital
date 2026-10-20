@@ -60,9 +60,8 @@ export function ServicesPage() {
             What I don't do
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
-            I believe in being upfront. I don't offer broad "AI strategy consulting."
-            If your project needs something outside
-            my focus areas, I'll tell you honestly and point you in the right direction.
+            I believe in being upfront. If your project needs something outside my focus areas,
+            I'll tell you honestly and point you in the right direction.
           </p>
         </motion.div>
       </Section>
