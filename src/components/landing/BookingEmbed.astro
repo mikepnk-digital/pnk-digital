@@ -26,7 +26,7 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
 ---
 {
   url && (
-    <div class:list={['cal-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme={theme}>
+    <div class:list={['booking-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme={theme}>
       <a class:list={['cal-open', linkClass]} href={CAL_LINK} target="_blank" rel="noopener" data-cal-open>
         {label}
       </a>
@@ -130,7 +130,8 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
 </script>
 
 <style>
-  .cal-embed {
+  /* Not .cal-embed: Cal's script styles that class globally (min-height: 300px). */
+  .booking-embed {
     min-width: 0;
   }
   .cal-dialog {

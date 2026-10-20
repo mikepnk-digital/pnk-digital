@@ -2,7 +2,7 @@
 // Pink booking band (#book): heading, intro and checks beside the BookingForm.
 // A `copy` slot replaces the default copy column (it must contain the
 // #book-title heading); `form` props are passed through to BookingForm.
-// `calendar`: a "Pick a time" panel under the copy whose button opens the
+// `calendar`: a "Pick a time" panel above the form whose button opens the
 // Cal.com calendar in a modal (BookingEmbed). Without a CAL_LINK it is left out.
 import Icon from './Icon.astro';
 import BookingForm from './BookingForm.astro';
@@ -38,6 +38,8 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
           </>
         )
       }
+    </div>
+    <div class="side">
       {
         withCalendar && (
           <div class="card cal-card">
@@ -47,10 +49,10 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
           </div>
         )
       }
-    </div>
-    <div class="card">
-      {withCalendar && <h3 class="card-title">Or send us a message</h3>}
-      <BookingForm variant={variant} successLine={successLine} {...form} />
+      <div class="card">
+        {withCalendar && <h3 class="card-title">Or send us a message</h3>}
+        <BookingForm variant={variant} successLine={successLine} {...form} />
+      </div>
     </div>
   </div>
 </section>
@@ -110,9 +112,13 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
     line-height: 1.3;
     color: var(--lp-ink);
   }
-  /* In the copy column (a flex column), so no flex-basis height. */
-  .copy .cal-card {
-    flex: none;
+  /* The calendar panel stacked above the form card. */
+  .side {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
   .cal-card .card-title {
     margin-bottom: 8px;
@@ -124,7 +130,6 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
     color: var(--lp-muted);
   }
   .card {
-    flex: 1 1 440px;
     min-width: 0;
     background: var(--lp-white);
     border-radius: 28px;
