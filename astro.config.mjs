@@ -25,10 +25,10 @@ export default defineConfig({
   integrations: [
     react(),
     // Keep noindex pages out of the sitemap: outreach (/audit/*, /landing/*)
-    // and the tech-support no-JS thanks page.
+    // and the tech-support / ai-consulting no-JS thanks pages.
     sitemap({
       filter: (page) =>
-        !/\/(audit|landing)(\/|$)/.test(page) && !/\/tech-support\/thanks(\/|$)/.test(page),
+        !/\/(audit|landing)(\/|$)/.test(page) && !/\/(tech-support|ai-consulting)\/thanks(\/|$)/.test(page),
     }),
   ],
   markdown: {

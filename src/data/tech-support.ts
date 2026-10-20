@@ -4,13 +4,23 @@
 // its own copy in tech-support-service.ts; the types here are shared by both.
 
 export type Variant = 'a' | 'b';
-export type PlanId = 'essentials' | 'growth' | 'partner' | 'website-care' | 'business';
+export type PlanId =
+  | 'essentials'
+  | 'growth'
+  | 'partner'
+  | 'website-care'
+  | 'business'
+  | 'ai-audit'
+  | 'ai-pilot'
+  | 'ai-lead';
 
 export type Plan = {
   id: PlanId;
   name: string;
   price: number;
   from?: boolean;
+  /** Text after the price: '/month' (default), 'one-off', 'fixed price'. */
+  priceSuffix?: string;
   /** Bold one-line positioning under the plan name (version B). */
   positioning?: string;
   tagline: string;

@@ -2,10 +2,26 @@
 // Version B hero: company voice, with an HTML/CSS client-portal mock-up.
 // Honesty rule: the mock-up is labelled "Illustrative example" and contains
 // no percentages, statistics, names or client counts.
+// Props default to the /tech-support copy; a `panel` slot replaces the portal
+// mock-up. Scoped styles here don't reach slotted markup, so the panel brings
+// its own (see AuditPanel.astro) and needs its own role="img" + aria-label.
 import Icon from './Icon.astro';
 import { PHONE_DISPLAY, PHONE_HREF, PRIMARY_CTA } from '@/data/tech-support-service';
 
-const reassurance = ['No IT department to hire.', 'No juggling different suppliers.', 'No wondering who to call when something goes wrong.'];
+export interface Props {
+  eyebrow?: string;
+  title?: string;
+  sub?: string;
+  reassurance?: string[];
+  cta?: string;
+}
+const {
+  eyebrow = 'For businesses without an IT department',
+  title = 'Your business technology, taken care of.',
+  sub = 'Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner.',
+  reassurance = ['No IT department to hire.', 'No juggling different suppliers.', 'No wondering who to call when something goes wrong.'],
+  cta = PRIMARY_CTA,
+} = Astro.props;
 const status = [
   { label: 'Website', value: 'Online' },
   { label: 'Backups', value: 'Daily' },
@@ -22,16 +38,16 @@ const requests = [
 <section class="hero" aria-labelledby="hero-title">
   <div class="inner">
     <div class="copy">
-      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>For businesses without an IT department</span>
-      <h1 id="hero-title">Your business technology, taken care of.</h1>
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{eyebrow}</span>
+      <h1 id="hero-title">{title}</h1>
       <p class="sub">
-        Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner.
+        {sub}
       </p>
       <ul class="trust">
         {reassurance.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
       </ul>
       <div class="ctas">
-        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>{PRIMARY_CTA}</a>
+        <a class="lp-btn lp-btn--pink cta" href="#book" data-book>{cta}</a>
         <a class="call" href={PHONE_HREF} data-phone>
           <Icon name="phone" size={18} />
           <span>Call PNK Digital <span class="num">{PHONE_DISPLAY}</span></span>
@@ -40,6 +56,7 @@ const requests = [
       <p class="fine">No obligation. No hard sell.</p>
     </div>
 
+    {Astro.slots.has('panel') ? <slot name="panel" /> : (
     <div
       class="frame"
       role="img"
@@ -82,6 +99,7 @@ const requests = [
         </div>
       </div>
     </div>
+    )}
   </div>
 </section>
 

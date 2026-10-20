@@ -21,10 +21,16 @@ export interface Props {
   submitLabel?: string;
   /** First small line under the submit button. */
   reassurance?: string;
+  /** Hidden `source` field; the API picks the auto-reply and thanks page by it. */
+  source?: string;
+  /** Adds a `page` param to the booking gtag event (e.g. 'ai-consulting'). */
+  analyticsPage?: string;
 }
 const {
   variant,
   successLine,
+  source = 'tech-support-plans',
+  analyticsPage,
   compact = false,
   messageLabel = "What's your biggest tech headache?",
   messagePlaceholder = "e.g. Our emails keep going to clients' spam folders",
@@ -36,10 +42,10 @@ const apiUrl: string = import.meta.env.VITE_API_URL || '';
 const action = apiUrl ? `${apiUrl}/api/tech-support` : '';
 const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 ---
-<div class="booking" data-booking data-variant={variant}>
+<div class="booking" data-booking data-variant={variant} data-page={analyticsPage}>
   <form class="form" method="post" action={action || undefined} data-form>
     <input type="hidden" name="variant" value={variant} />
-    <input type="hidden" name="source" value="tech-support-plans" />
+    <input type="hidden" name="source" value={source} />
     {utmKeys.map((k) => <input type="hidden" name={k} value="" data-utm={k} />)}
     <div class="hp" aria-hidden="true">
       <label for="bk-website">Website</label>
@@ -130,6 +136,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
     const nameInput = form.querySelector<HTMLInputElement>('#bk-name')!;
     const fields = Array.from(form.querySelectorAll<HTMLInputElement>('[data-field]'));
     const variant = root.dataset.variant ?? 'a';
+    const page = root.dataset.page;
     const startedAt = Date.now();
 
     // Custom validation replaces native bubbles (native stays for no-JS).
@@ -221,7 +228,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
           await new Promise((r) => setTimeout(r, 600));
         }
         if (typeof window.gtag === 'function') {
-          window.gtag('event', 'tech_review_booked', { variant, plan });
+          window.gtag('event', 'tech_review_booked', page ? { variant, plan, page } : { variant, plan });
           // TODO: add a Google Ads conversion for this goal once a label exists, e.g.
           // window.gtag('event', 'conversion', { send_to: 'AW-17989609549/<label>' });
         }

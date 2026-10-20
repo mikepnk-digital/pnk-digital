@@ -1,4 +1,5 @@
 import { Link } from '@/lib/router';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Cloud, Zap, Cpu } from 'lucide-react';
 import { Section, orbPresets } from '../ui/Section';
@@ -29,6 +30,7 @@ const services = [
     title: 'AI Integration',
     description: 'Embed intelligent capabilities into your existing products. From chatbots to content generation to workflow automation - AI that actually solves problems.',
     color: 'neon-green',
+    href: '/ai-consulting',
   },
 ];
 
@@ -59,6 +61,17 @@ const colorMap: Record<string, { bg: string; border: string; text: string; glow:
   },
 };
 
+// Cards with an href link to their own page; the rest are plain cards.
+function CardWrapper({ href, children }: { href?: string; children: ReactNode }) {
+  return href ? (
+    <Link to={href} className="block h-full rounded-2xl">
+      {children}
+    </Link>
+  ) : (
+    <>{children}</>
+  );
+}
+
 export function ServicesOverview() {
   return (
     <Section id="services-overview" orbs={orbPresets.servicesLeft}>
@@ -78,6 +91,7 @@ export function ServicesOverview() {
           const colors = colorMap[service.color];
           return (
             <motion.div key={service.title} variants={fadeInUpLarge}>
+              <CardWrapper href={service.href}>
               <div className="
                 relative p-6 rounded-2xl
                 bg-midnight/60 backdrop-blur-sm
@@ -108,6 +122,7 @@ export function ServicesOverview() {
                   </p>
                 </div>
               </div>
+              </CardWrapper>
             </motion.div>
           );
         })}

@@ -8,6 +8,8 @@ import logo from '@/assets/pnk-digital-logo.svg';
 export interface Props {
   /** In-page section links (shown from 760px). */
   links?: { href: string; label: string }[];
+  /** Book button label. */
+  cta?: string;
 }
 const {
   links = [
@@ -15,6 +17,7 @@ const {
     { href: '#how', label: 'How it works' },
     { href: '#faq', label: 'FAQ' },
   ],
+  cta = 'Book a free review',
 } = Astro.props;
 ---
 <header class="header">
@@ -27,7 +30,7 @@ const {
       <ul class="links">
         {links.map((l) => <li><a href={l.href} data-scroll>{l.label}</a></li>)}
       </ul>
-      <a class="book" href="#book" data-book>Book a free review</a>
+      <a class="book" href="#book" data-book>{cta}</a>
     </nav>
   </div>
 </header>

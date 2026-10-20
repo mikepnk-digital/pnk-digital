@@ -1,0 +1,186 @@
+---
+// "How it compares": row labels down the side, one column per option, the
+// highlighted column tinted pink. ≥760px: a real <table>. <760px: one stacked
+// card per option instead (CSS swap, no JS; display:none keeps the hidden copy
+// out of the accessibility tree).
+import type { CompareColumn, CompareRow } from '@/data/ai-consulting';
+
+export interface Props {
+  caption: string;
+  columns: CompareColumn[];
+  rows: CompareRow[];
+  /** Small source line under the table. */
+  source?: string;
+}
+const { caption, columns, rows, source } = Astro.props;
+---
+<div class="compare">
+  <table>
+    <caption class="lp-sr-only">{caption}</caption>
+    <thead>
+      <tr>
+        <td class="corner"></td>
+        {columns.map((c) => <th scope="col" class:list={{ hl: c.highlight }}>{c.label}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr>
+            <th scope="row">{r.label}</th>
+            {r.values.map((v, i) => (
+              <td class:list={{ hl: columns[i]?.highlight }}>{v}</td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <!-- Narrow screens: one card per option. -->
+  <ul class="cards">
+    {
+      columns.map((c, ci) => (
+        <li class:list={['card', { hl: c.highlight }]}>
+          <h3>{c.label}</h3>
+          <dl>
+            {rows.map((r) => (
+              <div class="pair">
+                <dt>{r.label}</dt>
+                <dd>{r.values[ci]}</dd>
+              </div>
+            ))}
+          </dl>
+        </li>
+      ))
+    }
+  </ul>
+  {source && <p class="source">{source}</p>}
+</div>
+
+<style>
+  .compare {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Wide: table */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    overflow: hidden;
+  }
+  th,
+  td {
+    padding: 18px 20px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 16px;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--lp-border);
+  }
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+  thead th {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .corner {
+    width: 22%;
+  }
+  tbody th {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--lp-ink);
+  }
+  td {
+    color: var(--lp-muted);
+  }
+  .hl {
+    background: var(--lp-pink-tint);
+    color: var(--lp-ink);
+    font-weight: 700;
+  }
+  thead th.hl {
+    color: var(--lp-pink-text);
+  }
+
+  /* Narrow: stacked cards */
+  .cards {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card {
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card.hl {
+    border: 3px solid var(--lp-pink);
+    font-weight: inherit;
+    background: var(--lp-white);
+  }
+  .card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .card.hl h3 {
+    color: var(--lp-pink-text);
+  }
+  dl {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pair {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  dt {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--lp-muted);
+  }
+  dd {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--lp-ink);
+  }
+  .card.hl dd {
+    font-weight: 700;
+  }
+
+  @media (max-width: 759.98px) {
+    table {
+      display: none;
+    }
+    .cards {
+      display: flex;
+    }
+  }
+
+  .source {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--lp-muted);
+  }
+</style>

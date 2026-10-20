@@ -2,6 +2,7 @@
 // One plan card. The highlighted plan gets the pink outline, "Most popular"
 // badge and a pink button; others get an outline button that fills on hover.
 // Buttons are #book anchors (work without JS); landing.ts pre-selects the plan.
+// Price reads "[from] £1,950 <suffix>", suffix defaulting to "/month".
 import Icon from './Icon.astro';
 import type { Plan } from '@/data/tech-support';
 
@@ -31,8 +32,8 @@ const titleId = `plan-${plan.id}-title`;
   </div>
   <p class="price">
     {plan.from && <span class="unit">from</span>}
-    <span class="amount">£{plan.price}</span>
-    <span class="unit">/month</span>
+    <span class="amount">£{plan.price.toLocaleString('en-GB')}</span>
+    <span class="unit">{plan.priceSuffix ?? '/month'}</span>
   </p>
   {
     (plan.hours || plan.response) && (

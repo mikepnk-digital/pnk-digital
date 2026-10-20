@@ -50,6 +50,9 @@ export interface ValidationError {
 }
 
 // Tech Support Plans landing pages (POST /api/tech-support)
+/** Which landing page's booking form sent the request (hidden `source` field). */
+export type BookingSource = 'tech-support-plans' | 'ai-consulting';
+
 export interface TechSupportBookingInput {
   name: string;
   businessName: string;
@@ -59,6 +62,7 @@ export interface TechSupportBookingInput {
   plan: string;
   headache: string;
   variant: 'a' | 'b';
+  source: BookingSource;
   utm: Record<string, string>;
   website?: string; // Honeypot
   _t?: number; // Elapsed ms since form became interactive (JS path only)
@@ -77,7 +81,7 @@ export interface TechSupportEnquiryRecord {
   variant: 'a' | 'b';
   utm?: Record<string, string>;
   status: 'new' | 'contacted' | 'qualified' | 'closed';
-  source: 'tech-support-plans';
+  source: BookingSource;
   ipAddress?: string;
   userAgent?: string;
   ttl?: number;

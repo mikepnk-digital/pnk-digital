@@ -1,0 +1,61 @@
+---
+// No-JS fallback destination for the /ai-consulting booking form: the API
+// answers a native POST with source=ai-consulting with a 303 redirect here.
+// Mirrors tech-support/thanks.astro.
+import LandingLayout from '@/layouts/LandingLayout.astro';
+import LandingFooter from '@/components/landing/LandingFooter.astro';
+import Icon from '@/components/landing/Icon.astro';
+---
+<LandingLayout
+  theme="b"
+  title="Thanks – you're booked in | PNK Digital"
+  description="Thanks for booking a free 30-minute AI Fit Call with PNK Digital."
+  noindex={true}
+>
+  <main class="lp-section thanks">
+    <div class="lp-container inner">
+      <span class="tick"><Icon name="check" size={28} /></span>
+      <h1>Thanks – you're booked in.</h1>
+      <p class="lp-lead">We'll reply within one business day to arrange your free 30-minute AI Fit Call.</p>
+      <a class="back" href="/ai-consulting">Back to AI consulting</a>
+    </div>
+  </main>
+  <LandingFooter showLocation={false} />
+</LandingLayout>
+
+<style>
+  .thanks {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    background: var(--lp-surface);
+  }
+  .inner {
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .tick {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  h1 {
+    font-size: var(--lp-h2);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .back {
+    font-size: 17px;
+    font-weight: 700;
+    text-underline-offset: 5px;
+  }
+</style>

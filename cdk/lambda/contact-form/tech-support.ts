@@ -1,12 +1,14 @@
 // POST /api/tech-support — booking form on the Tech Support Plans landing
-// page (/tech-support; variant A retired, B live). Accepts JSON (JS-enhanced form, answers JSON)
+// page (/tech-support; variant A retired, B live) and the AI Consulting page
+// (/ai-consulting, source=ai-consulting). Accepts JSON (JS-enhanced form, answers JSON)
 // or a native urlencoded form post (no-JS fallback, answers with a 303 redirect).
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { TechSupportBookingInput, TechSupportEnquiryRecord, ValidationError } from './types';
+import { BookingSource, TechSupportBookingInput, TechSupportEnquiryRecord, ValidationError } from './types';
 // Bundled as strings by esbuild's text loader (see api-stack.ts), so the
 // templates in /emails are the single source for each variant's auto-reply.
 import autoReplyTemplateA from '../../../emails/tech-support-auto-reply-a.html';
 import autoReplyTemplateB from '../../../emails/tech-support-auto-reply.html';
+import autoReplyTemplateAi from '../../../emails/ai-consulting-auto-reply.html';
 
 export interface TechSupportDeps {
   isRateLimited: (ip: string) => Promise<boolean>;
@@ -22,7 +24,23 @@ export interface TechSupportDeps {
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
 // Essentials/Growth: version A. Website Care/Business: version B (now /tech-support).
-const PLANS = ['Not sure', 'Essentials', 'Growth', 'Partner', 'Website Care', 'Business'];
+// The last three are the /ai-consulting pricing cards.
+const PLANS = [
+  'Not sure',
+  'Essentials',
+  'Growth',
+  'Partner',
+  'Website Care',
+  'Business',
+  'AI Opportunity Audit',
+  'Pilot Build',
+  'Fractional AI Lead',
+];
+// Landing page path per source, for the no-JS redirects.
+const PAGE_PATH: Record<BookingSource, string> = {
+  'tech-support-plans': '/tech-support',
+  'ai-consulting': '/ai-consulting',
+};
 const STAFF = ['', 'Just me', '2–5', '6–10', '11–25', '26–50', 'More than 50'];
 const FALLBACK_ORIGIN = 'https://pnk-digital.com';
 
@@ -44,10 +62,12 @@ export async function handleTechSupport(
       : {};
   const input = normaliseInput(body);
   const redirectBase = resolveOrigin(event, deps.allowedOrigins);
+  const pagePath = PAGE_PATH[input.source];
+  const isAi = input.source === 'ai-consulting';
 
   const ok = (enquiryId?: string): APIGatewayProxyResultV2 =>
     isNativeForm
-      ? redirect(`${redirectBase}/tech-support/thanks`)
+      ? redirect(`${redirectBase}${pagePath}/thanks`)
       : json(200, { success: true, message: 'Thanks — we will be in touch shortly.', enquiryId }, deps);
 
   // Honeypot: bots auto-fill the hidden "website" field.
@@ -66,13 +86,13 @@ export async function handleTechSupport(
   const ip = event.requestContext.http.sourceIp;
   if (await deps.isRateLimited(ip)) {
     const message = "You've sent several messages recently. Please wait a bit before sending another.";
-    return isNativeForm ? redirect(`${redirectBase}/tech-support#book`) : json(429, { success: false, message }, deps);
+    return isNativeForm ? redirect(`${redirectBase}${pagePath}#book`) : json(429, { success: false, message }, deps);
   }
 
   const errors = validate(input);
   if (errors.length) {
     return isNativeForm
-      ? redirect(`${redirectBase}/tech-support#book`)
+      ? redirect(`${redirectBase}${pagePath}#book`)
       : json(400, { success: false, message: 'Validation failed', errors }, deps);
   }
 
@@ -89,7 +109,7 @@ export async function handleTechSupport(
     variant: input.variant,
     utm: Object.keys(input.utm).length ? input.utm : undefined,
     status: 'new',
-    source: 'tech-support-plans',
+    source: input.source,
     ipAddress: ip,
     userAgent: event.headers['user-agent'],
     ttl: Math.floor(Date.now() / 1000) + 63072000,
@@ -99,7 +119,9 @@ export async function handleTechSupport(
 
   try {
     await deps.sendNotification(
-      `[PNK Digital] Tech review request (${record.variant.toUpperCase()}) from ${record.name}, ${record.company}`,
+      isAi
+        ? `[PNK Digital] AI Fit Call request from ${record.name}, ${record.company}`
+        : `[PNK Digital] Tech review request (${record.variant.toUpperCase()}) from ${record.name}, ${record.company}`,
       buildHtml(record),
       buildText(record)
     );
@@ -110,7 +132,11 @@ export async function handleTechSupport(
   try {
     await deps.sendConfirmation(
       record.email,
-      record.variant === 'b' ? 'Your free technology review request – PNK Digital' : 'Your free tech review with Mike – PNK Digital',
+      isAi
+        ? 'Your free AI Fit Call request – PNK Digital'
+        : record.variant === 'b'
+          ? 'Your free technology review request – PNK Digital'
+          : 'Your free tech review with Mike – PNK Digital',
       buildConfirmationHtml(record),
       buildConfirmationText(record)
     );
@@ -140,6 +166,7 @@ function normaliseInput(body: Record<string, unknown>): TechSupportBookingInput 
     plan: PLANS.includes(plan) ? plan : 'Not sure',
     headache: str('headache', 5000),
     variant: str('variant') === 'b' ? 'b' : 'a',
+    source: str('source') === 'ai-consulting' ? 'ai-consulting' : 'tech-support-plans',
     utm,
     website: str('website'),
     _t: typeof t === 'number' ? t : typeof t === 'string' && t ? Number(t) : undefined,
@@ -193,13 +220,20 @@ function rows(r: TechSupportEnquiryRecord): [string, string][] {
   ];
 }
 
+// Notification wording per source: [heading, free-text label].
+const notificationCopy = (r: TechSupportEnquiryRecord): [string, string] =>
+  r.source === 'ai-consulting'
+    ? ['New free AI Fit Call request', "What takes up most of their team's time"]
+    : ['New free tech review request', 'Biggest tech headache'];
+
 function buildText(r: TechSupportEnquiryRecord): string {
+  const [heading, messageLabel] = notificationCopy(r);
   return [
-    'New free tech review request (Tech Support Plans)',
+    r.source === 'ai-consulting' ? `${heading} (AI Consulting)` : `${heading} (Tech Support Plans)`,
     '',
     ...rows(r).map(([k, v]) => `${k}: ${v}`),
     '',
-    'Biggest tech headache:',
+    `${messageLabel}:`,
     r.message || '—',
     '',
     '---',
@@ -209,6 +243,7 @@ function buildText(r: TechSupportEnquiryRecord): string {
 }
 
 function buildHtml(r: TechSupportEnquiryRecord): string {
+  const [heading, messageLabel] = notificationCopy(r);
   const tr = rows(r)
     .map(
       ([k, v]) =>
@@ -217,18 +252,21 @@ function buildHtml(r: TechSupportEnquiryRecord): string {
     .join('');
   return `<!DOCTYPE html><html><body style="margin:0;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;">
 <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;padding:24px;">
-<h1 style="margin:0 0 16px;font-size:20px;color:#1b1720;">New free tech review request</h1>
+<h1 style="margin:0 0 16px;font-size:20px;color:#1b1720;">${esc(heading)}</h1>
 <table role="presentation" style="border-collapse:collapse;font-size:15px;">${tr}</table>
-<h2 style="margin:20px 0 8px;font-size:16px;color:#1b1720;">Biggest tech headache</h2>
+<h2 style="margin:20px 0 8px;font-size:16px;color:#1b1720;">${esc(messageLabel)}</h2>
 <p style="margin:0;line-height:1.6;white-space:pre-wrap;">${esc(r.message || '—')}</p>
 <p style="margin:24px 0 0;font-size:13px;color:#888;">Enquiry ID: ${esc(r.enquiryId)} · ${esc(r.createdAt)}</p>
 </div></body></html>`;
 }
 
-// Fills the ${firstName} / ${company} placeholders in the variant's template:
-// emails/tech-support-auto-reply-a.html (A) or tech-support-auto-reply.html (B).
+// Fills the ${firstName} / ${company} placeholders in the page's template:
+// emails/ai-consulting-auto-reply.html (AI Consulting), otherwise
+// tech-support-auto-reply-a.html (A) or tech-support-auto-reply.html (B).
 function buildConfirmationHtml(r: TechSupportEnquiryRecord): string {
-  return (r.variant === 'b' ? autoReplyTemplateB : autoReplyTemplateA)
+  const template =
+    r.source === 'ai-consulting' ? autoReplyTemplateAi : r.variant === 'b' ? autoReplyTemplateB : autoReplyTemplateA;
+  return template
     .split('${firstName}')
     .join(esc(r.name.split(' ')[0]))
     .split('${company}')
@@ -236,6 +274,7 @@ function buildConfirmationHtml(r: TechSupportEnquiryRecord): string {
 }
 
 function buildConfirmationText(r: TechSupportEnquiryRecord): string {
+  if (r.source === 'ai-consulting') return buildConfirmationTextAi(r);
   return r.variant === 'b' ? buildConfirmationTextB(r) : buildConfirmationTextA(r);
 }
 
@@ -309,6 +348,43 @@ Speak soon,
 The PNK Digital team
 
 Compare the plans: https://pnk-digital.com/tech-support?utm_source=email&utm_medium=auto-reply&utm_campaign=tech-support-service#plans
+
+---
+PNK Digital is a trading name of Mike Pink Ltd.
+Registered in England & Wales · Company No. 09029124
+Registered Office: 7 Jubilee Lane, Farnham, Surrey GU104SZ
+`;
+}
+
+function buildConfirmationTextAi(r: TechSupportEnquiryRecord): string {
+  const firstName = r.name.split(' ')[0];
+  return `Thanks, ${firstName}. Your free AI Fit Call is requested.
+
+We've received your request for ${r.company}. In your free 30-minute AI Fit Call, we'll talk through how your team actually works: where your team's time goes each week, documents and emails that follow a pattern, the tools you already pay for, what client data you handle and the rules around it, anything staff are already doing with AI, and whether an audit is worth it, or whether a quick fix will do.
+
+You'll leave with a clearer picture of what AI could take off your plate, and a straight answer on whether it's worth going further. No obligation. No hard sell. Just straightforward advice.
+
+We'll reply within one business day to arrange a time.
+
+GETTING STARTED IS SIMPLE
+1. Let's talk (free, 30 minutes): how your business runs, where the time goes and whether an audit is worth doing.
+2. We find the opportunity: the two-week audit. We talk to your people, map the work, check the data risks and name the first pilot with a fixed price.
+3. We build it, measure it, hand it over: the pilot goes live in your tools with a human check, and after 30 days you'll know the hours it saves.
+
+FIXED PRICES. DECIDE ONE STEP AT A TIME.
+- AI Opportunity Audit, £1,950 one-off: find out where AI will pay in your business.
+- Pilot Build, from £6,500 fixed price (recommended): one workflow, built and measured.
+- Fractional AI Lead, from £2,750/month: someone senior owning AI in your business, part time.
+All prices exclude VAT. Anything outside a fixed scope is quoted before we start. No day rates, no surprise invoices.
+
+In the meantime, if there's anything you'd like us to look at on the call, just reply to this email.
+
+Prefer to talk? Call us on 01252 279059.
+
+Speak soon,
+The PNK Digital team
+
+See the pricing: https://pnk-digital.com/ai-consulting?utm_source=email&utm_medium=auto-reply&utm_campaign=ai-consulting#pricing
 
 ---
 PNK Digital is a trading name of Mike Pink Ltd.

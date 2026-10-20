@@ -12,6 +12,7 @@ Production-ready HTML email templates for outreach campaigns via Brevo (or any E
 | `tech-support-service.html` | Managed tech support plans pitch (company voice, links to `/tech-support`) | Graphical |
 | `tech-support-auto-reply-a.html` | Auto-reply to a free tech review booking from the retired version A page (founder voice, warm neutrals) | Graphical |
 | `tech-support-auto-reply.html` | Auto-reply to a free tech review booking on `/tech-support` (version B: company voice, slate) | Graphical |
+| `ai-consulting-auto-reply.html` | Auto-reply to a free AI Fit Call booking on `/ai-consulting` (company voice, slate) | Graphical |
 | `follow-up.html` | Simple follow-up after no reply | Text-only |
 | `nurture.html` | Light check-in / value-share email | Text-only |
 

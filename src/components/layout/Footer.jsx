@@ -9,6 +9,7 @@ const footerLinks = {
     { name: 'AWS Integration', to: '/services' },
     { name: 'AI-Powered MVPs', to: '/services' },
     { name: 'AI Integration', to: '/services' },
+    { name: 'AI Consulting', to: '/ai-consulting' },
   ],
   Navigation: [
     { name: 'Home', to: '/' },

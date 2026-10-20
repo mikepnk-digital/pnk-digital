@@ -6,6 +6,8 @@ import CtaStrip from './CtaStrip.astro';
 import type { Plan, PlanId } from '@/data/tech-support';
 
 export interface Props {
+  /** Section anchor, e.g. "pricing" (default "plans"). */
+  id?: string;
   eyebrow?: string;
   title: string;
   lead: string;
@@ -21,6 +23,7 @@ export interface Props {
   cardConfirm?: string;
 }
 const {
+  id = 'plans',
   eyebrow = 'Plans',
   title,
   lead,
@@ -34,11 +37,11 @@ const {
   cardConfirm,
 } = Astro.props;
 ---
-<section id="plans" class="lp-section lp-section--surface" aria-labelledby="plans-title">
+<section id={id} class="lp-section lp-section--surface" aria-labelledby={`${id}-title`}>
   <div class="lp-container lp-stack">
     <div class="lp-intro intro">
       <span class="lp-eyebrow">{eyebrow}</span>
-      <h2 id="plans-title" class="lp-h2">{title}</h2>
+      <h2 id={`${id}-title`} class="lp-h2">{title}</h2>
       <p class="lp-lead">{lead}</p>
     </div>
     <div class="cards">
