@@ -12,6 +12,8 @@ export interface Service {
   tags: string[];
   color: string;
   link?: string;
+  /** Which /services group it sits in: #run (recurring) or #build (projects). */
+  group: 'run' | 'build';
 }
 
 export const services: Service[] = [
@@ -26,15 +28,13 @@ export const services: Service[] = [
       "Small and growing businesses with around 5–50 people that need reliable technology support but aren't ready – or don't want – to employ a full-time IT team.",
     deliverables: [
       'Website hosting, updates and maintenance',
-      'Domain, DNS and SSL management',
       'Microsoft 365 or Google Workspace administration',
-      'New starters set up and leavers removed, properly',
       'Technical problems investigated and resolved',
-      'Advice on where automation could save your team time',
     ],
     tags: ['Websites', 'Email', 'Microsoft 365', 'Google Workspace', 'Domains & DNS', 'Security'],
     color: 'neon-cyan',
     link: '/tech-support',
+    group: 'run',
   },
   // Copy from the /ai-consulting landing page (src/data/ai-consulting.ts).
   {
@@ -47,15 +47,13 @@ export const services: Service[] = [
       "Owner-led businesses of roughly 10–100 people in professional and financial services: insurance brokers, IFAs, accountants, solicitors, recruiters, property firms, and SaaS companies with a small dev team.",
     deliverables: [
       'Ranked list of AI opportunities with estimated hours saved',
-      'Data protection and risk check',
       'One workflow built into the tools you already use',
-      'Human approval step on anything that touches a customer',
       'Written runbook so you can run it without us',
-      '30 days of measurement: hours saved, errors, adoption',
     ],
     tags: ['Workflow automation', 'AI agents', 'Financial services', 'Data protection', 'Cloud infrastructure'],
     color: 'brand-pink',
     link: '/ai-consulting',
+    group: 'run',
   },
   {
     icon: Code2,
@@ -75,6 +73,7 @@ export const services: Service[] = [
     ],
     tags: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Vite'],
     color: 'neon-cyan',
+    group: 'build',
   },
   {
     icon: Cloud,
@@ -94,6 +93,7 @@ export const services: Service[] = [
     ],
     tags: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'S3', 'CloudFront', 'CDK', 'Cognito'],
     color: 'neon-purple',
+    group: 'build',
   },
   {
     icon: Zap,
@@ -113,5 +113,6 @@ export const services: Service[] = [
     ],
     tags: ['React', 'AWS', 'Rapid Prototyping', 'MVP', 'Full-Stack', 'AI Tooling'],
     color: 'brand-pink',
+    group: 'build',
   },
 ];

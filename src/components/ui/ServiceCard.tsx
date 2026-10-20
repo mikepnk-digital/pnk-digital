@@ -48,18 +48,17 @@ interface ServiceCardProps {
 export function ServiceCard({ service, index }: ServiceCardProps) {
   const colors = colorMap[service.color] || colorMap['neon-cyan'];
   const isReversed = index % 2 === 1;
-  // "Discuss a Web project", "Discuss an AWS project", "Discuss an AI project".
-  const subject = service.title.split(/[\s-]/)[0];
-  const article = /^[AEIOU]/.test(subject) ? 'an' : 'a';
 
   return (
     <motion.div
+      id={service.slug}
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
       className={`
         grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start
+        scroll-mt-24
         p-6 md:p-8 rounded-2xl
         bg-midnight/40 backdrop-blur-sm
         border border-white/5
@@ -77,9 +76,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
           `}>
             <service.icon className={`w-7 h-7 ${colors.iconText}`} strokeWidth={1.5} />
           </div>
-          <h2 className="text-2xl font-bold text-text-primary">
+          <h3 className="text-2xl font-bold text-text-primary">
             {service.title}
-          </h2>
+          </h3>
         </div>
 
         {/* Description */}
@@ -89,9 +88,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
 
         {/* Target client */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">
+          <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">
             Who this is for
-          </h3>
+          </h4>
           <p className="text-text-secondary text-sm leading-relaxed">
             {service.targetClient}
           </p>
@@ -100,7 +99,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         {/* CTA */}
         <Link to={service.link || '/contact'}>
           <Button variant="secondary" size="sm" className="group">
-            {service.link ? 'Learn More' : `Discuss ${article} ${subject} project`}
+            {service.link ? 'Learn More' : 'Discuss a project'}
             <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>
@@ -110,9 +109,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
       <div className={isReversed ? 'lg:order-1' : ''}>
         {/* Deliverables */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">
+          <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">
             Example deliverables
-          </h3>
+          </h4>
           <ul className="space-y-3">
             {service.deliverables.map((item) => (
               <li key={item} className="flex items-start gap-3">
@@ -125,9 +124,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
 
         {/* Technology tags */}
         <div>
-          <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">
+          <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">
             Technologies
-          </h3>
+          </h4>
           <div className="flex flex-wrap gap-2">
             {service.tags.map((tag) => (
               <span
