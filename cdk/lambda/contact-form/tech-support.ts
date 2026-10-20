@@ -1,5 +1,5 @@
 // POST /api/tech-support — booking form on the Tech Support Plans landing
-// pages (/tech-support A/B test). Accepts JSON (JS-enhanced form, answers JSON)
+// page (/tech-support; variant A retired, B live). Accepts JSON (JS-enhanced form, answers JSON)
 // or a native urlencoded form post (no-JS fallback, answers with a 303 redirect).
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { TechSupportBookingInput, TechSupportEnquiryRecord, ValidationError } from './types';
@@ -21,7 +21,7 @@ export interface TechSupportDeps {
 }
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
-// Essentials/Growth: version A. Website Care/Business: version B (/tech-support/service).
+// Essentials/Growth: version A. Website Care/Business: version B (now /tech-support).
 const PLANS = ['Not sure', 'Essentials', 'Growth', 'Partner', 'Website Care', 'Business'];
 const STAFF = ['', 'Just me', '2–5', '6–10', '11–25', '26–50', 'More than 50'];
 const FALLBACK_ORIGIN = 'https://pnk-digital.com';
@@ -44,7 +44,6 @@ export async function handleTechSupport(
       : {};
   const input = normaliseInput(body);
   const redirectBase = resolveOrigin(event, deps.allowedOrigins);
-  const variantPath = input.variant === 'b' ? '/tech-support/service' : '/tech-support';
 
   const ok = (enquiryId?: string): APIGatewayProxyResultV2 =>
     isNativeForm
@@ -67,13 +66,13 @@ export async function handleTechSupport(
   const ip = event.requestContext.http.sourceIp;
   if (await deps.isRateLimited(ip)) {
     const message = "You've sent several messages recently. Please wait a bit before sending another.";
-    return isNativeForm ? redirect(`${redirectBase}${variantPath}#book`) : json(429, { success: false, message }, deps);
+    return isNativeForm ? redirect(`${redirectBase}/tech-support#book`) : json(429, { success: false, message }, deps);
   }
 
   const errors = validate(input);
   if (errors.length) {
     return isNativeForm
-      ? redirect(`${redirectBase}${variantPath}#book`)
+      ? redirect(`${redirectBase}/tech-support#book`)
       : json(400, { success: false, message: 'Validation failed', errors }, deps);
   }
 
@@ -309,7 +308,7 @@ Prefer to talk? Call us on 01252 279059.
 Speak soon,
 The PNK Digital team
 
-Compare the plans: https://pnk-digital.com/tech-support/service?utm_source=email&utm_medium=auto-reply&utm_campaign=tech-support-service#plans
+Compare the plans: https://pnk-digital.com/tech-support?utm_source=email&utm_medium=auto-reply&utm_campaign=tech-support-service#plans
 
 ---
 PNK Digital is a trading name of Mike Pink Ltd.

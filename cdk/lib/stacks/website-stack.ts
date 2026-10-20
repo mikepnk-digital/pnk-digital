@@ -92,21 +92,15 @@ export class WebsiteStack extends cdk.Stack {
     // won't resolve directory indexes, so rewrite extensionless request URIs to
     // the matching .html object. Assets (with a file extension) pass through.
     //
-    // It also runs the /tech-support A/B split. A is served at /tech-support;
-    // B visitors get a 302 to /tech-support/service (noindex, canonical -> A), so the
-    // canonical URL never serves B's noindex page. Sticky via the ts_ab cookie
-    // (set here for B, and by an inline script on A). Bots always get A.
-    // QA: /tech-support?variant=a|b forces a variant; /tech-support/service is always
-    // reachable. To change the split, edit AB_B_SHARE (0 = all A, 1 = all B).
+    // It also 301s retired routes in REDIRECTS (query string kept), e.g. the old
+    // /tech-support/service A/B page, still linked from sent outreach emails.
     const urlRewriteFunction = new cloudfront.Function(this, 'UrlRewriteFunction', {
       functionName: `pnk-digital-url-rewrite-${config.environmentName}`,
-      comment: 'Rewrite clean routes to Astro .html files; /tech-support A/B split',
+      comment: 'Rewrite clean routes to Astro .html files; 301 retired routes',
       code: cloudfront.FunctionCode.fromInline(`
-var AB_PATH = '/tech-support';
-var AB_B_PATH = '/tech-support/service';
-var AB_COOKIE = 'ts_ab';
-var AB_B_SHARE = 0.5;
-var AB_BOT_RE = /bot|crawl|spider|slurp|facebookexternalhit|embedly|preview|lighthouse/i;
+var REDIRECTS = {
+  '/tech-support/service': '/tech-support'
+};
 
 function serializeQuery(qs) {
   var parts = [];
@@ -129,29 +123,13 @@ function handler(event) {
     uri = uri.slice(0, -1);
     request.uri = uri;
   }
-  if (uri === AB_PATH) {
-    var forced = request.querystring.variant ? request.querystring.variant.value : '';
-    var uaHeader = request.headers['user-agent'];
-    var isBot = uaHeader ? AB_BOT_RE.test(uaHeader.value) : false;
-    var cookie = request.cookies[AB_COOKIE] ? request.cookies[AB_COOKIE].value : '';
-    var variant;
-    if (forced === 'a' || forced === 'b') { variant = forced; }
-    else if (isBot) { variant = 'a'; }
-    else if (cookie === 'a' || cookie === 'b') { variant = cookie; }
-    else { variant = Math.random() < AB_B_SHARE ? 'b' : 'a'; }
-    if (variant === 'b') {
-      return {
-        statusCode: 302,
-        statusDescription: 'Found',
-        headers: {
-          location: { value: AB_B_PATH + serializeQuery(request.querystring) },
-          'cache-control': { value: 'no-store' }
-        },
-        cookies: {
-          ts_ab: { value: 'b', attributes: 'Path=/; Max-Age=2592000; Secure; SameSite=Lax' }
-        }
-      };
-    }
+  var target = REDIRECTS[uri];
+  if (target) {
+    return {
+      statusCode: 301,
+      statusDescription: 'Moved Permanently',
+      headers: { location: { value: target + serializeQuery(request.querystring) } }
+    };
   }
   var lastSegment = uri.slice(uri.lastIndexOf('/') + 1);
   // No file extension => it's a route; serve the matching .html file.

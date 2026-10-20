@@ -1,6 +1,6 @@
-// Tech Support landing page, version B (/tech-support/service).
+// Tech Support landing page, version B (/tech-support).
 // Copy is lifted from design-assets/copy/pnk-digital-landing-page-copy.md.
-// Honesty rule (see service.astro): no client logos, testimonials, reviews,
+// Honesty rule (see tech-support.astro): no client logos, testimonials, reviews,
 // certifications, years trading, customer numbers or statistics.
 
 import type { Faq, Plan, Step } from './tech-support';

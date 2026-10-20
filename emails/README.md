@@ -9,9 +9,9 @@ Production-ready HTML email templates for outreach campaigns via Brevo (or any E
 | `cold-local-business.html` | Cold outreach to local businesses around Farnham, Surrey | Graphical |
 | `agency-partnership.html` | White-label dev partnership pitch to agencies | Graphical |
 | `tech-startup.html` | Pitch to tech companies/startups needing dev resource | Graphical |
-| `tech-support-service.html` | Managed tech support plans pitch (company voice, links to `/tech-support/service`) | Graphical |
-| `tech-support-auto-reply-a.html` | Auto-reply to a free tech review booking on `/tech-support` (version A: founder voice, warm neutrals) | Graphical |
-| `tech-support-auto-reply.html` | Auto-reply to a free tech review booking on `/tech-support/service` (version B: company voice, slate) | Graphical |
+| `tech-support-service.html` | Managed tech support plans pitch (company voice, links to `/tech-support`) | Graphical |
+| `tech-support-auto-reply-a.html` | Auto-reply to a free tech review booking from the retired version A page (founder voice, warm neutrals) | Graphical |
+| `tech-support-auto-reply.html` | Auto-reply to a free tech review booking on `/tech-support` (version B: company voice, slate) | Graphical |
 | `follow-up.html` | Simple follow-up after no reply | Text-only |
 | `nurture.html` | Light check-in / value-share email | Text-only |
 
@@ -57,8 +57,8 @@ Sent automatically by the `/api/tech-support` Lambda (`cdk/lambda/contact-form/t
 | `${firstName}` | First word of the `name` field | `Sarah` |
 | `${company}` | The `businessName` field | `Acme Design` |
 
-- **A** mirrors `/tech-support`: first person, signed by Mike, version A colours. Links use `utm_campaign=tech-support`.
-- **B** mirrors `/tech-support/service`: company voice, signed "The PNK Digital team", version B colours and the same honesty rule as `tech-support-service.html`. Links use `utm_campaign=tech-support-service`.
+- **A** mirrored the retired version A page: first person, signed by Mike, version A colours. Links use `utm_campaign=tech-support`.
+- **B** mirrors `/tech-support`: company voice, signed "The PNK Digital team", version B colours and the same honesty rule as `tech-support-service.html`. Links use `utm_campaign=tech-support-service`.
 
 Both links use `utm_source=email&utm_medium=auto-reply`. The plain-text versions live in `tech-support.ts`; keep them in step with the HTML.
 

@@ -1,7 +1,7 @@
-// Tech Support Plans landing pages (/tech-support A/B test).
-// Version A copy is lifted verbatim from the design handoff (renderVals() in
-// "Tech Support Plans.dc.html"). Version B (/tech-support/service) has its own
-// copy in tech-support-service.ts; the types here are shared by both.
+// Tech Support Plans landing page types, plus version A copy (retired from
+// /tech-support; lifted verbatim from the design handoff, renderVals() in
+// "Tech Support Plans.dc.html"). The live page (version B, /tech-support) has
+// its own copy in tech-support-service.ts; the types here are shared by both.
 
 export type Variant = 'a' | 'b';
 export type PlanId = 'essentials' | 'growth' | 'partner' | 'website-care' | 'business';
