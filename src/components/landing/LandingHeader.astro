@@ -1,9 +1,11 @@
 ---
-// Sticky landing header: logo, in-page section links (≥760px) and a
-// "Book a free review" button. Plain anchors, so it works without JS;
+// Sticky landing header: logo, in-page section links (≥760px), phone link
+// (icon only on phones) and the book-a-call button. Plain anchors, so it works without JS;
 // BookingForm.astro adds the 68px-offset scroll for the book button; section
 // links use CSS scroll-padding-top.
 import logo from '@/assets/pnk-digital-logo.svg';
+import Icon from './Icon.astro';
+import { CALL_LABEL, PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
 
 export interface Props {
   /** In-page section links (shown from 760px). */
@@ -17,7 +19,7 @@ const {
     { href: '#how', label: 'How it works' },
     { href: '#faq', label: 'FAQ' },
   ],
-  cta = 'Book a free review',
+  cta = CALL_LABEL,
 } = Astro.props;
 ---
 <header class="header">
@@ -30,6 +32,9 @@ const {
       <ul class="links">
         {links.map((l) => <li><a href={l.href} data-scroll>{l.label}</a></li>)}
       </ul>
+      <a class="phone" href={PHONE_HREF} data-phone aria-label={`Call ${PHONE_DISPLAY}`}>
+        <Icon name="phone" size={18} /><span>{PHONE_DISPLAY}</span>
+      </a>
       <a class="book" href="#book" data-book>{cta}</a>
     </nav>
   </div>
@@ -106,6 +111,31 @@ const {
   .links a:hover {
     color: var(--lp-pink-text);
   }
+  .phone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--lp-dark);
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 4px;
+  }
+  .phone:hover {
+    color: var(--lp-pink-text);
+  }
+  .phone span {
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .phone span {
+      display: inline;
+    }
+  }
   .book {
     display: inline-flex;
     align-items: center;
@@ -128,7 +158,18 @@ const {
     outline: 3px solid var(--lp-pink);
     outline-offset: 3px;
   }
-  /* Small phones: keep mark + name + book button on one line, no overflow. */
+  /* Phones: the longer call label needs the room, so show the mark only. */
+  @media (max-width: 479.98px) {
+    .logo span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  }
+  /* Small phones: keep mark + book button on one line, no overflow. */
   @media (max-width: 380px) {
     .inner {
       gap: 10px;

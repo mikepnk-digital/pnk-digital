@@ -20,6 +20,8 @@ import LandingFooter from '@/components/landing/LandingFooter.astro';
 import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
+import LandingPhoto from '@/components/landing/LandingPhoto.astro';
+import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
   PHONE_DISPLAY,
@@ -32,6 +34,8 @@ import {
   experience,
   faqs,
   hero,
+  pilotExamples,
+  pilotRoi,
   plans,
   principles,
   problems,
@@ -96,7 +100,7 @@ const jsonLd = [
 ];
 ---
 <LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>
-  <LandingHeader links={navLinks} cta="Book a free AI Fit Call" />
+  <LandingHeader links={navLinks} />
 
   <main>
     <!-- 1. Hero -->
@@ -173,13 +177,19 @@ const jsonLd = [
             PNK Digital isn't a marketing consultancy that learned prompting last year, and it isn't a helpdesk.
           </p>
           <p>
-            We're software engineers with <strong>27 years of delivering systems in financial services</strong> — insurance
+            We're software engineers with <strong>{YEARS_EXPERIENCE} years of delivering systems in financial services</strong> — insurance
             claims, pensions, life insurance — where data is sensitive and compliance is not optional. And we build with AI
             every day: agentic coding, multi-agent workflows, self-hosted models, document retrieval.
           </p>
           <ul class="chips" aria-label="What we bring together">
             {disciplines.map((d) => <li>{d}</li>)}
           </ul>
+          <figure class="founder">
+            <div class="founder-photo">
+              <LandingPhoto photo="mike-founder" alt="Mike Pink" widths={[120, 240]} sizes="120px" />
+            </div>
+            <figcaption>Mike Pink, founder — the person who does the work.</figcaption>
+          </figure>
         </div>
         <div class="diff-panel">
           <ul class="principles">
@@ -211,6 +221,27 @@ const jsonLd = [
             {quotes.map((q) => <li><Icon name="chat" size={20} /><q>{q}</q></li>)}
           </ul>
           <p class="quotes-outro">…there is almost certainly one process worth starting with.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6b. What a pilot can look like -->
+    <section id="examples" class="lp-section lp-section--surface" aria-labelledby="examples-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Examples</span>
+          <h2 id="examples-title" class="lp-h2">What a pilot can look like</h2>
+          <p class="lp-lead">From email to onboarding: the kind of work a pilot can take off your team.</p>
+        </div>
+        <ServiceGrid items={pilotExamples} iconStyle="solid" columns={3} />
+        <div class="roi">
+          <h3 class="roi-title">Illustrative: 4 hours saved per person per week</h3>
+          <CompareStrip
+            caption="Illustrative time saved and annual value by team size, at 4 hours saved per person per week"
+            columns={pilotRoi.columns}
+            rows={pilotRoi.rows}
+            source={pilotRoi.source}
+          />
         </div>
       </div>
     </section>
@@ -281,6 +312,7 @@ const jsonLd = [
     <!-- 10. Book (booking form) -->
     <BookingBand
       variant={variant}
+      calendar
       successLine={booking.successLine}
       form={{
         compact: true,
@@ -288,8 +320,8 @@ const jsonLd = [
         analyticsPage: 'ai-consulting',
         messageLabel: "What takes up most of your team's time?",
         messagePlaceholder: '',
-        submitLabel: 'Book my free AI Fit Call',
-        reassurance: "No obligation. No hard sell. We'll reply within one business day.",
+        submitLabel: PRIMARY_CTA,
+        reassurance: `No obligation. No hard sell. We'll reply ${RESPONSE_PROMISE}.`,
       }}
     >
       <Fragment slot="copy">
@@ -343,7 +375,7 @@ const jsonLd = [
           <span class="lp-eyebrow">Experience</span>
           <h2 id="exp-title" class="lp-h2">Technology expertise you can rely on.</h2>
           <p class="lp-lead">
-            PNK Digital is built on 27 years of designing and delivering software for businesses, most of it in financial
+            PNK Digital is built on {YEARS_EXPERIENCE} years of designing and delivering software for businesses, most of it in financial
             services. Our experience spans:
           </p>
         </div>
@@ -392,8 +424,8 @@ const jsonLd = [
     </section>
   </main>
 
-  <LandingFooter showLocation={false} />
-  <StickyCta label={['Free 30-minute', 'AI Fit Call']} cta="Book free call" />
+  <LandingFooter />
+  <StickyCta />
 </LandingLayout>
 
 <script>
@@ -562,6 +594,31 @@ const jsonLd = [
     border: 1px solid var(--lp-on-slate-rule);
     color: var(--lp-white);
   }
+  .founder {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  .founder-photo {
+    flex: none;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--lp-radius-card);
+    overflow: hidden;
+  }
+  .founder figcaption {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--lp-white);
+  }
+  @media (max-width: 379.98px) {
+    .founder-photo {
+      width: 96px;
+      height: 96px;
+    }
+  }
   .diff-panel {
     flex: 1 1 420px;
     min-width: 0;
@@ -636,6 +693,18 @@ const jsonLd = [
   }
   .quotes q {
     quotes: '“' '”';
+  }
+
+  /* 6b. What a pilot can look like */
+  .roi {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .roi-title {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.3;
   }
 
   /* 7. Client stories: two-up on desktop, stacked on mobile. */

@@ -128,7 +128,6 @@ export function BlogPostPage({ slug }: { slug: string }) {
       <CtaBanner
         heading="Working on something similar?"
         subtext="I'd love to hear about your project. Book a discovery call - no obligation, no hard sell."
-        buttonText="Let's Talk"
       />
 
       {/* Related articles */}

@@ -8,6 +8,7 @@ import { ParticleBackground } from '../decorative/ParticleBackground';
 import { DataTransformationViz } from '../decorative/DataTransformationViz';
 import { createStaggerContainer, fadeInUpLarge } from '../../utils/animations';
 import { useIsMobile } from '../../hooks';
+import { CALL_LABEL, YEARS_EXPERIENCE } from '../../config/site';
 
 // Use shared animation utilities with hero-specific timing
 const containerVariants = createStaggerContainer(0.15, 0.3);
@@ -60,9 +61,9 @@ export function Hero() {
             variants={fadeInUpLarge}
             className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-12 leading-relaxed"
           >
-            I'm Mike - a senior full-stack developer with 25 years building web applications
-            and cloud architecture. I use AI-accelerated workflows to deliver production-quality
-            software in weeks, not months. You work directly with me. No agency layers, no juniors, no surprises.
+            PNK Digital is run by Mike Pink, a senior full-stack developer with {YEARS_EXPERIENCE} years building web
+            applications and cloud architecture. We use AI-accelerated workflows to deliver production-quality
+            software in weeks, not months. You work directly with Mike. No agency layers, no juniors, no surprises.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -72,7 +73,7 @@ export function Hero() {
           >
             <Link to="/contact">
               <Button size="lg" className="group min-w-[200px]">
-                Book a Discovery Call
+                {CALL_LABEL}
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

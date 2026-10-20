@@ -1,12 +1,14 @@
 ---
 // Inline CTA bar repeated between sections.
 // `tone`: 'outline' (bordered, white bg) | 'tint' (surface fill) | 'card' (white card + border).
+import { CALL_LABEL } from '@/config/site';
+
 export interface Props {
   text: string;
   tone?: 'outline' | 'tint' | 'card';
   cta?: string;
 }
-const { text, tone = 'outline', cta = 'Book a free tech review' } = Astro.props;
+const { text, tone = 'outline', cta = CALL_LABEL } = Astro.props;
 ---
 <div class:list={['strip', tone]}>
   <p class="text">{text}</p>

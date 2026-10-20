@@ -2,8 +2,13 @@
 // Pink booking band (#book): heading, intro and checks beside the BookingForm.
 // A `copy` slot replaces the default copy column (it must contain the
 // #book-title heading); `form` props are passed through to BookingForm.
+// `calendar`: the copy spans the full width and the Cal.com calendar sits
+// beside the form (calendar first when stacked). Without a CAL_LINK it falls
+// back to the copy-beside-form layout.
 import Icon from './Icon.astro';
 import BookingForm from './BookingForm.astro';
+import BookingEmbed from './BookingEmbed.astro';
+import { CAL_LINK } from '@/config/site';
 import type { Props as BookingFormProps } from './BookingForm.astro';
 import type { Variant } from '@/data/tech-support';
 
@@ -12,12 +17,14 @@ export interface Props {
   intro?: string;
   successLine: string;
   form?: Omit<BookingFormProps, 'variant' | 'successLine'>;
+  calendar?: boolean;
 }
-const { variant, intro, successLine, form = {} } = Astro.props;
+const { variant, intro, successLine, form = {}, calendar = false } = Astro.props;
+const withCalendar = calendar && !!CAL_LINK;
 const checks = ['At a time that suits you', 'A plain-English summary afterwards', 'No obligation, no hard sell'];
 ---
 <section id="book" class="band" aria-labelledby="book-title" data-booking-band>
-  <div class="inner">
+  <div class:list={['inner', { 'with-calendar': withCalendar }]}>
     {
       Astro.slots.has('copy') ? (
         <div class="copy">
@@ -33,7 +40,16 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
         </div>
       )
     }
+    {
+      withCalendar && (
+        <div class="card cal-card">
+          <h3 class="card-title">Pick a time</h3>
+          <BookingEmbed linkClass="lp-btn lp-btn--pink" />
+        </div>
+      )
+    }
     <div class="card">
+      {withCalendar && <h3 class="card-title">Or send us a message</h3>}
       <BookingForm variant={variant} successLine={successLine} {...form} />
     </div>
   </div>
@@ -86,6 +102,22 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
   }
   .checks :global(svg) {
     flex: none;
+  }
+  .with-calendar .copy {
+    flex-basis: 100%;
+  }
+  .card-title {
+    margin-bottom: 16px;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--lp-ink);
+  }
+  .cal-card {
+    padding-inline: clamp(12px, 2vw, 24px);
+  }
+  .cal-card .card-title {
+    padding-inline: clamp(12px, 1.5vw, 16px);
   }
   .card {
     flex: 1 1 440px;

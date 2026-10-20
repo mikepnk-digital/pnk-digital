@@ -5,16 +5,7 @@
 // Dark background follows the theme (ink in A, slate in B).
 // Keep the link lists and legal lines in sync with Footer.jsx.
 import logo from '@/assets/pnk-digital-logo.svg';
-
-export interface Props {
-  /**
-   * Show the "Surrey, UK" contact line. Off for version B (no-locations rule).
-   * The registered-office line stays on every page: it's a statutory
-   * company disclosure, not a marketing claim.
-   */
-  showLocation?: boolean;
-}
-const { showLocation = true } = Astro.props;
+import { EMAIL, EMAIL_HREF, LINKEDIN_URL, LOCATION, PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
 
 const columns = [
   {
@@ -71,8 +62,10 @@ const year = new Date().getFullYear();
       <div class="col">
         <h2 class="col-title">Get in Touch</h2>
         <ul>
-          <li><a href="mailto:hello@pnk-digital.com">hello@pnk-digital.com</a></li>
-          {showLocation && <li class="muted">Surrey, UK</li>}
+          <li><a href={PHONE_HREF} data-phone>{PHONE_DISPLAY}</a></li>
+          <li><a href={EMAIL_HREF}>{EMAIL}</a></li>
+          <li class="muted">{LOCATION}</li>
+          {LINKEDIN_URL && <li><a href={LINKEDIN_URL} rel="me noopener" target="_blank">LinkedIn</a></li>}
         </ul>
       </div>
     </div>

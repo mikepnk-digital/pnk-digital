@@ -6,13 +6,14 @@ import { Section } from '../components/ui/Section';
 import { orbPresets } from '../components/ui/orbPresets';
 import { GradientText } from '../components/ui/GradientText';
 import { CtaBanner } from '../components/sections/CtaBanner';
+import { CALL_LABEL, YEARS_EXPERIENCE } from '../config/site';
 import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInLeft, fadeInRight, viewportWithMargin } from '../utils/animations';
 
 const processSteps = [
   {
     icon: MessageSquare,
-    title: 'Discovery Call',
-    description: "A 30-minute conversation to understand your project, goals, and constraints. I'll ask the right questions to scope things properly - no sales pitch.",
+    title: 'Free 30-Minute Call',
+    description: "A 30-minute conversation to understand your project, goals, and constraints. We'll ask the right questions to scope things properly - no sales pitch.",
   },
   {
     icon: Target,
@@ -22,7 +23,7 @@ const processSteps = [
   {
     icon: Bot,
     title: 'AI-Accelerated Build',
-    description: "I use AI tooling to handle repetitive work while I focus on architecture, quality, and the decisions that count. You get faster delivery without cutting corners.",
+    description: "We use AI tooling to handle repetitive work while we focus on architecture, quality, and the decisions that count. You get faster delivery without cutting corners.",
   },
   {
     icon: GitBranch,
@@ -35,7 +36,7 @@ const values = [
   {
     icon: Zap,
     title: 'Speed Without Shortcuts',
-    benefit: "You get production-quality software in weeks because I use better tools, not because I skip testing or cut corners.",
+    benefit: "You get production-quality software in weeks because we use better tools, not because we skip testing or cut corners.",
   },
   {
     icon: Shield,
@@ -50,7 +51,7 @@ const values = [
   {
     icon: Lightbulb,
     title: 'Honest Advice',
-    benefit: "I'll tell you if something is a bad idea, suggest simpler alternatives, or recommend you don't need what you think you need. My job is to solve your problem, not maximise my invoice.",
+    benefit: "We'll tell you if something is a bad idea, suggest simpler alternatives, or recommend you don't need what you think you need. Our job is to solve your problem, not maximise our invoice.",
   },
 ];
 
@@ -95,22 +96,22 @@ export function AboutPage() {
             </motion.div>
 
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight">
-              I'm Mike. I build software <GradientText>that ships.</GradientText>
+              PNK Digital is run by Mike Pink. We build software <GradientText>that ships.</GradientText>
             </motion.h1>
 
             <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
-              For 25 years, I've been building production web applications for startups, scale-ups,
-              and enterprise clients across the UK. I've seen
+              For {YEARS_EXPERIENCE} years, Mike has been building production web applications for startups, scale-ups,
+              and enterprise clients across the UK. Mike has seen
               how software gets built inside agencies and consultancies: layers of management,
               junior developers learning on client budgets, and timelines that balloon because
               nobody wants to make a decision.
             </motion.p>
 
             <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
-              I started PNK Digital because I believed there was a better way. AI tooling has
+              Mike started PNK Digital in the belief that there was a better way. AI tooling has
               changed what a single experienced developer can ship. The productivity gains
               are real - not because AI writes perfect code, but because it handles the tedious
-              parts and frees me up for the things that actually matter: architecture, user
+              parts and frees us up for the things that actually matter: architecture, user
               experience, and getting your product to market.
             </motion.p>
 
@@ -137,7 +138,7 @@ export function AboutPage() {
 
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-8">
             Most agencies sell you a team. What you actually get is a project manager relaying
-            messages to a junior developer who's Googling how to do what you need. I cut all of
+            messages to a junior developer who's Googling how to do what you need. We cut all of
             that out.
           </motion.p>
 
@@ -148,8 +149,8 @@ export function AboutPage() {
             {[
               { label: 'Low overhead', detail: 'No office, no middle management, no bloated margins. You pay for development, not infrastructure.' },
               { label: 'Direct communication', detail: 'You talk to the developer. Questions answered in hours, not routed through three people over three days.' },
-              { label: 'Senior expertise on every project', detail: 'Every line of code is written by someone with 25 years of experience. No juniors, no interns, no bait-and-switch.' },
-              { label: 'Accountability', detail: 'One person, one project, full ownership. If something\'s wrong, there\'s nobody to blame but me - and I fix it fast.' },
+              { label: 'Senior expertise on every project', detail: `Every line of code is written by someone with ${YEARS_EXPERIENCE} years of experience. No juniors, no interns, no bait-and-switch.` },
+              { label: 'Accountability', detail: 'One person, one project, full ownership. If something\'s wrong, there\'s nobody to blame but us - and we fix it fast.' },
             ].map((point) => (
               <div
                 key={point.label}
@@ -163,7 +164,7 @@ export function AboutPage() {
         </motion.div>
       </Section>
 
-      {/* How I Work */}
+      {/* How We Work */}
       <Section>
         <motion.div
           initial="hidden"
@@ -172,7 +173,7 @@ export function AboutPage() {
           className="text-center mb-16"
         >
           <motion.h2 variants={fadeInUpLarge} className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
-            <GradientText>How I Work</GradientText>
+            <GradientText>How We Work</GradientText>
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
             From first conversation to working software, with as little friction as possible.
@@ -233,7 +234,7 @@ export function AboutPage() {
           className="text-center mb-16"
         >
           <motion.h2 variants={fadeInUpLarge} className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
-            <GradientText>What I Stand For</GradientText>
+            <GradientText>What We Stand For</GradientText>
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
             Not platitudes on a wall - principles that directly affect how your project gets built.
@@ -280,8 +281,8 @@ export function AboutPage() {
       {/* CTA */}
       <CtaBanner
         heading="Want to know more?"
-        subtext="Book a discovery call and let's talk about your project. No obligation, no hard sell."
-        buttonText="Get in Touch"
+        subtext="Book a free 30-minute call and let's talk about your project. No obligation, no hard sell."
+        buttonText={CALL_LABEL}
       />
     </>
   );

@@ -1,0 +1,110 @@
+---
+// Cal.com inline booking calendar for the free call (CAL_LINK in
+// src/config/site.ts). Plain Astro + inline JS so it works on the landing
+// pages (no React) and inside the React /contact page as passed-in children.
+// - Without JS: a "Book a time" link to the Cal.com page.
+// - With JS: Cal's embed script loads only when the calendar nears the
+//   viewport, then replaces the link with the inline calendar.
+// Renders nothing while CAL_LINK is empty.
+import { CAL_LINK } from '@/config/site';
+
+export interface Props {
+  /** Cal.com colour scheme: light on landing pages, dark on the main site. */
+  theme?: 'light' | 'dark';
+  /** Classes for the fallback link, so it matches the page's buttons. */
+  linkClass?: string;
+  class?: string;
+}
+const { theme = 'light', linkClass, class: className } = Astro.props;
+
+const url = CAL_LINK ? new URL(CAL_LINK) : null;
+const calLink = url?.pathname.replace(/^\/|\/$/g, '');
+---
+{
+  url && (
+    <div class:list={['cal-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme={theme}>
+      <a class:list={['cal-fallback', linkClass]} href={CAL_LINK} target="_blank" rel="noopener">
+        Book a time
+      </a>
+      <div class="cal-frame" data-cal-frame></div>
+    </div>
+  )
+}
+
+<script>
+  // Cal.com's loader snippet (defines window.Cal and queues calls until
+  // https://app.cal.com/embed/embed.js arrives), run once per page.
+  type CalFn = ((...args: unknown[]) => void) & { loaded?: boolean; ns?: object; q?: unknown[][] };
+  declare global {
+    interface Window {
+      Cal?: CalFn;
+    }
+  }
+
+  function loadCal(): CalFn {
+    if (!window.Cal) {
+      const cal = function (...args: unknown[]) {
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          const s = document.createElement('script');
+          s.src = 'https://app.cal.com/embed/embed.js';
+          s.async = true;
+          document.head.appendChild(s);
+          cal.loaded = true;
+        }
+        cal.q!.push(args);
+      } as CalFn;
+      window.Cal = cal;
+    }
+    return window.Cal;
+  }
+
+  function mount(el: HTMLElement) {
+    const frame = el.querySelector<HTMLElement>('[data-cal-frame]');
+    if (!frame) return;
+    frame.id ||= `cal-inline-${Math.random().toString(36).slice(2, 8)}`;
+    const Cal = loadCal();
+    Cal('init', { origin: el.dataset.calOrigin });
+    Cal('inline', {
+      elementOrSelector: `#${frame.id}`,
+      calLink: el.dataset.calLink,
+      config: { layout: 'month_view', theme: el.dataset.calTheme },
+    });
+    Cal('ui', { theme: el.dataset.calTheme, hideEventTypeDetails: false, layout: 'month_view' });
+    el.classList.add('is-loaded');
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-cal-embed]').forEach((el) => {
+    el.classList.add('has-js');
+    if (!('IntersectionObserver' in window)) return mount(el);
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          mount(el);
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+    io.observe(el);
+  });
+</script>
+
+<style>
+  .cal-embed {
+    width: 100%;
+    min-width: 0;
+  }
+  /* Room for the calendar before it arrives, so the page doesn't jump. */
+  .cal-embed.has-js {
+    min-height: 560px;
+  }
+  .cal-embed.is-loaded .cal-fallback {
+    display: none;
+  }
+  .cal-frame {
+    width: 100%;
+    overflow: auto;
+  }
+</style>

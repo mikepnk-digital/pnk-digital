@@ -2,6 +2,7 @@ import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { fadeInUp } from '../../utils/animations';
+import { CALL_LABEL } from '../../config/site';
 
 interface CtaBannerProps {
   heading?: string;
@@ -12,8 +13,8 @@ interface CtaBannerProps {
 
 export function CtaBanner({
   heading = "Got a project in mind?",
-  subtext = "Book a free discovery call. No obligation, no hard sell - just a conversation about what you're building and how I can help.",
-  buttonText = "Let's Talk",
+  subtext = "Book a free discovery call. No obligation, no hard sell - just a conversation about what you're building and how we can help.",
+  buttonText = CALL_LABEL,
   buttonTo = "/contact",
 }: CtaBannerProps) {
   return (

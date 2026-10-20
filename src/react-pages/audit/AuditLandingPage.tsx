@@ -10,6 +10,7 @@ import { AuditFooter } from '../../components/audit/AuditFooter';
 import { ProspectCard } from '../../components/audit/ProspectCard';
 import { prospects } from '../../data/prospects';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
+import { YEARS_EXPERIENCE } from '../../config/site';
 
 export function AuditLandingPage() {
   useEffect(() => {
@@ -43,7 +44,7 @@ export function AuditLandingPage() {
   ];
 
   const credentials = [
-    { icon: Code, label: '25+ Years Experience' },
+    { icon: Code, label: `${YEARS_EXPERIENCE}+ Years Experience` },
     { icon: Clock, label: 'Fast Delivery with AI-Powered Workflows' },
     { icon: MapPin, label: 'Local Surrey Developer' },
   ];

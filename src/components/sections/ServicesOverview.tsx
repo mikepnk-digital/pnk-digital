@@ -38,7 +38,7 @@ const services = [
   {
     icon: Zap,
     title: 'AI-Powered MVPs',
-    description: 'Go from idea to working product fast. I use AI-accelerated workflows to prototype, build, and ship MVPs that let you validate with real users quickly.',
+    description: 'Go from idea to working product fast. We use AI-accelerated workflows to prototype, build, and ship MVPs that let you validate with real users quickly.',
     color: 'brand-pink',
   },
   {
@@ -90,9 +90,9 @@ function CardWrapper({ href, children }: { href?: string; children: ReactNode })
 export function ServicesOverview() {
   return (
     <Section id="services-overview" orbs={orbPresets.servicesLeft}>
-      <SectionHeading title="What I Build" gradient />
+      <SectionHeading title="What We Build" gradient />
       <p className="text-text-secondary text-center max-w-2xl mx-auto mb-12 -mt-4">
-        Six things I do really well.
+        Six things we do really well.
       </p>
 
       <motion.div

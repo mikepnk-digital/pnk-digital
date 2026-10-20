@@ -1,15 +1,15 @@
 // Tech Support landing page, version B (/tech-support).
 // Copy is lifted from design-assets/copy/pnk-digital-landing-page-copy.md.
-// Honesty rule (see tech-support.astro): no client logos, testimonials, reviews,
+// Honesty rule (see tech-support.astro): no client logos, reviews,
 // certifications, years trading, customer numbers or statistics.
 
 import type { Faq, Plan, Step } from './tech-support';
 import type { IconName } from '@/components/landing/Icon.astro';
+import { CALL_LABEL, RESPONSE_PROMISE } from '@/config/site';
 
-export const PHONE_DISPLAY = '01252 279059';
-export const PHONE_HREF = 'tel:+441252279059';
+export { PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
 
-export const PRIMARY_CTA = 'Book a free 30-minute technology review';
+export const PRIMARY_CTA = CALL_LABEL;
 
 export type IconItem = { icon: IconName; title: string; body: string };
 
@@ -120,7 +120,11 @@ export const plans: Plan[] = [
     features: [
       'Around 10 hours of hands-on work each month, with priority response',
       'Ongoing development and custom software',
-      'Business process automation and practical AI',
+      {
+        before: 'Business process automation (AI work is quoted separately — see ',
+        link: { href: '/ai-consulting', label: 'AI consulting' },
+        after: ')',
+      },
       'Cloud infrastructure management',
       'A 12-month technology roadmap, reviewed quarterly',
       'Supplier and software management',
@@ -227,7 +231,7 @@ export const faqs: Faq[] = [
 ];
 
 export const booking = {
-  successLine: "We'll reply within one business day to arrange your free 30-minute technology review.",
+  successLine: `We'll reply ${RESPONSE_PROMISE} to arrange your free 30-minute technology review.`,
 };
 
 export type ClientTestimonial = {

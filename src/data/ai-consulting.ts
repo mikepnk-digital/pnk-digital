@@ -6,10 +6,11 @@
 
 import type { Faq, Plan, Step } from './tech-support';
 import type { IconItem } from './tech-support-service';
+import { CALL_LABEL, RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 
 export { PHONE_DISPLAY, PHONE_HREF, testimonials } from './tech-support-service';
 
-export const PRIMARY_CTA = 'Book a free 30-minute AI Fit Call';
+export const PRIMARY_CTA = CALL_LABEL;
 
 /** Hidden `source` on the booking form; the API picks the auto-reply by it. */
 export const BOOKING_SOURCE = 'ai-consulting';
@@ -113,7 +114,7 @@ export const compare: { columns: CompareColumn[]; rows: CompareRow[]; source: st
     },
     {
       label: 'Knows your sector',
-      values: ['Sometimes', 'Rarely', '27 years in financial and professional services'],
+      values: ['Sometimes', 'Rarely', `${YEARS_EXPERIENCE} years in financial and professional services`],
     },
     {
       label: 'Who owns the result',
@@ -121,6 +122,26 @@ export const compare: { columns: CompareColumn[]; rows: CompareRow[]; source: st
     },
   ],
   source: 'Market figures from published UK pricing, October 2026.',
+};
+
+// "What a pilot can look like": use cases and ROI figures carried over from the
+// retired /services/ai-employees page (now a 301 to /ai-consulting).
+export const pilotExamples: IconItem[] = [
+  { icon: 'mail', title: 'Email triage', body: 'Classify, prioritise, draft replies, mark junk as read' },
+  { icon: 'clock', title: 'Meeting prep', body: 'Pull relevant docs, summarise previous notes, draft agendas' },
+  { icon: 'code', title: 'Developer productivity', body: 'PR reviews, CI monitoring, bug investigation, documentation' },
+  { icon: 'tag', title: 'Sales pipeline', body: 'CRM updates via chat, lead research, follow-up reminders' },
+  { icon: 'file', title: 'Finance automation', body: 'Expense categorisation, invoice matching, cash flow alerts' },
+  { icon: 'chat', title: 'HR and onboarding', body: 'New starter setup, policy Q&A, training reminders' },
+];
+
+export const pilotRoi: { columns: CompareColumn[]; rows: CompareRow[]; source: string } = {
+  columns: [{ label: '10 people' }, { label: '25 people' }, { label: '50 people' }],
+  rows: [
+    { label: 'Time saved per week', values: ['40 hours', '100 hours', '200 hours'] },
+    { label: 'Annual value', values: ['£40,000', '£100,000', '£200,000'] },
+  ],
+  source: 'Annual value at the average UK knowledge worker salary.',
 };
 
 export const disciplines = [
@@ -293,5 +314,5 @@ export const faqs: Faq[] = [
 ];
 
 export const booking = {
-  successLine: "We'll reply within one business day to arrange your free 30-minute AI Fit Call.",
+  successLine: `We'll reply ${RESPONSE_PROMISE} to arrange your free 30-minute AI Fit Call.`,
 };

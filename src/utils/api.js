@@ -1,3 +1,5 @@
+import { RESPONSE_PROMISE } from '../config/site';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 /**
@@ -12,7 +14,7 @@ export async function submitContactForm(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     return {
       success: true,
-      message: 'Thanks for reaching out. I\'ll get back to you within 24 hours.',
+      message: `Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`,
       enquiryId: `dev-${Date.now()}`,
     };
   }

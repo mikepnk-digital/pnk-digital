@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from '@/lib/router';
 import logo from '../../assets/pnk-digital-logo.svg?url';
+import { EMAIL, EMAIL_HREF, LINKEDIN_URL, LOCATION, PHONE_DISPLAY, PHONE_HREF } from '../../config/site';
 import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {
@@ -89,15 +90,35 @@ export function Footer() {
             <ul className="space-y-3 mb-6">
               <li>
                 <a
-                  href="mailto:hello@pnk-digital.com"
+                  href={PHONE_HREF}
                   className="text-text-secondary text-sm hover:text-neon-cyan transition-colors duration-300"
                 >
-                  hello@pnk-digital.com
+                  {PHONE_DISPLAY}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={EMAIL_HREF}
+                  className="text-text-secondary text-sm hover:text-neon-cyan transition-colors duration-300"
+                >
+                  {EMAIL}
                 </a>
               </li>
               <li className="text-text-secondary text-sm">
-                Surrey, UK
+                {LOCATION}
               </li>
+              {LINKEDIN_URL && (
+                <li>
+                  <a
+                    href={LINKEDIN_URL}
+                    rel="me noopener"
+                    target="_blank"
+                    className="text-text-secondary text-sm hover:text-neon-cyan transition-colors duration-300"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+              )}
             </ul>
           </motion.div>
         </div>

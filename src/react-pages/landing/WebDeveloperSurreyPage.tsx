@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button';
 import { ContactForm } from '../../components/sections/ContactForm';
 import { Footer } from '../../components/layout/Footer';
 import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInRight, viewportWithMargin } from '../../utils/animations';
+import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '../../config/site';
 import logo from '../../assets/pnk-digital-logo.svg?url';
 
 const usps = [
@@ -22,7 +23,7 @@ const usps = [
   },
   {
     icon: Code,
-    title: '25+ Years Experience',
+    title: `${YEARS_EXPERIENCE}+ Years Experience`,
     description: 'Senior developer from day one. Your project won\'t be handed to a junior learning on the job.',
   },
   {
@@ -109,7 +110,7 @@ export function WebDeveloperSurreyPage() {
               className="text-lg md:text-xl text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto"
             >
               Custom websites and web apps - direct from the developer, no agency markup.
-              React, Node.js &amp; AWS. 25+ years experience.
+              React, Node.js &amp; AWS. {YEARS_EXPERIENCE}+ years experience.
             </motion.p>
 
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -235,7 +236,7 @@ export function WebDeveloperSurreyPage() {
             </motion.h2>
             <motion.div variants={fadeInUp} className="grid sm:grid-cols-3 gap-8 mb-8">
               {[
-                { stat: '25+', label: 'Years Experience' },
+                { stat: `${YEARS_EXPERIENCE}+`, label: 'Years Experience' },
                 { stat: '100%', label: 'UK-Based' },
                 { stat: '24hr', label: 'Response Time' },
               ].map((item) => (
@@ -268,7 +269,7 @@ export function WebDeveloperSurreyPage() {
                 <GradientText>Get in Touch</GradientText>
               </motion.h2>
               <motion.p variants={fadeInUp} className="text-text-secondary max-w-xl mx-auto">
-                Tell me about your project and I'll get back to you within 24 hours. No obligation, no hard sell.
+                Tell me about your project and I'll get back to you {RESPONSE_PROMISE}. No obligation, no hard sell.
               </motion.p>
             </motion.div>
 
@@ -313,7 +314,7 @@ export function WebDeveloperSurreyPage() {
                   <h3 className="text-lg font-semibold text-text-primary mb-3">What Happens Next?</h3>
                   <ol className="space-y-3 text-sm text-text-secondary">
                     {[
-                      'I\'ll reply within 24 hours',
+                      `I'll reply ${RESPONSE_PROMISE}`,
                       'We\'ll have a quick call to discuss your project',
                       'You\'ll get a clear proposal with fixed pricing',
                     ].map((step, i) => (
