@@ -39,11 +39,14 @@ export function ContactPage({ children }: ContactPageProps) {
             rounded-2xl border border-neon-cyan/20
             p-4 sm:p-8
           ">
-            <div className="flex items-center gap-3 mb-6 px-2 sm:px-0">
-              <Calendar className="w-6 h-6 text-neon-cyan" />
-              <h2 className="text-2xl font-bold text-text-primary">Book a Free 30-Minute Call</h2>
+            <div className="mb-6 px-2 sm:px-0">
+              <div className="flex items-center gap-3 mb-2">
+                <Calendar className="w-6 h-6 text-neon-cyan" />
+                <h2 className="text-2xl font-bold text-text-primary">Book a Free 30-Minute Call</h2>
+              </div>
+              <p className="text-text-secondary">See the live calendar and book a slot that suits you.</p>
             </div>
-            {children}
+            <div className="px-2 sm:px-0">{children}</div>
           </div>
         </Section>
       )}

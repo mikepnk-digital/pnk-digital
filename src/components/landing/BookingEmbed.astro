@@ -1,32 +1,49 @@
 ---
-// Cal.com inline booking calendar for the free call (CAL_LINK in
-// src/config/site.ts). Plain Astro + inline JS so it works on the landing
-// pages (no React) and inside the React /contact page as passed-in children.
-// - Without JS: a "Book a time" link to the Cal.com page.
-// - With JS: Cal's embed script loads only when the calendar nears the
-//   viewport, then replaces the link with the inline calendar.
+// Cal.com booking calendar for the free call (CAL_LINK in src/config/site.ts),
+// shown in a modal so a long list of times doesn't take over the page. Plain
+// Astro + inline JS so it works on the landing pages (no React) and inside the
+// React home and /contact pages as passed-in children.
+// - Without JS: the button is a link to the Cal.com page.
+// - With JS: the button opens a <dialog>; Cal's embed script loads on the
+//   first open and fills it with the inline calendar.
 // Renders nothing while CAL_LINK is empty.
 import { CAL_LINK } from '@/config/site';
 
 export interface Props {
   /** Cal.com colour scheme: light on landing pages, dark on the main site. */
   theme?: 'light' | 'dark';
-  /** Classes for the fallback link, so it matches the page's buttons. */
+  /** Classes for the button, so it matches the page's buttons. */
   linkClass?: string;
+  /** Button text. */
+  label?: string;
   class?: string;
 }
-const { theme = 'light', linkClass, class: className } = Astro.props;
+const { theme = 'light', linkClass, label = 'See available times', class: className } = Astro.props;
 
 const url = CAL_LINK ? new URL(CAL_LINK) : null;
 const calLink = url?.pathname.replace(/^\/|\/$/g, '');
+const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
 ---
 {
   url && (
     <div class:list={['cal-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme={theme}>
-      <a class:list={['cal-fallback', linkClass]} href={CAL_LINK} target="_blank" rel="noopener">
-        Book a time
+      <a class:list={['cal-open', linkClass]} href={CAL_LINK} target="_blank" rel="noopener" data-cal-open>
+        {label}
       </a>
-      <div class="cal-frame" data-cal-frame></div>
+      <dialog class:list={['cal-dialog', `cal-dialog--${theme}`]} aria-labelledby={titleId} data-cal-dialog>
+        <div class="cal-head">
+          <h2 id={titleId} class="cal-title">Pick a time</h2>
+          <button type="button" class="cal-close" aria-label="Close" data-cal-close>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="cal-body">
+          <p class="cal-loading">Loading available times…</p>
+          <div class="cal-frame" data-cal-frame></div>
+        </div>
+      </dialog>
     </div>
   )
 }
@@ -64,7 +81,7 @@ const calLink = url?.pathname.replace(/^\/|\/$/g, '');
 
   function mount(el: HTMLElement) {
     const frame = el.querySelector<HTMLElement>('[data-cal-frame]');
-    if (!frame) return;
+    if (!frame || el.classList.contains('is-loaded')) return;
     frame.id ||= `cal-inline-${Math.random().toString(36).slice(2, 8)}`;
     const Cal = loadCal();
     Cal('init', { origin: el.dataset.calOrigin });
@@ -83,39 +100,138 @@ const calLink = url?.pathname.replace(/^\/|\/$/g, '');
   function listenForBookings() {
     if (listening) return;
     listening = true;
-    loadCal()('on', { action: 'bookingSuccessful', callback: () => track('call_booked') });
+    const Cal = loadCal();
+    Cal('on', { action: 'bookingSuccessful', callback: () => track('call_booked') });
+    // Times are showing: drop the loading line.
+    Cal('on', {
+      action: 'linkReady',
+      callback: () => document.querySelectorAll('[data-cal-embed].is-loaded').forEach((el) => el.classList.add('is-ready')),
+    });
   }
 
-  document.querySelectorAll<HTMLElement>('[data-cal-embed]').forEach((el) => {
-    el.classList.add('has-js');
-    if (!('IntersectionObserver' in window)) return mount(el);
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect();
-          mount(el);
-        }
-      },
-      { rootMargin: '600px 0px' }
-    );
-    io.observe(el);
+  // Delegated, so it still works after a React island around the calendar
+  // hydrates. Without <dialog> support the link opens Cal.com instead.
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    const open = target.closest<HTMLElement>('[data-cal-open]');
+    if (open) {
+      const el = open.closest<HTMLElement>('[data-cal-embed]');
+      const dialog = el?.querySelector<HTMLDialogElement>('[data-cal-dialog]');
+      if (!el || !dialog || typeof dialog.showModal !== 'function') return;
+      e.preventDefault();
+      dialog.showModal();
+      mount(el);
+      return;
+    }
+    const dialog = target.closest<HTMLDialogElement>('[data-cal-dialog]');
+    // The close button, or a click on the backdrop (the dialog element itself).
+    if (dialog && (target.closest('[data-cal-close]') || target === dialog)) dialog.close();
   });
 </script>
 
 <style>
   .cal-embed {
-    width: 100%;
     min-width: 0;
   }
-  /* Room for the calendar before it arrives, so the page doesn't jump. */
-  .cal-embed.has-js {
-    min-height: 560px;
+  .cal-dialog {
+    --cal-bg: #ffffff;
+    --cal-ink: #1b1720;
+    --cal-muted: #5f5a63;
+    --cal-line: #e7e2de;
+    width: min(1000px, calc(100% - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--cal-line);
+    border-radius: 20px;
+    background: var(--cal-bg);
+    color: var(--cal-ink);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
   }
-  .cal-embed.is-loaded .cal-fallback {
+  .cal-dialog--dark {
+    --cal-bg: var(--color-midnight, #0f0f1a);
+    --cal-ink: var(--color-text-primary, #e4e4e7);
+    --cal-muted: var(--color-text-secondary, #a1a1aa);
+    --cal-line: rgba(255, 255, 255, 0.12);
+  }
+  .cal-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .cal-dialog::backdrop {
+    background: rgba(10, 10, 15, 0.7);
+  }
+  :global(html:has(.cal-dialog[open])) {
+    overflow: hidden;
+  }
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 14px 14px 24px;
+    border-bottom: 1px solid var(--cal-line);
+  }
+  .cal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--cal-ink);
+  }
+  .cal-close {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--cal-ink);
+    cursor: pointer;
+  }
+  .cal-close:hover {
+    background: var(--cal-line);
+  }
+  .cal-close:focus-visible {
+    outline: 3px solid #ec008c;
+    outline-offset: 2px;
+  }
+  .cal-body {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 8px;
+  }
+  .cal-loading {
+    position: absolute;
+    inset: 24px auto auto 24px;
+    margin: 0;
+    font-size: 16px;
+    color: var(--cal-muted);
+  }
+  .is-ready .cal-loading {
     display: none;
   }
   .cal-frame {
+    position: relative;
     width: 100%;
-    overflow: auto;
+    min-height: 480px;
+  }
+  @media (max-width: 600px) {
+    .cal-dialog {
+      width: 100%;
+      max-height: 100dvh;
+      height: 100dvh;
+      border-radius: 0;
+      border: 0;
+    }
   }
 </style>

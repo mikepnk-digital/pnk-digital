@@ -102,7 +102,7 @@ export function HomePage({ children, caseStudies = [] }) {
                 <h2 className="text-2xl md:text-3xl font-bold text-text-primary">{CALL_LABEL}</h2>
               </div>
               <p className="text-text-secondary">
-                Pick a time below, or call us. Messages get a reply {RESPONSE_PROMISE}.
+                Pick a time that suits you from the live calendar, or call us. Messages get a reply {RESPONSE_PROMISE}.
               </p>
             </div>
             <a
@@ -113,7 +113,7 @@ export function HomePage({ children, caseStudies = [] }) {
               {PHONE_DISPLAY}
             </a>
           </div>
-          {children}
+          <div className="px-2 sm:px-0">{children}</div>
         </div>
       </Section>
     </>
