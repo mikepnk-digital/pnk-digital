@@ -2,9 +2,9 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Post = CollectionEntry<'blog'>;
 
-/** Published posts, newest first. */
+/** Published posts (not staged as drafts), newest first. */
 export async function getPublishedPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => data.published);
+  const posts = await getCollection('blog', ({ data }) => data.published && !data.draft);
   return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
@@ -36,9 +36,5 @@ export function formatDate(date: Date): string {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-export const categories = [
-  'AI & Development',
-  'Technical Insights',
-  'Business & Strategy',
-  'Project Spotlights',
-] as const;
+// Case studies live at /work (the old "Project Spotlights" category).
+export const categories = ['AI & Development', 'Technical Insights', 'Business & Strategy'] as const;
