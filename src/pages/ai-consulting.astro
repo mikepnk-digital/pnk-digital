@@ -23,6 +23,7 @@ import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
 import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
 import { getCaseStudyFor } from '@/lib/case-studies-collection';
+import { faqPageJsonLd, serviceJsonLd } from '@/lib/structured-data';
 import { LOCATION, RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
@@ -64,42 +65,19 @@ const navLinks = [
   { href: '#faq', label: 'FAQ' },
 ];
 
-// FAQPage + Service with one Offer per pricing card (GBP, ex VAT). "from"
-// prices are minimums; the Fractional AI Lead is billed monthly.
+// FAQPage + Service with one Offer per pricing card (prices exclude VAT, as
+// the pricing lead says).
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  faqPageJsonLd(faqs),
+  serviceJsonLd({
     name: 'AI Consulting',
     serviceType: 'AI consulting',
     description: DESCRIPTION,
     url: CANONICAL,
-    provider: { '@type': 'Organization', name: 'PNK Digital', url: 'https://pnk-digital.com' },
-    offers: plans.map((p) => ({
-      '@type': 'Offer',
-      name: p.name,
-      description: p.tagline,
-      url: `${CANONICAL}#pricing`,
-      price: p.price,
-      priceCurrency: 'GBP',
-      priceSpecification: {
-        '@type': p.priceSuffix ? 'PriceSpecification' : 'UnitPriceSpecification',
-        ...(p.from ? { minPrice: p.price } : { price: p.price }),
-        priceCurrency: 'GBP',
-        valueAddedTaxIncluded: false,
-        ...(p.priceSuffix ? {} : { unitCode: 'MON', unitText: 'month' }),
-      },
-    })),
-  },
+    pricingAnchor: 'pricing',
+    plans,
+    vatIncluded: false,
+  }),
 ];
 ---
 <LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>

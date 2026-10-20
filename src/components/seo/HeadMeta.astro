@@ -2,6 +2,7 @@
 // Theme-free <head> essentials: favicons, manifest, gtag + per-page SEO meta.
 // No CSS or fonts, so isolated layouts (LandingLayout) can reuse it without
 // pulling in the main site theme. BaseHead wraps it with the site theme.
+import { organizationJsonLd } from '@/lib/structured-data';
 
 export interface Props {
   title: string;
@@ -107,4 +108,6 @@ const twitterImageURL = new URL(twitterImage, Astro.site).href;
   gtag('config', 'AW-17989609549');
 </script>
 
+<!-- Site-wide Organization; page-specific JSON-LD (jsonLd prop) follows. -->
+<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationJsonLd())} />
 {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
