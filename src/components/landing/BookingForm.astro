@@ -115,6 +115,8 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
 </div>
 
 <script>
+  import { track } from '@/lib/analytics';
+
   type FieldKey = 'name' | 'business' | 'email';
   const MESSAGES: Record<FieldKey, string> = {
     name: 'Please enter your name.',
@@ -228,6 +230,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
           console.warn('VITE_API_URL not configured. Simulating booking submission.', payload);
           await new Promise((r) => setTimeout(r, 600));
         }
+        track('form_submitted', { form: 'booking', source: data.source, plan });
         if (typeof window.gtag === 'function') {
           window.gtag('event', 'tech_review_booked', page ? { variant, plan, page } : { variant, plan });
           // TODO: add a Google Ads conversion for this goal once a label exists, e.g.

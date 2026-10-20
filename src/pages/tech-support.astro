@@ -7,7 +7,8 @@
 // Honesty rule: no team size, years trading, certifications, client counts or
 // statistics anywhere – copy, meta or alt text. Exceptions: client
 // testimonials, which must use client-approved wording and names (see
-// `testimonials` in tech-support-service.ts); Mike's photo and name in "Why
+// `testimonials` in tech-support-service.ts); the support case study and its
+// result (content/case-studies, supplied by Mike); Mike's photo and name in "Why
 // PNK Digital"; and the contact details (phone, email, location from
 // src/config/site.ts) and statutory company disclosure in the footer.
 import LandingLayout from '@/layouts/LandingLayout.astro';
@@ -24,7 +25,10 @@ import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
-import { RESPONSE_PROMISE } from '@/config/site';
+import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
+import { getCaseStudyFor } from '@/lib/case-studies-collection';
+import { faqPageJsonLd, serviceJsonLd } from '@/lib/structured-data';
+import { LOCATION, RESPONSE_PROMISE } from '@/config/site';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -46,7 +50,26 @@ import {
 } from '@/data/tech-support-service';
 
 const variant = 'b';
+const caseStudy = await getCaseStudyFor('support');
 const pull = testimonials.find((t) => t.pullQuote)!;
+const TITLE = `IT Support for Small Businesses in ${LOCATION} | PNK Digital`;
+const DESCRIPTION =
+  'Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner. Book a free 30-minute technology review.';
+const CANONICAL = 'https://pnk-digital.com/tech-support';
+
+// FAQPage + Service with one Offer per plan card (monthly; the page doesn't
+// state VAT treatment, so the markup doesn't either).
+const jsonLd = [
+  faqPageJsonLd(faqs),
+  serviceJsonLd({
+    name: 'Tech Support Plans',
+    serviceType: 'IT support',
+    description: DESCRIPTION,
+    url: CANONICAL,
+    pricingAnchor: 'plans',
+    plans,
+  }),
+];
 const navLinks = [
   { href: '#plans', label: 'Plans' },
   { href: '#clients', label: 'Clients' },
@@ -56,14 +79,20 @@ const navLinks = [
 ---
 <LandingLayout
   theme={variant}
-  title="Business Technology Support for Small Businesses | PNK Digital"
-  description="Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner. Book a free 30-minute technology review."
+  title={TITLE}
+  description={DESCRIPTION}
+  canonical={CANONICAL}
+  ogImage="/og/tech-support.png"
+  twitterImage="/og/tech-support.png"
+  jsonLd={jsonLd}
 >
   <LandingHeader links={navLinks} />
 
   <main>
     <!-- 1. Hero -->
-    <HeroCompany />
+    <HeroCompany
+      sub={`Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner, based in ${LOCATION}.`}
+    />
 
     <!-- 2. Problem -->
     <section class="lp-section" aria-labelledby="problem-title">
@@ -185,6 +214,7 @@ const navLinks = [
             ))
           }
         </ul>
+        {caseStudy && <CaseStudyCard study={caseStudy} />}
         <p class="clients-note">Want to hear more? Ask us about current clients on your free technology review.</p>
       </div>
     </section>
@@ -339,6 +369,28 @@ const navLinks = [
       </div>
     </section>
 
+    <!-- 11b. Local to you -->
+    <section class="lp-section" aria-labelledby="local-title">
+      <div class="lp-container split">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Local to you</span>
+          <h2 id="local-title" class="lp-h2">Based in {LOCATION.split(',')[0]}. Supporting businesses across the UK.</h2>
+          <p class="lp-lead">
+            Most technical issues can be resolved remotely, wherever your business is. When something needs someone on
+            site, we'll come to you.
+          </p>
+        </div>
+        <div class="list-card">
+          <p class="list-card-title"><Icon name="globe" size={22} />Where we work:</p>
+          <ul class="ticks">
+            <li><Icon name="check" size={18} />Based in {LOCATION}</li>
+            <li><Icon name="check" size={18} />On-site across Surrey and Hampshire when needed</li>
+            <li><Icon name="check" size={18} />Remote support across the UK</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <!-- 12. FAQ -->
     <FaqSection
       title="Frequently asked questions"
@@ -371,15 +423,6 @@ const navLinks = [
   <LandingFooter />
   <StickyCta />
 </LandingLayout>
-
-<script>
-  // Phone CTA clicks (secondary conversion), alongside BookingForm's tech_review_booked.
-  document.querySelectorAll<HTMLAnchorElement>('[data-phone]').forEach((link) => {
-    link.addEventListener('click', () => {
-      if (typeof window.gtag === 'function') window.gtag('event', 'phone_click', { variant: 'b' });
-    });
-  });
-</script>
 
 <style>
   .ink {

@@ -1,0 +1,108 @@
+---
+// Landing twin of src/components/ui/CaseStudyCard.tsx (React + Tailwind, main
+// site): same content from the case-studies collection, rebuilt with landing
+// tokens so no Tailwind or React reaches the landing pages. Keep the two in step.
+// The whole card links to /work/<slug>; the headline number leads.
+import Icon from './Icon.astro';
+import { SERVICE_LABELS, type CaseStudy } from '@/lib/case-studies';
+
+export interface Props {
+  study: CaseStudy;
+}
+const { study } = Astro.props;
+---
+<a class="study" href={`/work/${study.slug}`}>
+  <span class="tags">
+    <span class="tag">{SERVICE_LABELS[study.service]} case study</span>
+    {study.draft && <span class="tag draft">Draft</span>}
+  </span>
+  <span class="metric">{study.metric}</span>
+  <span class="body">
+    <span class="title">{study.title}</span>
+    <span class="client">{study.client}</span>
+    <span class="summary">{study.summary}</span>
+  </span>
+  <span class="more">Read case study <Icon name="arrow" size={18} /></span>
+</a>
+
+<style>
+  .study {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 28px;
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    color: var(--lp-ink);
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  .study:hover {
+    color: var(--lp-ink);
+    border-color: var(--lp-pink);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: var(--lp-eyebrow-size);
+    font-weight: var(--lp-eyebrow-weight);
+    letter-spacing: var(--lp-eyebrow-track);
+    text-transform: uppercase;
+    color: var(--lp-pink-text);
+  }
+  .draft {
+    color: var(--lp-subtle);
+    border: 1px dashed var(--lp-placeholder-border);
+    border-radius: var(--lp-radius-badge);
+    padding: 0 8px;
+  }
+  .metric {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .title {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .client {
+    font-size: 15px;
+    color: var(--lp-muted);
+  }
+  .summary {
+    margin-top: 8px;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--lp-muted);
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--lp-pink-text);
+  }
+  @media (min-width: 900px) {
+    .study {
+      grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr);
+      column-gap: 40px;
+      align-items: start;
+    }
+    .tags,
+    .more {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

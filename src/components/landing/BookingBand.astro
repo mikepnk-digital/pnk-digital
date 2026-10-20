@@ -2,9 +2,8 @@
 // Pink booking band (#book): heading, intro and checks beside the BookingForm.
 // A `copy` slot replaces the default copy column (it must contain the
 // #book-title heading); `form` props are passed through to BookingForm.
-// `calendar`: the copy spans the full width and the Cal.com calendar sits
-// beside the form (calendar first when stacked). Without a CAL_LINK it falls
-// back to the copy-beside-form layout.
+// `calendar`: a "Pick a time" panel above the form whose button opens the
+// Cal.com calendar in a modal (BookingEmbed). Without a CAL_LINK it is left out.
 import Icon from './Icon.astro';
 import BookingForm from './BookingForm.astro';
 import BookingEmbed from './BookingEmbed.astro';
@@ -24,33 +23,36 @@ const withCalendar = calendar && !!CAL_LINK;
 const checks = ['At a time that suits you', 'A plain-English summary afterwards', 'No obligation, no hard sell'];
 ---
 <section id="book" class="band" aria-labelledby="book-title" data-booking-band>
-  <div class:list={['inner', { 'with-calendar': withCalendar }]}>
-    {
-      Astro.slots.has('copy') ? (
-        <div class="copy">
+  <div class="inner">
+    <div class="copy">
+      {
+        Astro.slots.has('copy') ? (
           <slot name="copy" />
-        </div>
-      ) : (
-        <div class="copy">
-          <h2 id="book-title">Find out what your tech really needs: free 30-minute review</h2>
-          <p class="intro">{intro}</p>
-          <ul class="checks">
-            {checks.map((c) => <li><Icon name="check" size={22} />{c}</li>)}
-          </ul>
-        </div>
-      )
-    }
-    {
-      withCalendar && (
-        <div class="card cal-card">
-          <h3 class="card-title">Pick a time</h3>
-          <BookingEmbed linkClass="lp-btn lp-btn--pink" />
-        </div>
-      )
-    }
-    <div class="card">
-      {withCalendar && <h3 class="card-title">Or send us a message</h3>}
-      <BookingForm variant={variant} successLine={successLine} {...form} />
+        ) : (
+          <>
+            <h2 id="book-title">Find out what your tech really needs: free 30-minute review</h2>
+            <p class="intro">{intro}</p>
+            <ul class="checks">
+              {checks.map((c) => <li><Icon name="check" size={22} />{c}</li>)}
+            </ul>
+          </>
+        )
+      }
+    </div>
+    <div class="side">
+      {
+        withCalendar && (
+          <div class="card cal-card">
+            <h3 class="card-title">Pick a time</h3>
+            <p class="card-text">See the live calendar and book a slot that suits you.</p>
+            <BookingEmbed linkClass="lp-btn lp-btn--pink" />
+          </div>
+        )
+      }
+      <div class="card">
+        {withCalendar && <h3 class="card-title">Or send us a message</h3>}
+        <BookingForm variant={variant} successLine={successLine} {...form} />
+      </div>
     </div>
   </div>
 </section>
@@ -103,9 +105,6 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
   .checks :global(svg) {
     flex: none;
   }
-  .with-calendar .copy {
-    flex-basis: 100%;
-  }
   .card-title {
     margin-bottom: 16px;
     font-size: 22px;
@@ -113,14 +112,24 @@ const checks = ['At a time that suits you', 'A plain-English summary afterwards'
     line-height: 1.3;
     color: var(--lp-ink);
   }
-  .cal-card {
-    padding-inline: clamp(12px, 2vw, 24px);
+  /* The calendar panel stacked above the form card. */
+  .side {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
   .cal-card .card-title {
-    padding-inline: clamp(12px, 1.5vw, 16px);
+    margin-bottom: 8px;
+  }
+  .card-text {
+    margin-bottom: 20px;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--lp-muted);
   }
   .card {
-    flex: 1 1 440px;
     min-width: 0;
     background: var(--lp-white);
     border-radius: 28px;

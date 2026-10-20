@@ -4,6 +4,7 @@ import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input, Textarea } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { submitContactForm, ApiError } from '../../utils/api';
+import { track } from '../../lib/analytics';
 import { RESPONSE_PROMISE } from '../../config/site';
 import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/animations';
 
@@ -129,6 +130,8 @@ export function ContactForm({ withTopics = false }: ContactFormProps) {
       setSubmitMessage(response.message || `Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`);
       setFormData(initialFormState);
       startCooldown();
+
+      track('form_submitted', { form: 'contact', topic: topic ?? undefined });
 
       // Google Ads conversion tracking
       if (typeof window.gtag === 'function') {

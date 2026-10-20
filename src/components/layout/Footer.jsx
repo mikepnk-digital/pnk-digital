@@ -1,7 +1,18 @@
 import { motion } from 'framer-motion';
 import { Link } from '@/lib/router';
 import logo from '../../assets/pnk-digital-logo.svg?url';
-import { EMAIL, EMAIL_HREF, LINKEDIN_URL, LOCATION, PHONE_DISPLAY, PHONE_HREF } from '../../config/site';
+import {
+  EMAIL,
+  EMAIL_HREF,
+  LINKEDIN_URL,
+  LOCATION,
+  MAPS_URL,
+  OPENING_HOURS,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  POSTCODE,
+  STREET_ADDRESS,
+} from '../../config/site';
 import { staggerContainer, fadeInUp } from '../../utils/animations';
 
 const footerLinks = {
@@ -86,7 +97,15 @@ export function Footer() {
             <h3 className="font-semibold text-text-primary mb-5 text-sm uppercase tracking-wider">
               Get in Touch
             </h3>
+            {/* NAP block: matches localBusinessJsonLd() (emitted by Layout.astro). */}
+            <address className="not-italic">
             <ul className="space-y-3 mb-6">
+              <li className="text-text-secondary text-sm">
+                PNK Digital
+                {STREET_ADDRESS && <><br />{STREET_ADDRESS}</>}
+                <br />{LOCATION}
+                {POSTCODE && <><br />{POSTCODE}</>}
+              </li>
               <li>
                 <a
                   href={PHONE_HREF}
@@ -103,8 +122,20 @@ export function Footer() {
                   {EMAIL}
                 </a>
               </li>
-              <li className="text-text-secondary text-sm">
-                {LOCATION}
+              {OPENING_HOURS.map((h) => (
+                <li key={h.spec} className="text-text-secondary text-sm">
+                  {h.label}
+                </li>
+              ))}
+              <li>
+                <a
+                  href={MAPS_URL}
+                  rel="noopener"
+                  target="_blank"
+                  className="text-text-secondary text-sm hover:text-neon-cyan transition-colors duration-300"
+                >
+                  View on Google Maps
+                </a>
               </li>
               {LINKEDIN_URL && (
                 <li>
@@ -119,6 +150,7 @@ export function Footer() {
                 </li>
               )}
             </ul>
+            </address>
           </motion.div>
         </div>
 

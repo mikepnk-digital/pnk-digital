@@ -7,6 +7,7 @@ export interface BlogPost {
   author: string;
   slug: string;
   published: boolean;
+  draft: boolean;
   content: string;
   readingTime: string;
 }
@@ -68,7 +69,8 @@ const markdownFiles = import.meta.glob('/content/blog/*.md', {
 function parsePost(raw: string): BlogPost | null {
   const { data, content } = parseFrontmatter(raw);
 
-  if (!data.published) return null;
+  // Live only when published and not staged as a draft.
+  if (!data.published || data.draft) return null;
 
   return {
     title: data.title as string,
@@ -79,6 +81,7 @@ function parsePost(raw: string): BlogPost | null {
     author: (data.author as string) || 'Mike Pink',
     slug: data.slug as string,
     published: data.published as boolean,
+    draft: false,
     content,
     readingTime: calculateReadingTime(content),
   };
@@ -132,9 +135,5 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export const categories = [
-  'AI & Development',
-  'Technical Insights',
-  'Business & Strategy',
-  'Project Spotlights',
-] as const;
+// Case studies live at /work (the old "Project Spotlights" category).
+export const categories = ['AI & Development', 'Technical Insights', 'Business & Strategy'] as const;

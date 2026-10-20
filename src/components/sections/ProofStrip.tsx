@@ -1,6 +1,9 @@
+import { Link } from '@/lib/router';
 import { motion } from 'framer-motion';
 import { Section } from '../ui/Section';
 import { SectionHeading } from '../ui/SectionHeading';
+import { CaseStudyCard } from '../ui/CaseStudyCard';
+import type { CaseStudy } from '../../lib/case-studies';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
 export interface ProofItem {
@@ -13,18 +16,36 @@ export interface ProofItem {
 }
 
 interface ProofStripProps {
-  /** Testimonials now; case studies (Phase 3) join the same list. */
   items: ProofItem[];
+  /** Published case studies, shown above the quotes (up to three). */
+  caseStudies?: CaseStudy[];
   title?: string;
 }
 
-/** Client proof as a row of quote cards. Adding an item is content-only. */
-export function ProofStrip({ items, title = 'What clients say' }: ProofStripProps) {
-  if (items.length === 0) return null;
+/** Client proof: case study cards, then a row of quote cards. Adding either is content-only. */
+export function ProofStrip({ items, caseStudies = [], title = 'What clients say' }: ProofStripProps) {
+  const studies = caseStudies.slice(0, 3);
+  if (items.length === 0 && studies.length === 0) return null;
 
   return (
     <Section id="proof">
       <SectionHeading title={title} gradient />
+
+      {studies.length > 0 && (
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportWithMargin}
+          className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-6 lg:gap-8 mb-6 lg:mb-8"
+        >
+          {studies.map((study) => (
+            <motion.div key={study.slug} variants={fadeInUpLarge}>
+              <CaseStudyCard study={study} />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
 
       <motion.div
         variants={staggerContainer}
@@ -57,6 +78,18 @@ export function ProofStrip({ items, title = 'What clients say' }: ProofStripProp
           </motion.figure>
         ))}
       </motion.div>
+
+      {studies.length > 0 && (
+        <div className="text-center mt-10">
+          <Link
+            to="/work"
+            className="inline-flex items-center gap-2 text-neon-cyan hover:text-neon-purple transition-colors duration-300"
+          >
+            See all work
+            <span>→</span>
+          </Link>
+        </div>
+      )}
     </Section>
   );
 }

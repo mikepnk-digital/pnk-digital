@@ -21,7 +21,10 @@ import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
-import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
+import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
+import { getCaseStudyFor } from '@/lib/case-studies-collection';
+import { faqPageJsonLd, serviceJsonLd } from '@/lib/structured-data';
+import { LOCATION, RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
   PHONE_DISPLAY,
@@ -48,7 +51,8 @@ import {
 } from '@/data/ai-consulting';
 
 const variant = 'b';
-const TITLE = 'AI Consulting for Small Businesses | PNK Digital';
+const caseStudy = await getCaseStudyFor('ai');
+const TITLE = `AI Consulting for Small Businesses in ${LOCATION.split(',')[1].trim()} & the UK | PNK Digital`;
 const DESCRIPTION =
   'We find the processes AI can take off your team, build the first one into the tools you already use, and hand it over. Fixed prices from £1,950. Book a free 30-minute AI Fit Call.';
 const CANONICAL = 'https://pnk-digital.com/ai-consulting';
@@ -61,45 +65,30 @@ const navLinks = [
   { href: '#faq', label: 'FAQ' },
 ];
 
-// FAQPage + Service with one Offer per pricing card (GBP, ex VAT). "from"
-// prices are minimums; the Fractional AI Lead is billed monthly.
+// FAQPage + Service with one Offer per pricing card (prices exclude VAT, as
+// the pricing lead says).
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  faqPageJsonLd(faqs),
+  serviceJsonLd({
     name: 'AI Consulting',
     serviceType: 'AI consulting',
     description: DESCRIPTION,
     url: CANONICAL,
-    provider: { '@type': 'Organization', name: 'PNK Digital', url: 'https://pnk-digital.com' },
-    offers: plans.map((p) => ({
-      '@type': 'Offer',
-      name: p.name,
-      description: p.tagline,
-      url: `${CANONICAL}#pricing`,
-      price: p.price,
-      priceCurrency: 'GBP',
-      priceSpecification: {
-        '@type': p.priceSuffix ? 'PriceSpecification' : 'UnitPriceSpecification',
-        ...(p.from ? { minPrice: p.price } : { price: p.price }),
-        priceCurrency: 'GBP',
-        valueAddedTaxIncluded: false,
-        ...(p.priceSuffix ? {} : { unitCode: 'MON', unitText: 'month' }),
-      },
-    })),
-  },
+    pricingAnchor: 'pricing',
+    plans,
+    vatIncluded: false,
+  }),
 ];
 ---
-<LandingLayout theme={variant} title={TITLE} description={DESCRIPTION} canonical={CANONICAL} jsonLd={jsonLd}>
+<LandingLayout
+  theme={variant}
+  title={TITLE}
+  description={DESCRIPTION}
+  canonical={CANONICAL}
+  ogImage="/og/ai-consulting.png"
+  twitterImage="/og/ai-consulting.png"
+  jsonLd={jsonLd}
+>
   <LandingHeader links={navLinks} />
 
   <main>
@@ -247,7 +236,7 @@ const jsonLd = [
     </section>
 
     <!-- 7. Client stories -->
-    <section id="clients" class="lp-section lp-section--flush-top" aria-labelledby="clients-title">
+    <section id="clients" class="lp-section" aria-labelledby="clients-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
           <span class="lp-eyebrow">Client stories</span>
@@ -262,6 +251,7 @@ const jsonLd = [
             ))
           }
         </ul>
+        {caseStudy && <CaseStudyCard study={caseStudy} />}
         <!-- Placeholder until an AI-specific client quote exists (spec, "Before launch"). -->
         <p class="clients-note">Our first AI pilots are live now. Ask about them on your free AI Fit Call.</p>
       </div>
@@ -429,17 +419,13 @@ const jsonLd = [
 </LandingLayout>
 
 <script>
-  // Same events as /tech-support (phone_click here, tech_review_booked in
-  // BookingForm), tagged page: 'ai-consulting'; plus cta_click and a one-off
-  // pricing_view, which only this page sends.
+  // cta_click and a one-off pricing_view, tagged page: 'ai-consulting'. Phone
+  // clicks (phone_clicked) are sent site-wide from HeadMeta; bookings and form
+  // sends from BookingEmbed and BookingForm.
   const params = { variant: 'b', page: 'ai-consulting' };
   const track = (name: string, extra: Record<string, string> = {}) => {
     if (typeof window.gtag === 'function') window.gtag('event', name, { ...params, ...extra });
   };
-
-  document.querySelectorAll<HTMLAnchorElement>('[data-phone]').forEach((link) => {
-    link.addEventListener('click', () => track('phone_click'));
-  });
 
   // Where the CTA sits: header, sticky bar, or the section's heading id.
   const ctaLocation = (el: Element) => {

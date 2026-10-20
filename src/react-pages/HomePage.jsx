@@ -35,14 +35,17 @@ const steps = [
   },
 ];
 
-/** @param {{ children?: import('react').ReactNode }} props  children: the booking calendar (BookingEmbed, rendered by index.astro). */
-export function HomePage({ children }) {
+/**
+ * @param {{ children?: import('react').ReactNode, caseStudies?: import('../lib/case-studies').CaseStudy[] }} props
+ *   children: the booking calendar (BookingEmbed, rendered by index.astro); caseStudies: for the proof strip.
+ */
+export function HomePage({ children, caseStudies = [] }) {
   return (
     <>
       <Hero />
       <ServicesOverview />
       <CredibilitySection />
-      <ProofStrip items={testimonials} />
+      <ProofStrip items={testimonials} caseStudies={caseStudies} />
 
       {/* How it works */}
       <Section id="how-it-works" background="midnight">
@@ -99,7 +102,7 @@ export function HomePage({ children }) {
                 <h2 className="text-2xl md:text-3xl font-bold text-text-primary">{CALL_LABEL}</h2>
               </div>
               <p className="text-text-secondary">
-                Pick a time below, or call us. Messages get a reply {RESPONSE_PROMISE}.
+                Pick a time that suits you from the live calendar, or call us. Messages get a reply {RESPONSE_PROMISE}.
               </p>
             </div>
             <a
@@ -110,7 +113,7 @@ export function HomePage({ children }) {
               {PHONE_DISPLAY}
             </a>
           </div>
-          {children}
+          <div className="px-2 sm:px-0">{children}</div>
         </div>
       </Section>
     </>

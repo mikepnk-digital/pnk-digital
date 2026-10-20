@@ -1,10 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { BlogPage } from '../../react-pages/BlogPage';
+import { getCaseStudies } from '../../lib/case-studies-collection';
+
+const hasWork = (await getCaseStudies()).some((s) => !s.draft);
 ---
 <Layout
   title="Blog - PNK Digital"
   description="Thoughts on AI-accelerated development, React, AWS, and building modern software. By Mike Pink."
 >
-  <BlogPage client:load />
+  <BlogPage hasWork={hasWork} client:load />
 </Layout>

@@ -2,18 +2,33 @@
 import Layout from '../../layouts/Layout.astro';
 import { BlogPostPage } from '../../react-pages/BlogPostPage';
 import { getPublishedPosts } from '../../lib/posts';
+import { ORG_ID, SITE_URL } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { title: post.data.title, excerpt: post.data.excerpt },
+    props: { title: post.data.title, excerpt: post.data.excerpt, date: post.data.date, author: post.data.author },
   }));
 }
 
 const { slug } = Astro.params;
-const { title, excerpt } = Astro.props;
+const { title, excerpt, date, author } = Astro.props;
+const url = `${SITE_URL}/blog/${slug}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: excerpt,
+  datePublished: date.toISOString().slice(0, 10),
+  author: { '@type': 'Person', name: author },
+  publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'PNK Digital' },
+  mainEntityOfPage: url,
+  url,
+  image: `${SITE_URL}/og-image.png`,
+};
 ---
-<Layout title={`${title} - PNK Digital`} description={excerpt} ogType="article">
+<Layout title={`${title} - PNK Digital`} description={excerpt} ogType="article" jsonLd={jsonLd}>
   <BlogPostPage slug={slug} client:load />
 </Layout>

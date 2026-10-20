@@ -3,12 +3,17 @@ import Layout from '../layouts/Layout.astro';
 import { HomePage } from '../react-pages/HomePage.jsx';
 import BookingEmbed from '../components/landing/BookingEmbed.astro';
 import { LOCATION, YEARS_EXPERIENCE } from '../config/site';
+import { getCaseStudies } from '../lib/case-studies-collection';
+
+const caseStudies = (await getCaseStudies()).slice(0, 3);
 ---
 <Layout
+  ogImage="/og/home.png"
+  twitterImage="/og/home.png"
   title={`Technology Support, AI and Software for Small Businesses | PNK Digital, ${LOCATION.split(',')[0]}`}
   description={`One experienced technology partner for small and growing businesses: tech support plans from £125/month, AI consulting from £1,950, and web apps, AWS and MVPs. ${YEARS_EXPERIENCE} years in financial services. Based in ${LOCATION}.`}
 >
-  <HomePage client:load>
+  <HomePage caseStudies={caseStudies} client:load>
     <BookingEmbed
       theme="dark"
       linkClass="inline-flex items-center px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:bg-brand-pink/90 transition-colors"

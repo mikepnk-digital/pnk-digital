@@ -4,10 +4,19 @@ import { loadEnv } from 'vite';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// /work is noindex until a case study is published (src/pages/work.astro), so
+// keep it out of the sitemap until then. Drafts never reach the build.
+const caseStudiesDir = path.join(__dirname, 'content/case-studies');
+const hasPublishedWork = fs
+  .readdirSync(caseStudiesDir)
+  .filter((f) => f.endsWith('.md'))
+  .some((f) => !/^draft:\s*true\s*$/m.test(fs.readFileSync(path.join(caseStudiesDir, f), 'utf8')));
 
 // Load .env / .env.production (VITE_-prefixed) the way the old Vite build did.
 // Astro's client env prefix is PUBLIC_, so these must be injected via `define`.
@@ -24,11 +33,13 @@ export default defineConfig({
   build: { format: 'file' },
   integrations: [
     react(),
-    // Keep noindex pages out of the sitemap: outreach (/audit/*, /landing/*)
-    // and the tech-support / ai-consulting no-JS thanks pages.
+    // Keep noindex pages out of the sitemap: outreach (/audit/*, /landing/*),
+    // the tech-support / ai-consulting no-JS thanks pages, and /work while empty.
     sitemap({
       filter: (page) =>
-        !/\/(audit|landing)(\/|$)/.test(page) && !/\/(tech-support|ai-consulting)\/thanks(\/|$)/.test(page),
+        !/\/(audit|landing)(\/|$)/.test(page) &&
+        !/\/(tech-support|ai-consulting)\/thanks(\/|$)/.test(page) &&
+        (hasPublishedWork || !/\/work$/.test(page)),
     }),
   ],
   markdown: {
