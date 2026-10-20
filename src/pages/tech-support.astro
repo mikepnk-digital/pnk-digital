@@ -424,15 +424,6 @@ const navLinks = [
   <StickyCta />
 </LandingLayout>
 
-<script>
-  // Phone CTA clicks (secondary conversion), alongside BookingForm's tech_review_booked.
-  document.querySelectorAll<HTMLAnchorElement>('[data-phone]').forEach((link) => {
-    link.addEventListener('click', () => {
-      if (typeof window.gtag === 'function') window.gtag('event', 'phone_click', { variant: 'b' });
-    });
-  });
-</script>
-
 <style>
   .ink {
     color: var(--lp-ink);

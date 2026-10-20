@@ -108,6 +108,15 @@ const twitterImageURL = new URL(twitterImage, Astro.site).href;
   gtag('config', 'AW-17989609549');
 </script>
 
+<script>
+  // phone_clicked for every tel: link on the page (header, footer, CTAs).
+  import { track } from '@/lib/analytics';
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element | null)?.closest?.('a[href^="tel:"]');
+    if (link) track('phone_clicked');
+  });
+</script>
+
 <!-- Site-wide Organization; page-specific JSON-LD (jsonLd prop) follows. -->
 <script type="application/ld+json" is:inline set:html={JSON.stringify(organizationJsonLd())} />
 {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}

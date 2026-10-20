@@ -236,14 +236,24 @@ function handler(event) {
     // Using wildcard for execute-api since the actual URL is a CloudFormation token at synth time
     // Cal.com: the BookingEmbed loads app.cal.com/embed/embed.js, which renders
     // the calendar in an app.cal.com iframe.
+    // Google tag (gtag.js, AW-17989609549, in HeadMeta): the loader comes from
+    // googletagmanager.com; Google Ads conversions and the call_booked /
+    // form_submitted / phone_clicked events go to the Google endpoints below
+    // (Google's CSP guidance for Ads; images are already allowed by https:).
+    const googleTag = [
+      'https://www.googletagmanager.com',
+      'https://www.googleadservices.com',
+      'https://googleads.g.doubleclick.net',
+      'https://www.google.com',
+    ];
     const directives = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.cal.com",
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.cal.com ${googleTag.join(' ')}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://*.execute-api.eu-west-2.amazonaws.com https://app.cal.com",
-      "frame-src https://app.cal.com https://cal.com",
+      `connect-src 'self' https://*.execute-api.eu-west-2.amazonaws.com https://app.cal.com ${googleTag.join(' ')} https://*.google-analytics.com https://*.analytics.google.com`,
+      "frame-src https://app.cal.com https://cal.com https://td.doubleclick.net https://www.googletagmanager.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

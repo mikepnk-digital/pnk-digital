@@ -419,17 +419,13 @@ const jsonLd = [
 </LandingLayout>
 
 <script>
-  // Same events as /tech-support (phone_click here, tech_review_booked in
-  // BookingForm), tagged page: 'ai-consulting'; plus cta_click and a one-off
-  // pricing_view, which only this page sends.
+  // cta_click and a one-off pricing_view, tagged page: 'ai-consulting'. Phone
+  // clicks (phone_clicked) are sent site-wide from HeadMeta; bookings and form
+  // sends from BookingEmbed and BookingForm.
   const params = { variant: 'b', page: 'ai-consulting' };
   const track = (name: string, extra: Record<string, string> = {}) => {
     if (typeof window.gtag === 'function') window.gtag('event', name, { ...params, ...extra });
   };
-
-  document.querySelectorAll<HTMLAnchorElement>('[data-phone]').forEach((link) => {
-    link.addEventListener('click', () => track('phone_click'));
-  });
 
   // Where the CTA sits: header, sticky bar, or the section's heading id.
   const ctaLocation = (el: Element) => {
