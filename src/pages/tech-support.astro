@@ -7,7 +7,8 @@
 // Honesty rule: no team size, years trading, certifications, client counts or
 // statistics anywhere – copy, meta or alt text. Exceptions: client
 // testimonials, which must use client-approved wording and names (see
-// `testimonials` in tech-support-service.ts); Mike's photo and name in "Why
+// `testimonials` in tech-support-service.ts); the support case study and its
+// result (content/case-studies, supplied by Mike); Mike's photo and name in "Why
 // PNK Digital"; and the contact details (phone, email, location from
 // src/config/site.ts) and statutory company disclosure in the footer.
 import LandingLayout from '@/layouts/LandingLayout.astro';
@@ -24,6 +25,8 @@ import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
+import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
+import { getCaseStudyFor } from '@/lib/case-studies-collection';
 import { RESPONSE_PROMISE } from '@/config/site';
 import {
   PHONE_DISPLAY,
@@ -46,6 +49,7 @@ import {
 } from '@/data/tech-support-service';
 
 const variant = 'b';
+const caseStudy = await getCaseStudyFor('support');
 const pull = testimonials.find((t) => t.pullQuote)!;
 const navLinks = [
   { href: '#plans', label: 'Plans' },
@@ -185,6 +189,7 @@ const navLinks = [
             ))
           }
         </ul>
+        {caseStudy && <CaseStudyCard study={caseStudy} />}
         <p class="clients-note">Want to hear more? Ask us about current clients on your free technology review.</p>
       </div>
     </section>

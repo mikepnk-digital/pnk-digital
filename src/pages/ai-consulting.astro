@@ -21,6 +21,8 @@ import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
 import LandingPhoto from '@/components/landing/LandingPhoto.astro';
+import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
+import { getCaseStudyFor } from '@/lib/case-studies-collection';
 import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '@/config/site';
 import {
   BOOKING_SOURCE,
@@ -48,6 +50,7 @@ import {
 } from '@/data/ai-consulting';
 
 const variant = 'b';
+const caseStudy = await getCaseStudyFor('ai');
 const TITLE = 'AI Consulting for Small Businesses | PNK Digital';
 const DESCRIPTION =
   'We find the processes AI can take off your team, build the first one into the tools you already use, and hand it over. Fixed prices from £1,950. Book a free 30-minute AI Fit Call.';
@@ -262,6 +265,7 @@ const jsonLd = [
             ))
           }
         </ul>
+        {caseStudy && <CaseStudyCard study={caseStudy} />}
         <!-- Placeholder until an AI-specific client quote exists (spec, "Before launch"). -->
         <p class="clients-note">Our first AI pilots are live now. Ask about them on your free AI Fit Call.</p>
       </div>

@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { CaseStudyPage } from '../../react-pages/CaseStudyPage';
+import { getCaseStudies } from '../../lib/case-studies-collection';
+import type { CaseStudy } from '../../lib/case-studies';
+
+export async function getStaticPaths() {
+  const studies = await getCaseStudies();
+  return studies.map((study) => ({ params: { slug: study.slug }, props: { study } }));
+}
+
+const { study } = Astro.props as { study: CaseStudy };
+---
+<Layout
+  title={`${study.title} | PNK Digital`}
+  description={study.summary}
+  ogType="article"
+  ogImage={`/og/work-${study.slug}.png`}
+  twitterImage={`/og/work-${study.slug}.png`}
+  robots={study.draft ? 'noindex, nofollow' : undefined}
+>
+  <CaseStudyPage study={study} client:load />
+</Layout>

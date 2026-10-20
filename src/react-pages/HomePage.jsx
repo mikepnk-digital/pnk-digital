@@ -35,14 +35,17 @@ const steps = [
   },
 ];
 
-/** @param {{ children?: import('react').ReactNode }} props  children: the booking calendar (BookingEmbed, rendered by index.astro). */
-export function HomePage({ children }) {
+/**
+ * @param {{ children?: import('react').ReactNode, caseStudies?: import('../lib/case-studies').CaseStudy[] }} props
+ *   children: the booking calendar (BookingEmbed, rendered by index.astro); caseStudies: for the proof strip.
+ */
+export function HomePage({ children, caseStudies = [] }) {
   return (
     <>
       <Hero />
       <ServicesOverview />
       <CredibilitySection />
-      <ProofStrip items={testimonials} />
+      <ProofStrip items={testimonials} caseStudies={caseStudies} />
 
       {/* How it works */}
       <Section id="how-it-works" background="midnight">
