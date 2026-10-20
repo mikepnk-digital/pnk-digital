@@ -124,6 +124,26 @@ export const compare: { columns: CompareColumn[]; rows: CompareRow[]; source: st
   source: 'Market figures from published UK pricing, October 2026.',
 };
 
+// "What a pilot can look like": use cases and ROI figures carried over from the
+// retired /services/ai-employees page (now a 301 to /ai-consulting).
+export const pilotExamples: IconItem[] = [
+  { icon: 'mail', title: 'Email triage', body: 'Classify, prioritise, draft replies, mark junk as read' },
+  { icon: 'clock', title: 'Meeting prep', body: 'Pull relevant docs, summarise previous notes, draft agendas' },
+  { icon: 'code', title: 'Developer productivity', body: 'PR reviews, CI monitoring, bug investigation, documentation' },
+  { icon: 'tag', title: 'Sales pipeline', body: 'CRM updates via chat, lead research, follow-up reminders' },
+  { icon: 'file', title: 'Finance automation', body: 'Expense categorisation, invoice matching, cash flow alerts' },
+  { icon: 'chat', title: 'HR and onboarding', body: 'New starter setup, policy Q&A, training reminders' },
+];
+
+export const pilotRoi: { columns: CompareColumn[]; rows: CompareRow[]; source: string } = {
+  columns: [{ label: '10 people' }, { label: '25 people' }, { label: '50 people' }],
+  rows: [
+    { label: 'Time saved per week', values: ['40 hours', '100 hours', '200 hours'] },
+    { label: 'Annual value', values: ['£40,000', '£100,000', '£200,000'] },
+  ],
+  source: 'Annual value at the average UK knowledge worker salary.',
+};
+
 export const disciplines = [
   'Software engineering',
   'Financial services',

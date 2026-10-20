@@ -4,12 +4,12 @@
 // Positioning: "Your business technology, taken care of."
 // Copy: design-assets/copy/pnk-digital-landing-page-copy.md, held in
 // src/data/tech-support-service.ts.
-// Honesty rule: no individual's name, team size, locations, years trading,
-// certifications, client counts or statistics anywhere – copy, meta or alt
-// text. Exception: client testimonials, which must use client-approved
-// wording and names (see `testimonials` in tech-support-service.ts). Sole exception: the footer's statutory company disclosure
-// (registered name, number and office), which is a legal requirement, not a
-// trust claim.
+// Honesty rule: no team size, years trading, certifications, client counts or
+// statistics anywhere – copy, meta or alt text. Exceptions: client
+// testimonials, which must use client-approved wording and names (see
+// `testimonials` in tech-support-service.ts); Mike's photo and name in "Why
+// PNK Digital"; and the contact details (phone, email, location from
+// src/config/site.ts) and statutory company disclosure in the footer.
 import LandingLayout from '@/layouts/LandingLayout.astro';
 import LandingHeader from '@/components/landing/LandingHeader.astro';
 import HeroCompany from '@/components/landing/HeroCompany.astro';
@@ -23,6 +23,7 @@ import LandingFooter from '@/components/landing/LandingFooter.astro';
 import StickyCta from '@/components/landing/StickyCta.astro';
 import Icon from '@/components/landing/Icon.astro';
 import Testimonial from '@/components/landing/Testimonial.astro';
+import LandingPhoto from '@/components/landing/LandingPhoto.astro';
 import { RESPONSE_PROMISE } from '@/config/site';
 import {
   PHONE_DISPLAY,
@@ -122,6 +123,12 @@ const navLinks = [
           <ul class="chips" aria-label="What we bring together">
             {disciplines.map((d) => <li>{d}</li>)}
           </ul>
+          <figure class="founder">
+            <div class="founder-photo">
+              <LandingPhoto photo="mike-founder" alt="Mike Pink" widths={[120, 240]} sizes="120px" />
+            </div>
+            <figcaption>Mike Pink, founder — the person who does the work.</figcaption>
+          </figure>
         </div>
         <div class="diff-panel">
           <ul class="principles">
@@ -495,6 +502,31 @@ const navLinks = [
     border-radius: var(--lp-radius-badge);
     border: 1px solid var(--lp-on-slate-rule);
     color: var(--lp-white);
+  }
+  .founder {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  .founder-photo {
+    flex: none;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--lp-radius-card);
+    overflow: hidden;
+  }
+  .founder figcaption {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--lp-white);
+  }
+  @media (max-width: 379.98px) {
+    .founder-photo {
+      width: 96px;
+      height: 96px;
+    }
   }
   .diff-panel {
     flex: 1 1 420px;

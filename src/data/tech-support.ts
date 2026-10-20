@@ -28,12 +28,15 @@ export type Plan = {
   response?: string;
   /** e.g. "Everything in Essentials, plus:" */
   includes?: string;
-  features: string[];
+  features: PlanFeature[];
   /** Small line under the features, above `note` (version B). */
   detail?: string;
   /** Small italic line under the features (version B). */
   note?: string;
 };
+
+/** A plain bullet, or one with an inline link: `before` + link + `after`. */
+export type PlanFeature = string | { before: string; link: { href: string; label: string }; after?: string };
 
 export type CompareValue = boolean | string;
 export type CompareGroup = { title: string; rows: { label: string; v: CompareValue[] }[] };

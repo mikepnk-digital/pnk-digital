@@ -57,7 +57,14 @@ const titleId = `plan-${plan.id}-title`;
   <div class="features">
     {plan.includes && <p class="includes">{plan.includes}</p>}
     <ul>
-      {plan.features.map((f) => <li><Icon name="check" size={18} /><span>{f}</span></li>)}
+      {
+        plan.features.map((f) => (
+          <li>
+            <Icon name="check" size={18} />
+            {typeof f === 'string' ? <span>{f}</span> : <span>{f.before}<a href={f.link.href}>{f.link.label}</a>{f.after}</span>}
+          </li>
+        ))
+      }
     </ul>
     {plan.detail && <p class="detail">{plan.detail}</p>}
     {plan.note && <p class="note">{plan.note}</p>}

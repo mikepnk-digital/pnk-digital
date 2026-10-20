@@ -1,6 +1,6 @@
 // Tech Support landing page, version B (/tech-support).
 // Copy is lifted from design-assets/copy/pnk-digital-landing-page-copy.md.
-// Honesty rule (see tech-support.astro): no client logos, testimonials, reviews,
+// Honesty rule (see tech-support.astro): no client logos, reviews,
 // certifications, years trading, customer numbers or statistics.
 
 import type { Faq, Plan, Step } from './tech-support';
@@ -120,7 +120,11 @@ export const plans: Plan[] = [
     features: [
       'Around 10 hours of hands-on work each month, with priority response',
       'Ongoing development and custom software',
-      'Business process automation and practical AI',
+      {
+        before: 'Business process automation (AI work is quoted separately — see ',
+        link: { href: '/ai-consulting', label: 'AI consulting' },
+        after: ')',
+      },
       'Cloud infrastructure management',
       'A 12-month technology roadmap, reviewed quarterly',
       'Supplier and software management',
