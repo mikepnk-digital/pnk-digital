@@ -4,9 +4,11 @@ import { Check, Code2, LifeBuoy } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
+type Bullet = { label?: string; href?: string; text: string };
+
 // The homepage's "two doors": the recurring offers first, then build work.
 // Facts and prices are from the /tech-support, /ai-consulting and /services copy.
-const doors = [
+const doors: { icon: typeof LifeBuoy; title: string; intro: string; bullets: Bullet[]; href: string; color: string }[] = [
   {
     icon: LifeBuoy,
     title: 'Run your business',
