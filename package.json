@@ -18,7 +18,6 @@
     "cdk:destroy:dev": "cd cdk && npm run destroy:dev"
   },
   "dependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "^4.60.0",
     "@tailwindcss/vite": "^4.1.18",
     "framer-motion": "^12.26.2",
     "lucide-react": "^0.562.0",
