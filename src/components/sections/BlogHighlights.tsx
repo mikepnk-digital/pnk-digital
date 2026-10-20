@@ -6,10 +6,15 @@ import { BlogPostCard } from '../ui/BlogPostCard';
 import { getAllPosts } from '../../lib/blog';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
+/** Hide the section once the newest post is older than this. */
+const MAX_AGE_DAYS = 90;
+
 export function BlogHighlights() {
   const recentPosts = getAllPosts().slice(0, 3);
 
   if (recentPosts.length === 0) return null;
+  const newestAgeDays = (Date.now() - new Date(recentPosts[0].date).getTime()) / 86_400_000;
+  if (newestAgeDays > MAX_AGE_DAYS) return null;
 
   return (
     <Section id="blog-highlights">

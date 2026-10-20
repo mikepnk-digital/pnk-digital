@@ -1,99 +1,55 @@
 import { Link } from '@/lib/router';
-import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Code2, Cloud, Zap, Cpu, LifeBuoy, Sparkles } from 'lucide-react';
+import { Check, Code2, LifeBuoy } from 'lucide-react';
 import { Section } from '../ui/Section';
-import { orbPresets } from '../ui/orbPresets';
-import { SectionHeading } from '../ui/SectionHeading';
 import { staggerContainer, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 
-// The first two link to their landing pages; copy is from those pages' heroes.
-const services = [
+// The homepage's "two doors": the recurring offers first, then build work.
+// Facts and prices are from the /tech-support, /ai-consulting and /services copy.
+const doors = [
   {
     icon: LifeBuoy,
-    title: 'Tech Support Plans',
-    description: 'Your business technology, taken care of. Website, email, Microsoft 365, security, automation and technical support – managed by one experienced technology partner. Plans from £125/month.',
+    title: 'Run your business',
+    intro: 'Support and AI for the business you already have.',
+    bullets: [
+      { label: 'Tech Support Plans', href: '/tech-support', text: 'website, email, Microsoft 365 and security, looked after from £125/month.' },
+      { label: 'AI Consulting', href: '/ai-consulting', text: 'we find the processes AI can take off your team and build the first one. Fixed prices from £1,950.' },
+      { text: 'One experienced technology partner instead of a collection of suppliers. No surprise bills.' },
+    ],
+    href: '/services#run',
     color: 'neon-cyan',
-    href: '/tech-support',
-  },
-  {
-    icon: Sparkles,
-    title: 'AI Consulting',
-    description: 'AI that actually does the work. We find the processes AI can take off your team, build the first one into the tools you already use, and hand it over. Fixed prices from £1,950.',
-    color: 'brand-pink',
-    href: '/ai-consulting',
   },
   {
     icon: Code2,
-    title: 'Web Application Development',
-    description: 'Custom web apps that solve real business problems - dashboards, portals, booking systems, and more. Production-ready in weeks, not months.',
-    color: 'neon-cyan',
-  },
-  {
-    icon: Cloud,
-    title: 'AWS Integration & Infrastructure',
-    description: 'Scalable, secure cloud infrastructure on AWS. Serverless APIs, databases, authentication, and CI/CD - architected for reliability from day one.',
-    color: 'neon-purple',
-  },
-  {
-    icon: Zap,
-    title: 'AI-Powered MVPs',
-    description: 'Go from idea to working product fast. We use AI-accelerated workflows to prototype, build, and ship MVPs that let you validate with real users quickly.',
+    title: 'Build something',
+    intro: 'New software, built properly and handed over.',
+    bullets: [
+      { label: 'Web applications', text: 'customer portals, internal dashboards, booking systems and more.' },
+      { label: 'AWS integration', text: 'scalable, secure cloud infrastructure, architected for reliability from day one.' },
+      { label: 'AI-powered MVPs', text: 'a working product to validate with real users in weeks, not months.' },
+    ],
+    href: '/services#build',
     color: 'brand-pink',
-  },
-  {
-    icon: Cpu,
-    title: 'AI Integration',
-    description: 'Embed intelligent capabilities into your existing products. From chatbots to content generation to workflow automation - AI that actually solves problems.',
-    color: 'neon-green',
   },
 ];
 
-const colorMap: Record<string, { bg: string; border: string; text: string; glow: string }> = {
+const colorMap: Record<string, { bg: string; border: string; text: string }> = {
   'neon-cyan': {
     bg: 'from-neon-cyan/20 to-neon-cyan/5',
-    border: 'border-neon-cyan/20 group-hover:border-neon-cyan/40',
+    border: 'border-neon-cyan/20',
     text: 'text-neon-cyan',
-    glow: 'group-hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]',
-  },
-  'neon-purple': {
-    bg: 'from-neon-purple/20 to-neon-purple/5',
-    border: 'border-neon-purple/20 group-hover:border-neon-purple/40',
-    text: 'text-neon-purple',
-    glow: 'group-hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]',
   },
   'brand-pink': {
     bg: 'from-brand-pink/20 to-brand-pink/5',
-    border: 'border-brand-pink/20 group-hover:border-brand-pink/40',
+    border: 'border-brand-pink/20',
     text: 'text-brand-pink',
-    glow: 'group-hover:shadow-[0_0_30px_rgba(244,23,140,0.3)]',
-  },
-  'neon-green': {
-    bg: 'from-neon-green/20 to-neon-green/5',
-    border: 'border-neon-green/20 group-hover:border-neon-green/40',
-    text: 'text-neon-green',
-    glow: 'group-hover:shadow-[0_0_30px_rgba(0,255,136,0.3)]',
   },
 };
 
-// Cards with an href link to their own page; the rest are plain cards.
-function CardWrapper({ href, children }: { href?: string; children: ReactNode }) {
-  return href ? (
-    <Link to={href} className="block h-full rounded-2xl">
-      {children}
-    </Link>
-  ) : (
-    <>{children}</>
-  );
-}
-
 export function ServicesOverview() {
   return (
-    <Section id="services-overview" orbs={orbPresets.servicesLeft}>
-      <SectionHeading title="What We Build" gradient />
-      <p className="text-text-secondary text-center max-w-2xl mx-auto mb-12 -mt-4">
-        Six things we do really well.
-      </p>
+    <Section id="services-overview" padding="none" className="pb-20 md:pb-28">
+      <h2 className="sr-only">How we can help</h2>
 
       <motion.div
         variants={staggerContainer}
@@ -102,67 +58,65 @@ export function ServicesOverview() {
         viewport={viewportWithMargin}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
       >
-        {services.map((service) => {
-          const colors = colorMap[service.color];
+        {doors.map((door) => {
+          const colors = colorMap[door.color];
           return (
-            <motion.div key={service.title} variants={fadeInUpLarge}>
-              <CardWrapper href={service.href}>
+            <motion.div key={door.title} variants={fadeInUpLarge}>
               <div className="
-                relative p-6 rounded-2xl
+                relative p-6 md:p-8 rounded-2xl h-full
                 bg-midnight/60 backdrop-blur-sm
                 border border-white/10
                 hover:border-white/20
-                hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]
                 transition-all duration-300
-                group h-full
+                flex flex-col
               ">
-                <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-3">
                   <div className={`
-                    w-12 h-12 rounded-xl mb-5
+                    w-12 h-12 rounded-xl shrink-0
                     bg-gradient-to-br ${colors.bg}
                     ${colors.border} border
                     flex items-center justify-center
-                    ${colors.glow}
-                    transition-all duration-300
                   `}>
-                    <service.icon className={`w-6 h-6 ${colors.text}`} strokeWidth={1.5} />
+                    <door.icon className={`w-6 h-6 ${colors.text}`} strokeWidth={1.5} />
                   </div>
-
-                  <h3 className="text-xl font-semibold text-text-primary mb-3 group-hover:text-white transition-colors">
-                    {service.title}
+                  <h3 className="text-2xl md:text-3xl font-bold text-text-primary">
+                    {door.title}
                   </h3>
-
-                  <p className="text-text-secondary text-sm leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  {service.href && (
-                    <span className={`inline-flex items-center gap-2 mt-4 text-sm font-medium ${colors.text}`}>
-                      Learn more <span aria-hidden="true">→</span>
-                    </span>
-                  )}
                 </div>
+
+                <p className="text-text-secondary mb-6">{door.intro}</p>
+
+                <ul className="space-y-4 mb-8 flex-1">
+                  {door.bullets.map((b) => (
+                    <li key={b.text} className="flex items-start gap-3">
+                      <Check className={`w-5 h-5 mt-0.5 shrink-0 ${colors.text}`} strokeWidth={2} />
+                      <span className="text-text-secondary leading-relaxed">
+                        {b.label && (
+                          b.href ? (
+                            <Link to={b.href} className="font-semibold text-text-primary hover:text-neon-cyan transition-colors">
+                              {b.label}
+                            </Link>
+                          ) : (
+                            <span className="font-semibold text-text-primary">{b.label}</span>
+                          )
+                        )}
+                        {b.label && ': '}
+                        {b.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to={door.href}
+                  className={`inline-flex items-center gap-2 font-medium ${colors.text} hover:text-neon-purple transition-colors duration-300`}
+                >
+                  See how it works <span aria-hidden="true">→</span>
+                </Link>
               </div>
-              </CardWrapper>
             </motion.div>
           );
         })}
-      </motion.div>
-
-      <motion.div
-        variants={fadeInUpLarge}
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportWithMargin}
-        className="text-center mt-10"
-      >
-        <Link
-          to="/services"
-          className="inline-flex items-center gap-2 text-neon-cyan hover:text-neon-purple transition-colors duration-300"
-        >
-          View all services in detail
-          <span>→</span>
-        </Link>
       </motion.div>
     </Section>
   );
