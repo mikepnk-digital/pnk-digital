@@ -1,11 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { HomePage } from '../react-pages/HomePage.jsx';
-import { YEARS_EXPERIENCE } from '../config/site';
+import BookingEmbed from '../components/landing/BookingEmbed.astro';
+import { LOCATION, YEARS_EXPERIENCE } from '../config/site';
 ---
 <Layout
-  title="PNK Digital - Mike Pink | Senior Full-Stack Developer"
-  description={`PNK Digital is run by Mike Pink, a senior full-stack developer with ${YEARS_EXPERIENCE} years experience. React, Node.js, AWS. AI-accelerated delivery in weeks, not months. Work directly with Mike - no agency layers.`}
+  title={`Technology Support, AI and Software for Small Businesses | PNK Digital, ${LOCATION.split(',')[0]}`}
+  description={`One experienced technology partner for small and growing businesses: tech support plans from £125/month, AI consulting from £1,950, and web apps, AWS and MVPs. ${YEARS_EXPERIENCE} years in financial services. Based in ${LOCATION}.`}
 >
-  <HomePage client:load />
+  <HomePage client:load>
+    <BookingEmbed
+      theme="dark"
+      linkClass="inline-flex items-center px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:bg-brand-pink/90 transition-colors"
+    />
+  </HomePage>
 </Layout>

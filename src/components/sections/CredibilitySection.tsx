@@ -1,41 +1,48 @@
 import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { orbPresets } from '../ui/orbPresets';
 import { SectionHeading } from '../ui/SectionHeading';
+import { GradientText } from '../ui/GradientText';
 import { staggerContainer, fadeInUp, fadeInUpLarge, viewportWithMargin } from '../../utils/animations';
 import mikePinkPhoto from '../../assets/mike-pink.jpg?url';
 import { YEARS_EXPERIENCE } from '../../config/site';
 
-const technologies = [
-  'React', 'TypeScript', 'Next.js', 'Node.js', 'AWS',
-  'Tailwind CSS', 'PostgreSQL', 'DynamoDB', 'OpenAI', 'Claude API',
+// Condensed from "PNK Digital is one person. That's the point." on /about.
+const points = [
+  { label: 'Low overhead', detail: 'No office, no middle management, no bloated margins.' },
+  { label: 'Direct communication', detail: 'You talk to the person doing the work. Questions answered in hours.' },
+  { label: 'Senior expertise', detail: `${YEARS_EXPERIENCE} years of experience on every project. No juniors, no bait-and-switch.` },
+  { label: 'Accountability', detail: "One person, full ownership. If something's wrong, we fix it fast." },
 ];
+
+const stats = [`${YEARS_EXPERIENCE} years`, 'Financial services', 'One point of contact'];
 
 export function CredibilitySection() {
   return (
     <Section id="credibility" background="midnight" orbs={orbPresets.aboutRight}>
-      <SectionHeading title="Why Work With Us" gradient />
+      <SectionHeading title="Why PNK Digital" gradient />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        {/* Bio & photo */}
-        <motion.div
+        <motion.figure
           variants={fadeInUpLarge}
           initial="hidden"
           whileInView="visible"
           viewport={viewportWithMargin}
+          className="w-full max-w-sm mx-auto lg:mx-0"
         >
-          <div className="
-            w-full max-w-sm mx-auto lg:mx-0 aspect-[4/5] rounded-2xl mb-8
-            border border-white/10
-            overflow-hidden
-          ">
+          <div className="aspect-[4/5] rounded-2xl border border-white/10 overflow-hidden">
             <img
               src={mikePinkPhoto}
-              alt="Mike Pink - Senior Full-Stack Developer"
+              alt="Mike Pink, founder of PNK Digital"
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </div>
-        </motion.div>
+          <figcaption className="mt-4 text-sm text-text-muted text-center lg:text-left">
+            Mike Pink, founder — the person who does the work.
+          </figcaption>
+        </motion.figure>
 
         <motion.div
           variants={staggerContainer}
@@ -43,71 +50,30 @@ export function CredibilitySection() {
           whileInView="visible"
           viewport={viewportWithMargin}
         >
-          <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
-            PNK Digital is run by Mike Pink, a senior React and AWS developer with {YEARS_EXPERIENCE} years building
-            production software for startups, scale-ups, and enterprise clients. We pair that experience with
-            AI-accelerated workflows to deliver better software, faster, at a fraction of what
-            agencies charge.
-          </motion.p>
+          <motion.h3 variants={fadeInUp} className="text-2xl md:text-3xl font-bold text-text-primary mb-8">
+            PNK Digital is <GradientText>one person.</GradientText> That's the point.
+          </motion.h3>
 
-          <motion.p variants={fadeInUp} className="text-text-secondary leading-relaxed mb-8">
-            When you work with PNK Digital, you get a single senior developer who owns your project end-to-end.
-            No account managers. No handoffs. No juniors learning on your budget. Just direct
-            communication with the person writing your code - and results that speak for themselves.
-          </motion.p>
+          <motion.ul variants={fadeInUp} className="space-y-5 mb-10">
+            {points.map((point) => (
+              <li key={point.label} className="flex items-start gap-3">
+                <Check className="w-5 h-5 mt-0.5 shrink-0 text-neon-cyan" strokeWidth={2} />
+                <p className="text-text-secondary leading-relaxed">
+                  <span className="font-semibold text-text-primary">{point.label}.</span> {point.detail}
+                </p>
+              </li>
+            ))}
+          </motion.ul>
 
-          {/* Stats */}
-          <motion.div variants={fadeInUp} className="grid grid-cols-3 gap-4 mb-10">
-            {[
-              { value: String(YEARS_EXPERIENCE), label: 'Years Experience' },
-              { value: 'Senior', label: 'Level Expertise' },
-              { value: 'Direct', label: 'Communication' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center p-4 rounded-xl bg-void/50 border border-white/5">
-                <div className="text-2xl font-bold text-neon-cyan mb-1">{stat.value}</div>
-                <div className="text-text-muted text-xs uppercase tracking-wider">{stat.label}</div>
+          <motion.div variants={fadeInUp} className="grid grid-cols-3 gap-3 sm:gap-4">
+            {stats.map((stat) => (
+              <div key={stat} className="flex items-center justify-center text-center p-3 sm:p-4 rounded-xl bg-void/50 border border-white/5">
+                <span className="text-sm sm:text-base font-bold text-neon-cyan leading-snug">{stat}</span>
               </div>
             ))}
           </motion.div>
-
-          {/* Tech stack */}
-          <motion.div variants={fadeInUp}>
-            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">
-              Technologies We Work With
-            </h3>
-            <div className="flex flex-wrap gap-3">
-              {technologies.map((tech) => (
-                <span
-                  key={tech}
-                  className="
-                    px-3 py-1.5 text-sm rounded-lg
-                    bg-white/5 text-text-secondary
-                    border border-white/10
-                    hover:border-white/20
-                    transition-colors duration-200
-                  "
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </motion.div>
         </motion.div>
       </div>
-
-      {/* Social proof - replace with real testimonials as they come in */}
-      <motion.div
-        variants={fadeInUpLarge}
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportWithMargin}
-        className="mt-16 max-w-3xl mx-auto text-center"
-      >
-        <p className="text-text-secondary text-lg leading-relaxed">
-          Mike has built production software for startups, agencies, and enterprise clients for over {YEARS_EXPERIENCE} years.
-          Want to see if we're a good fit? <a href="/contact" className="text-neon-cyan hover:underline">Let's have a conversation</a>.
-        </p>
-      </motion.div>
     </Section>
   );
 }

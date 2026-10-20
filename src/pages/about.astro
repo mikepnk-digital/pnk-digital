@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { AboutPage } from '../react-pages/AboutPage';
+import { LINKEDIN_URL } from '../config/site';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -8,7 +9,7 @@ const jsonLd = {
   name: 'Mike Pink',
   jobTitle: 'Founder & Developer',
   url: 'https://pnk-digital.com',
-  sameAs: [],
+  sameAs: LINKEDIN_URL ? [LINKEDIN_URL] : [],
   worksFor: { '@type': 'Organization', name: 'PNK Digital', url: 'https://pnk-digital.com' },
   knowsAbout: ['React', 'AWS', 'TypeScript', 'AI Integration', 'Software Development'],
 };

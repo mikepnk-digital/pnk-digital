@@ -6,7 +6,7 @@ import { Section } from '../components/ui/Section';
 import { orbPresets } from '../components/ui/orbPresets';
 import { GradientText } from '../components/ui/GradientText';
 import { CtaBanner } from '../components/sections/CtaBanner';
-import { CALL_LABEL, YEARS_EXPERIENCE } from '../config/site';
+import { CALL_LABEL, LINKEDIN_URL, LOCATION, YEARS_EXPERIENCE } from '../config/site';
 import { staggerContainer, fadeInUp, fadeInUpLarge, fadeInLeft, fadeInRight, viewportWithMargin } from '../utils/animations';
 
 const processSteps = [
@@ -78,6 +78,16 @@ export function AboutPage() {
                 className="w-full h-full object-cover"
               />
             </div>
+            <div className="w-full max-w-md mx-auto lg:mx-0 mt-4 text-sm text-text-muted text-center lg:text-left space-y-1">
+              <p>Based in {LOCATION}; working with businesses across the UK.</p>
+              {LINKEDIN_URL && (
+                <p>
+                  <a href={LINKEDIN_URL} rel="me noopener" target="_blank" className="text-neon-cyan hover:underline">
+                    Mike Pink on LinkedIn
+                  </a>
+                </p>
+              )}
+            </div>
           </motion.div>
 
           {/* Story */}
@@ -108,11 +118,25 @@ export function AboutPage() {
             </motion.p>
 
             <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
+              Much of that work has been in financial services: insurance claims, pensions and life
+              insurance. That's where you learn to treat data with care: knowing where it lives, who
+              can see it and what the regulator expects, and building software that stands up to an
+              audit. We bring the same habits to every client, whatever their size.
+            </motion.p>
+
+            <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
               Mike started PNK Digital in the belief that there was a better way. AI tooling has
               changed what a single experienced developer can ship. The productivity gains
               are real - not because AI writes perfect code, but because it handles the tedious
               parts and frees us up for the things that actually matter: architecture, user
               experience, and getting your product to market.
+            </motion.p>
+
+            <motion.p variants={fadeInUp} className="text-lg text-text-secondary leading-relaxed mb-6">
+              Tech support and AI consulting came later, for a simple reason: the businesses we built
+              software for kept asking who looks after the rest. Their website, email, domains and
+              accounts, and now the AI tools their teams are already using. So we do that too, with
+              the same person answering the phone.
             </motion.p>
 
             <motion.p variants={fadeInUp} className="text-text-secondary leading-relaxed">

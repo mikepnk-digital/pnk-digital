@@ -10,6 +10,27 @@ import { staggerContainer, fadeInUp, viewportWithMargin } from '../../utils/anim
 const COOLDOWN_SECONDS = 60;
 const COOLDOWN_STORAGE_KEY = 'contactForm_lastSubmit';
 
+// The /contact selector: each choice changes the message prompt, and the
+// choice is prefixed to the message (the API only stores the message text).
+const topics = {
+  support: {
+    label: 'Support',
+    prompt: "What's causing problems?",
+    placeholder: 'Website, email, Microsoft 365, security – what is not working, and who does it affect?',
+  },
+  ai: {
+    label: 'AI',
+    prompt: "What takes up your team's time?",
+    placeholder: 'Which tasks fill your week? Roughly how many people do them, and how often?',
+  },
+  build: {
+    label: 'Build',
+    prompt: 'Tell us about your project',
+    placeholder: 'What are you building? What problem are you trying to solve? Any timeline or budget in mind?',
+  },
+} as const;
+type Topic = keyof typeof topics;
+
 const initialFormState = {
   name: '',
   email: '',
@@ -17,8 +38,15 @@ const initialFormState = {
   message: '',
 };
 
-export function ContactForm() {
+interface ContactFormProps {
+  /** Show the Support / AI / Build selector above the form. */
+  withTopics?: boolean;
+}
+
+export function ContactForm({ withTopics = false }: ContactFormProps) {
   const [formData, setFormData] = useState(initialFormState);
+  const [topic, setTopic] = useState<Topic | null>(null);
+  const prompt = topics[topic ?? 'build'];
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [submitMessage, setSubmitMessage] = useState('');
@@ -94,6 +122,7 @@ export function ContactForm() {
     try {
       const response = await submitContactForm({
         ...formData,
+        message: topic ? `Enquiry about: ${topics[topic].label}\n\n${formData.message}` : formData.message,
         _t: elapsed,
       });
       setSubmitStatus('success');
@@ -146,6 +175,37 @@ export function ContactForm() {
           />
         </div>
 
+        {withTopics && (
+          <motion.fieldset variants={fadeInUp}>
+            <legend className="block text-sm font-medium text-text-secondary mb-3">What can we help with?</legend>
+            <div className="grid grid-cols-3 gap-3">
+              {(Object.keys(topics) as Topic[]).map((key) => (
+                <label
+                  key={key}
+                  className={`
+                    cursor-pointer text-center px-4 py-3 rounded-lg border font-medium
+                    transition-colors duration-300
+                    has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-neon-cyan
+                    ${topic === key
+                      ? 'bg-brand-pink/15 border-brand-pink text-text-primary'
+                      : 'bg-midnight/50 border-white/10 text-text-secondary hover:border-white/30'}
+                  `}
+                >
+                  <input
+                    type="radio"
+                    name="topic"
+                    value={key}
+                    checked={topic === key}
+                    onChange={() => setTopic(key)}
+                    className="sr-only"
+                  />
+                  {topics[key].label}
+                </label>
+              ))}
+            </div>
+          </motion.fieldset>
+        )}
+
         <motion.div variants={fadeInUp} className="grid sm:grid-cols-2 gap-6">
           <Input
             label="Your Name"
@@ -181,9 +241,9 @@ export function ContactForm() {
 
         <motion.div variants={fadeInUp}>
           <Textarea
-            label="Tell me about your project"
+            label={prompt.prompt}
             name="message"
-            placeholder="What are you building? What problem are you trying to solve? Any timeline or budget in mind?"
+            placeholder={prompt.placeholder}
             value={formData.message}
             onChange={handleChange}
             rows={6}
