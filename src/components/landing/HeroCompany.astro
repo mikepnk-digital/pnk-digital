@@ -38,14 +38,11 @@ const requests = [
 <section class="hero" aria-labelledby="hero-title">
   <div class="inner">
     <div class="copy">
-      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{eyebrow}</span>
+      <span class="lp-eyebrow eyebrow"><span class="dot" aria-hidden="true"></span>{eyebrow}</span>
       <h1 id="hero-title">{title}</h1>
       <p class="sub">
         {sub}
       </p>
-      <ul class="trust">
-        {reassurance.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
-      </ul>
       <div class="ctas">
         <a class="lp-btn lp-btn--pink cta" href="#book" data-book>{cta}</a>
         <a class="call" href={PHONE_HREF} data-phone>
@@ -54,6 +51,10 @@ const requests = [
         </a>
       </div>
       <p class="fine">No obligation. No hard sell.</p>
+      <!-- After the CTA, so the button sits higher in the first screen. -->
+      <ul class="trust">
+        {reassurance.map((t) => <li><Icon name="check" size={16} />{t}</li>)}
+      </ul>
     </div>
 
     {Astro.slots.has('panel') ? <slot name="panel" /> : (
@@ -125,23 +126,18 @@ const requests = [
     gap: 24px;
     align-items: flex-start;
   }
+  /* Shared section eyebrow plus the pink dot; wraps like plain text. */
   .eyebrow {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    align-items: flex-start;
     gap: 10px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--lp-dark);
-    background: var(--lp-white);
-    border: 1px solid var(--lp-border-strong);
-    padding: 7px 12px;
-    border-radius: 8px;
+    line-height: 1.45;
   }
   .dot {
+    flex: none;
     width: 8px;
     height: 8px;
+    margin-top: 0.45em;
     border-radius: 2px;
     background: var(--lp-pink);
   }
