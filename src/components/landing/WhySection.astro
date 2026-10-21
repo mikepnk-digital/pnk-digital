@@ -16,7 +16,7 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
 ---
 <section class="lp-section diff" aria-labelledby="diff-title">
   <div class="lp-container diff-inner">
-    <div class="diff-copy">
+    <div class="diff-copy" data-reveal>
       <span class="lp-eyebrow diff-eyebrow">Why PNK Digital</span>
       <h2 id="diff-title" class="lp-h2">{title}</h2>
       <p class="diff-lead">{lead}</p>
@@ -31,7 +31,7 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
         <figcaption>Mike Pink, founder — the person who does the work.</figcaption>
       </figure>
     </div>
-    <div class="diff-panel">
+    <div class="diff-panel" data-reveal>
       <ul class="principles">
         {principles.map((p) => <li>{p.lead} <strong>{p.rest}</strong></li>)}
       </ul>
@@ -66,12 +66,12 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
     color: var(--lp-footer-logo);
   }
   .diff-lead {
-    font-size: 21px;
+    font-size: var(--lp-text-lg);
     font-weight: 700;
     line-height: 1.4;
   }
   .diff-copy > :global(p:not(.diff-lead)) {
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     line-height: 1.65;
     color: var(--lp-on-slate-muted);
   }
@@ -85,7 +85,7 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
     margin-top: 6px;
   }
   .chips li {
-    font-size: 14px;
+    font-size: var(--lp-text-sm);
     font-weight: 700;
     padding: 7px 12px;
     border-radius: var(--lp-radius-badge);
@@ -106,7 +106,7 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
     overflow: hidden;
   }
   .founder figcaption {
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     font-weight: 700;
     line-height: 1.45;
     color: var(--lp-white);
@@ -157,7 +157,7 @@ const { title, lead, disciplines, principles, foot } = Astro.props;
     color: var(--lp-pink-text);
   }
   .diff-foot {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
   }

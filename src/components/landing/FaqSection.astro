@@ -14,7 +14,7 @@ const { title, lead, items, surface = false } = Astro.props;
 ---
 <section id="faq" class:list={['lp-section', { 'lp-section--surface': surface }]} aria-labelledby="faq-title">
   <div class="lp-container row">
-    <div class="intro">
+    <div class="intro" data-reveal>
       <span class="lp-eyebrow">FAQ</span>
       <h2 id="faq-title" class="lp-h2">{title}</h2>
       <p class="lead">{lead}</p>
@@ -40,7 +40,7 @@ const { title, lead, items, surface = false } = Astro.props;
     gap: 14px;
   }
   .lead {
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
   }

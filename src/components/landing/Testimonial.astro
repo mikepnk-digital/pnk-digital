@@ -61,11 +61,18 @@ const hasLogo = Astro.slots.has('logo');
     padding: 28px;
     gap: 20px;
   }
+  /* Border firms up on hover, as on the home cards. */
+  .card {
+    transition: border-color 0.3s ease;
+  }
+  .card:hover {
+    border-color: var(--lp-border-strong);
+  }
   .card blockquote {
     flex: 1;
   }
   .card blockquote p {
-    font-size: 18px;
+    font-size: var(--lp-text-md);
     line-height: 1.6;
     font-weight: 600;
     color: var(--lp-ink);
@@ -78,16 +85,16 @@ const hasLogo = Astro.slots.has('logo');
     gap: 2px;
   }
   .card .who {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     font-weight: 800;
   }
   .card .role {
-    font-size: 15px;
+    font-size: var(--lp-text-sm);
     color: var(--lp-muted);
   }
   .card .services {
     margin-top: 8px;
-    font-size: 14px;
+    font-size: var(--lp-text-sm);
     font-weight: 700;
     color: var(--lp-pink-text);
   }
@@ -99,14 +106,14 @@ const hasLogo = Astro.slots.has('logo');
     gap: 8px;
   }
   .pull blockquote p {
-    font-size: 21px;
+    font-size: var(--lp-text-lg);
     line-height: 1.4;
     font-weight: 700;
     font-style: italic;
   }
   /* 19px bold: white-on-pink needs large text for AA. */
   .pull figcaption {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
   }
 

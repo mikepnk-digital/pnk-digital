@@ -11,7 +11,7 @@ export interface Props {
 }
 const { study } = Astro.props;
 ---
-<a class="study" href={`/work/${study.slug}`}>
+<a class="study" href={`/work/${study.slug}`} data-reveal>
   <span class="tags">
     <span class="tag">{SERVICE_LABELS[study.service]} case study</span>
     {study.draft && <span class="tag draft">Draft</span>}
@@ -72,17 +72,17 @@ const { study } = Astro.props;
     gap: 4px;
   }
   .title {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 800;
     line-height: 1.3;
   }
   .client {
-    font-size: 15px;
+    font-size: var(--lp-text-sm);
     color: var(--lp-muted);
   }
   .summary {
     margin-top: 8px;
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     line-height: 1.55;
     color: var(--lp-muted);
   }
@@ -90,7 +90,7 @@ const { study } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     font-weight: 700;
     color: var(--lp-pink-text);
   }

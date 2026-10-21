@@ -22,7 +22,20 @@ const { theme, ...seo } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script is:inline>document.documentElement.classList.add('lp-js');</script>
+    <script is:inline>
+      // lp-motion turns on the scroll reveals (lib/landing-motion.ts). Set here,
+      // before first paint, so revealed content never flashes; dropped after 3s
+      // if the module hasn't run, so content can't stay hidden.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('lp-js');
+        if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('lp-motion');
+        setTimeout(function () {
+          if (!window.__lpMotion) d.classList.remove('lp-motion');
+        }, 3000);
+      })();
+    </script>
   </head>
   <body class="lp-body">
     <div class="landing" data-theme={theme}>
@@ -30,6 +43,11 @@ const { theme, ...seo } = Astro.props;
     </div>
   </body>
 </html>
+
+<script>
+  import { initLandingMotion } from '@/lib/landing-motion';
+  initLandingMotion();
+</script>
 
 <style is:global>
   /* Page-level rules, limited to landing documents via .lp-html/.lp-body. */
@@ -73,6 +91,16 @@ const { theme, ...seo } = Astro.props;
     --lp-section-x: clamp(20px, 5vw, 64px);
     --lp-section-gap: clamp(32px, 4vw, 48px);
     --lp-h2: clamp(30px, 3.8vw, 46px);
+    /* Type scale. Body text uses these six steps; h3s use --lp-h3. */
+    --lp-text-xs: 13px;
+    --lp-text-sm: 15px;
+    --lp-text-base: 17px;
+    --lp-text-md: 19px;
+    --lp-text-lg: 22px;
+    --lp-h3: 22px;
+    --lp-h3-lg: 26px;
+    /* Headings on the pink booking band. */
+    --lp-h2-band: clamp(32px, 4.2vw, 50px);
     --lp-form-shadow: 0 30px 60px -30px rgba(60, 0, 35, 0.55);
     /* Focus rings. Dark sections override both to white. */
     --lp-focus: var(--lp-pink);
@@ -195,6 +223,25 @@ const { theme, ...seo } = Astro.props;
     outline: 3px solid var(--lp-focus);
     outline-offset: 2px;
   }
+  /* Scroll reveals (lib/landing-motion.ts), only under html.lp-motion. */
+  .lp-motion .landing :is(.lp-intro, [data-reveal], [data-reveal-stagger] > *):not(.is-in) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  /* !important: lp-anim is only present while the reveal runs, and must beat
+     components' own (hover) transitions, whose scoped selectors tie on
+     specificity and load later. */
+  .lp-motion .landing .lp-anim {
+    transition:
+      opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) var(--lp-delay, 0ms),
+      transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) var(--lp-delay, 0ms) !important;
+  }
+  @media print {
+    .lp-motion .landing :is(.lp-intro, [data-reveal], [data-reveal-stagger] > *) {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
   .landing .lp-sr-only {
     position: absolute;
     width: 1px;
@@ -254,15 +301,19 @@ const { theme, ...seo } = Astro.props;
     line-height: 1.1;
   }
   .landing .lp-lead {
-    font-size: 18px;
+    font-size: var(--lp-text-md);
     line-height: 1.6;
     color: var(--lp-muted);
   }
   .landing .lp-ink {
     color: var(--lp-ink);
   }
+  /* Keeps short figures like "10–100 people" on one line. */
+  .landing .lp-nowrap {
+    white-space: nowrap;
+  }
   .landing .lp-statement {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 800;
     line-height: 1.45;
   }
@@ -292,7 +343,7 @@ const { theme, ...seo } = Astro.props;
     border: 0;
     cursor: pointer;
     font-family: inherit;
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     font-weight: 700;
     line-height: 1.2;
     text-decoration: none;

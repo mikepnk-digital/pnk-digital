@@ -38,7 +38,7 @@ const { title, accent = "Let's take a look.", intro, outro, areas, pull } = Astr
 
 <style>
   .review-title {
-    font-size: clamp(32px, 4.2vw, 50px);
+    font-size: var(--lp-h2-band);
     line-height: 1.06;
     letter-spacing: -0.03em;
     font-weight: 800;
@@ -51,7 +51,7 @@ const { title, accent = "Let's take a look.", intro, outro, areas, pull } = Astr
   }
   .review-intro,
   .review-label {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     line-height: 1.5;
     font-weight: 700;
   }
@@ -67,7 +67,7 @@ const { title, accent = "Let's take a look.", intro, outro, areas, pull } = Astr
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
     line-height: 1.35;
   }
@@ -81,12 +81,12 @@ const { title, accent = "Let's take a look.", intro, outro, areas, pull } = Astr
     --quote-rule: var(--lp-white);
   }
   .review-strong {
-    font-size: 21px;
+    font-size: var(--lp-text-lg);
     font-weight: 800;
     line-height: 1.4;
   }
   .review-call {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
   }
   .review-call a {

@@ -44,14 +44,14 @@ const {
       <h2 id={`${id}-title`} class="lp-h2">{title}</h2>
       <p class="lp-lead">{lead}</p>
     </div>
-    <div class="cards">
+    <div class="cards" data-reveal-stagger>
       {
         plans.map((p) => (
           <PricingCard plan={p} popular={p.id === highlight} badge={badge} ctaLabel={cardCta} confirm={cardConfirm} />
         ))
       }
     </div>
-    {(noteStrong || note) && <p class="note"><strong>{noteStrong}</strong> {note}</p>}
+    {(noteStrong || note) && <p class="note" data-reveal><strong>{noteStrong}</strong> {note}</p>}
     <slot />
     {ctaText && <CtaStrip text={ctaText} tone="card" />}
   </div>
@@ -79,7 +79,7 @@ const {
     }
   }
   .note {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
     text-align: center;

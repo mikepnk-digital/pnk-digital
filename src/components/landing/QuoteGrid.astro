@@ -12,10 +12,10 @@ const { quotes, intro, outro } = Astro.props;
 ---
 <div class="quotes-wrap">
   <p class="quotes-intro">{intro}</p>
-  <ul class="quotes">
+  <ul class="quotes" data-reveal-stagger>
     {quotes.map((q) => <li><Icon name="chat" size={20} /><q>{q}</q></li>)}
   </ul>
-  <p class="quotes-outro">{outro}</p>
+  <p class="quotes-outro" data-reveal>{outro}</p>
 </div>
 
 <style>
@@ -26,7 +26,7 @@ const { quotes, intro, outro } = Astro.props;
   }
   .quotes-intro,
   .quotes-outro {
-    font-size: 18px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
   }
   /* 4 quotes: 1, then 2×2, then 4 across from 1120px (auto-fit gave 3+1). */
@@ -53,7 +53,7 @@ const { quotes, intro, outro } = Astro.props;
     background: var(--lp-surface);
     border-radius: var(--lp-radius-card) var(--lp-radius-card) var(--lp-radius-card) 4px;
     padding: 24px;
-    font-size: 20px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
     line-height: 1.35;
     letter-spacing: -0.01em;

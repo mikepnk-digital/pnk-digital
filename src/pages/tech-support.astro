@@ -159,7 +159,7 @@ const navLinks = [
             or don't want – to employ a full-time IT team.
           </p>
           <p class="lp-lead">
-            Typically, that's a business with around <strong class="lp-ink">5–50 people</strong> that has reached the point where
+            Typically, that's a business with around <strong class="lp-ink lp-nowrap">5–50 people</strong> that has reached the point where
             technology is too important to leave to chance, but doesn't need a full internal IT department.
           </p>
         </div>
@@ -196,7 +196,7 @@ const navLinks = [
           <h2 id="clients-title" class="lp-h2">Businesses that stopped worrying about their technology.</h2>
           <p class="lp-lead">A few words from businesses PNK Digital looks after today.</p>
         </div>
-        <ul class="clients">
+        <ul class="clients" data-reveal-stagger>
           {
             testimonials.map((t) => (
               <li>
@@ -206,7 +206,7 @@ const navLinks = [
           }
         </ul>
         {caseStudy && <CaseStudyCard study={caseStudy} />}
-        <p class="clients-note">Want to hear more? Ask us about current clients on your free technology review.</p>
+        <p class="clients-note" data-reveal>Want to hear more? Ask us about current clients on your free technology review.</p>
       </div>
     </section>
 
@@ -221,7 +221,7 @@ const navLinks = [
       cardCta={PRIMARY_CTA}
       cardConfirm=""
     >
-      <div class="more">
+      <div class="more" data-reveal>
         <div class="more-copy">
           <h3>What happens if you need more?</h3>
           <p>
@@ -243,7 +243,7 @@ const navLinks = [
           <h2 id="how-title" class="lp-h2">Getting started is simple.</h2>
         </div>
         <Steps steps={steps} />
-        <p class="how-close">You get on with running the business. We'll look after the technology.</p>
+        <p class="how-close" data-reveal>You get on with running the business. We'll look after the technology.</p>
       </div>
     </section>
 
@@ -332,7 +332,7 @@ const navLinks = [
     gap: 20px;
   }
   .clients-note {
-    font-size: 15px;
+    font-size: var(--lp-text-sm);
     line-height: 1.6;
     color: var(--lp-muted);
     text-align: center;
@@ -358,12 +358,12 @@ const navLinks = [
     gap: 8px;
   }
   .more h3 {
-    font-size: 21px;
+    font-size: var(--lp-h3);
     font-weight: 800;
     line-height: 1.3;
   }
   .more p {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
   }

@@ -24,7 +24,7 @@ const {
       <h2 id="problem-title" class="lp-h2">{title}</h2>
       <slot />
     </div>
-    <div class="problem-card">
+    <div class="problem-card" data-reveal>
       <ul class="problem-list">
         {problems.map((p) => <li><span class="mark" aria-hidden="true"></span>{p}</li>)}
       </ul>
@@ -52,7 +52,7 @@ const {
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     font-weight: 600;
     line-height: 1.45;
   }
@@ -75,12 +75,12 @@ const {
     gap: 6px;
   }
   .answer-lead {
-    font-size: 22px;
+    font-size: var(--lp-text-lg);
     font-weight: 800;
     letter-spacing: -0.01em;
   }
   .problem-answer p:not(.answer-lead) {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.55;
     color: var(--lp-on-slate-muted);
   }

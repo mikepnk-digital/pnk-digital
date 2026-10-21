@@ -9,7 +9,7 @@ export interface Props {
 }
 const { items } = Astro.props;
 ---
-<div class="faq">
+<div class="faq" data-reveal-stagger>
   {
     items.map((it, i) => (
       <details name="faq" open={i === 0}>
@@ -77,7 +77,7 @@ const { items } = Astro.props;
   }
   .a {
     padding: 0 56px 24px 0;
-    font-size: 17px;
+    font-size: var(--lp-text-base);
     line-height: 1.65;
     color: var(--lp-muted);
     text-wrap: pretty;

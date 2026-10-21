@@ -11,7 +11,7 @@ export interface Props {
 const { title, cta = CALL_LABEL } = Astro.props;
 ---
 <section class="lp-section final" aria-labelledby="final-title" data-sticky-hide>
-  <div class="lp-container final-inner">
+  <div class="lp-container final-inner" data-reveal>
     <h2 id="final-title" class="final-title">{title}</h2>
     <slot />
     <div class="final-ctas">
@@ -47,7 +47,7 @@ const { title, cta = CALL_LABEL } = Astro.props;
     font-weight: 800;
   }
   .final-inner :global(.final-lead) {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     line-height: 1.55;
     color: var(--lp-on-slate-muted);
   }
@@ -67,7 +67,7 @@ const { title, cta = CALL_LABEL } = Astro.props;
     align-items: center;
     gap: 10px;
     min-height: 48px;
-    font-size: 18px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
     color: var(--lp-white);
     text-decoration: underline;
@@ -85,7 +85,7 @@ const { title, cta = CALL_LABEL } = Astro.props;
     text-decoration-color: var(--lp-white);
   }
   .final-fine {
-    font-size: 15px;
+    font-size: var(--lp-text-sm);
     font-weight: 600;
     color: var(--lp-on-slate-muted);
   }

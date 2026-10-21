@@ -22,7 +22,7 @@ const {
   cta = CALL_LABEL,
 } = Astro.props;
 ---
-<header class="header">
+<header class="header" data-lp-header>
   <div class="inner">
     <a class="logo" href="/">
       <img src={logo.src} width="33" height="40" alt="" />
@@ -40,6 +40,16 @@ const {
   </div>
 </header>
 
+<script>
+  // A soft shadow once the page scrolls, as the home navbar does.
+  const header = document.querySelector<HTMLElement>('[data-lp-header]');
+  if (header) {
+    const update = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>
+
 <style>
   .header {
     position: sticky;
@@ -51,6 +61,10 @@ const {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--lp-header-border);
+    transition: box-shadow 0.3s ease;
+  }
+  .header.is-scrolled {
+    box-shadow: 0 10px 30px -18px rgba(31, 42, 55, 0.45);
   }
   .inner {
     max-width: var(--lp-header-max);

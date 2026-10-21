@@ -17,7 +17,7 @@ export interface Props {
 }
 const { items, iconStyle, columns } = Astro.props;
 ---
-<ul class:list={['grid', iconStyle, { three: columns === 3 }]}>
+<ul class:list={['grid', iconStyle, { three: columns === 3 }]} data-reveal-stagger>
   {
     items.map((it) => (
       <li class="item">
@@ -55,6 +55,13 @@ const { items, iconStyle, columns } = Astro.props;
     border-radius: var(--lp-radius-card);
     padding: 28px;
   }
+  /* Border firms up on hover, as on the home cards. */
+  .solid .item {
+    transition: border-color 0.3s ease;
+  }
+  .solid .item:hover {
+    border-color: var(--lp-border-strong);
+  }
   .icon {
     display: flex;
     align-items: center;
@@ -74,12 +81,12 @@ const { items, iconStyle, columns } = Astro.props;
     color: var(--lp-white);
   }
   h3 {
-    font-size: 20px;
+    font-size: var(--lp-h3);
     font-weight: 800;
     line-height: 1.3;
   }
   p {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
   }

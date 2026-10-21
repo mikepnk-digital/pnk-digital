@@ -8,7 +8,7 @@ export interface Props {
 }
 const { steps } = Astro.props;
 ---
-<ol class="steps">
+<ol class="steps" data-reveal-stagger>
   {
     steps.map((s, i) => (
       <li class="step">
@@ -49,6 +49,13 @@ const { steps } = Astro.props;
     flex-direction: column;
     gap: 14px;
   }
+  /* Border firms up on hover, as on the home cards. */
+  .step {
+    transition: border-color 0.3s ease;
+  }
+  .step:hover {
+    border-color: var(--lp-border-strong);
+  }
   .top {
     display: flex;
     justify-content: space-between;
@@ -64,11 +71,11 @@ const { steps } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: var(--lp-text-md);
     font-weight: 800;
   }
   .when {
-    font-size: 14px;
+    font-size: var(--lp-text-sm);
     font-weight: 700;
     color: var(--lp-muted);
     background: var(--lp-surface);
@@ -76,13 +83,13 @@ const { steps } = Astro.props;
     border-radius: var(--lp-radius-badge);
   }
   h3 {
-    font-size: 22px;
+    font-size: var(--lp-h3);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.3;
   }
   p {
-    font-size: 16px;
+    font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
   }
@@ -95,7 +102,7 @@ const { steps } = Astro.props;
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    font-size: 15px;
+    font-size: var(--lp-text-sm);
     font-weight: 600;
     line-height: 1.45;
   }

@@ -10,7 +10,7 @@ export interface Props {
 }
 const { text, tone = 'outline', cta = CALL_LABEL } = Astro.props;
 ---
-<div class:list={['strip', tone]}>
+<div class:list={['strip', tone]} data-reveal>
   <p class="text">{text}</p>
   <a class="lp-btn lp-btn--pink" href="#book" data-book>{cta}</a>
 </div>
@@ -36,7 +36,7 @@ const { text, tone = 'outline', cta = CALL_LABEL } = Astro.props;
     background: var(--lp-surface);
   }
   .text {
-    font-size: 19px;
+    font-size: var(--lp-text-md);
     font-weight: 700;
     line-height: 1.4;
     max-width: 620px;
