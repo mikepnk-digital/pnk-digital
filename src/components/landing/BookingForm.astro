@@ -6,7 +6,7 @@
 //   API answers with a 303 to /tech-support/thanks.
 // Plan pre-selection: any [data-book][data-plan] control on the page sets the
 // Plan select. When the page has a Cal.com modal, BookingEmbed opens it for
-// those controls; otherwise they scroll here (68px header offset) and focus
+// those controls; otherwise they scroll here (below the --lp-header-h header) and focus
 // Name after ~700ms.
 // `compact` (version B): name, business, email and one optional message only;
 // the plan is carried in a hidden field so plan buttons still pre-select it.
@@ -126,7 +126,9 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
     business: 'Please enter your business name.',
     email: 'Please enter a valid email address.',
   };
-  const HEADER_OFFSET = 68;
+  // The sticky header's height, from the --lp-header-h token (LandingLayout).
+  const headerOffset = () =>
+    parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lp-header-h')) || 72;
   const FOCUS_DELAY = 700;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -261,7 +263,7 @@ const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_co
         if (calEmbedWithDialog()) return;
         const band = document.getElementById('book');
         if (band) {
-          const top = band.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+          const top = band.getBoundingClientRect().top + window.scrollY - headerOffset();
           window.scrollTo({ top, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
         }
         history.replaceState(null, '', '#book');

@@ -42,7 +42,7 @@ const columns = [
 ];
 const year = new Date().getFullYear();
 ---
-<footer class="footer">
+<footer class="footer" data-sticky-hide>
   <div class="inner">
     <div class="grid">
       <div class="brand">
@@ -57,7 +57,7 @@ const year = new Date().getFullYear();
         {
           columns.map((col) => (
             <div class="col">
-              <h2 class="col-title">{col.title}</h2>
+              <h3 class="col-title">{col.title}</h3>
               <ul>
                 {col.links.map((l) => (
                   <li>
@@ -71,7 +71,7 @@ const year = new Date().getFullYear();
       </nav>
 
       <div class="col">
-        <h2 class="col-title">Get in Touch</h2>
+        <h3 class="col-title">Get in Touch</h3>
         <!-- NAP block: matches localBusinessJsonLd() below. -->
         <address>
           <ul>
@@ -189,6 +189,16 @@ const year = new Date().getFullYear();
   }
   .footer a:hover {
     color: var(--lp-footer-logo);
+  }
+  /* Phones: 44px tap targets in the link columns. */
+  @media (max-width: 759.98px) {
+    .links ul {
+      gap: 0;
+    }
+    .links ul a {
+      display: inline-block;
+      padding-block: 11px;
+    }
   }
   .footer .brand-link,
   .footer .brand-link:hover {

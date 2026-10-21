@@ -61,12 +61,22 @@ const {
   .intro {
     max-width: 700px;
   }
+  /* One centred column until three fit side by side with the CTA label on one
+     line (1120px); auto-fit left a 2+1 orphan from 700 to 1100px. */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 620px;
+    margin-inline: auto;
     gap: 24px;
     padding-top: 16px;
     align-items: stretch;
+  }
+  @media (min-width: 1120px) {
+    .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: none;
+    }
   }
   .note {
     font-size: 16px;

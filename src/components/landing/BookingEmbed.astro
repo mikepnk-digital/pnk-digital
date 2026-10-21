@@ -151,9 +151,10 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
   }
   .cal-dialog {
     --cal-bg: #ffffff;
-    --cal-ink: #1b1720;
-    --cal-muted: #5f5a63;
-    --cal-line: #e7e2de;
+    /* Landing tokens where present; theme-neutral fallbacks elsewhere. */
+    --cal-ink: var(--lp-ink, #1b1720);
+    --cal-muted: var(--lp-muted, #5f5a63);
+    --cal-line: var(--lp-border, #e7e2de);
     width: min(1000px, calc(100% - 32px));
     max-width: none;
     max-height: calc(100dvh - 32px);

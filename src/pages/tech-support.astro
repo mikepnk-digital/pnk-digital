@@ -399,7 +399,7 @@ const navLinks = [
     />
 
     <!-- 13. Final CTA -->
-    <section class="lp-section final" aria-labelledby="final-title">
+    <section class="lp-section final" aria-labelledby="final-title" data-sticky-hide>
       <div class="lp-container final-inner">
         <h2 id="final-title" class="final-title">Stop worrying about your technology.</h2>
         <p class="final-lead">
@@ -480,6 +480,8 @@ const navLinks = [
   .problem-answer {
     background: var(--lp-slate);
     color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
     padding: clamp(20px, 3vw, 32px);
     display: flex;
     flex-direction: column;
@@ -500,6 +502,8 @@ const navLinks = [
   .diff {
     background: var(--lp-slate);
     color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
   }
   .diff-inner {
     display: flex;
@@ -626,10 +630,21 @@ const navLinks = [
     font-size: 18px;
     font-weight: 700;
   }
+  /* 4 quotes: 1, then 2×2, then 4 across from 1120px (auto-fit gave 3+1). */
   .quotes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
+  }
+  @media (min-width: 600px) {
+    .quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1120px) {
+    .quotes {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   .quotes li {
     position: relative;
@@ -778,9 +793,12 @@ const navLinks = [
   }
 
   /* 9. Experience */
+  /* 5 cards: 1, then 2 across with the last spanning the row, then 5 across
+     from 1120px. The 1px gap shows the border colour, so an empty cell would
+     render as a grey block (auto-fit gave 3+2 and 4+1). */
   .exp {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1px;
     background: var(--lp-border);
     border: 1px solid var(--lp-border);
@@ -793,6 +811,22 @@ const navLinks = [
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+  @media (min-width: 600px) {
+    .exp {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .exp li:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1120px) {
+    .exp {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .exp li:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
   }
   .exp-icon {
     width: 44px;
@@ -879,7 +913,8 @@ const navLinks = [
   .final {
     background: var(--lp-slate);
     color: var(--lp-white);
-    /* Pink-button focus ring would be slate-on-slate (1:1) here. */
+    /* Pink rings are 3.4:1 on slate and pink-button rings would be 1:1. */
+    --lp-focus: var(--lp-white);
     --lp-focus-on-pink: var(--lp-white);
   }
   .final-inner {

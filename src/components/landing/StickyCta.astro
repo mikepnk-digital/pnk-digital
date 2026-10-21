@@ -1,6 +1,7 @@
 ---
 // Mobile-only (<760px) fixed booking bar. Hidden until the page has scrolled
-// 560px, and hidden again while the booking band is on screen. Pure
+// 560px, and hidden again while the booking band, the final CTA or the
+// footer is on screen, so it never doubles up a visible pink button. Pure
 // enhancement: without JS it never shows.
 import { CALL_LABEL } from '@/config/site';
 
@@ -18,18 +19,22 @@ const { label, cta = CALL_LABEL } = Astro.props;
 
 <script>
   const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
-  const band = document.querySelector<HTMLElement>('[data-booking-band]');
+  const blockers = document.querySelectorAll<HTMLElement>('[data-booking-band], [data-sticky-hide]');
   if (bar) {
     const compact = window.matchMedia('(max-width: 759.98px)');
-    let bandVisible = false;
+    const visible = new Set<Element>();
     const update = () => {
-      bar.hidden = !(compact.matches && window.scrollY > 560 && !bandVisible);
+      bar.hidden = !(compact.matches && window.scrollY > 560 && visible.size === 0);
     };
-    if (band && 'IntersectionObserver' in window) {
-      new IntersectionObserver((entries) => {
-        bandVisible = entries.some((e) => e.isIntersecting);
+    if (blockers.length && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target);
+          else visible.delete(e.target);
+        }
         update();
-      }).observe(band);
+      });
+      blockers.forEach((el) => io.observe(el));
     }
     window.addEventListener('scroll', update, { passive: true });
     compact.addEventListener('change', update);

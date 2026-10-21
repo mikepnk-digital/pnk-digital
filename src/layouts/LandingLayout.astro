@@ -34,7 +34,10 @@ const { theme, ...seo } = Astro.props;
 <style is:global>
   /* Page-level rules, limited to landing documents via .lp-html/.lp-body. */
   .lp-html {
-    scroll-padding-top: 68px;
+    /* Landing header height (LandingHeader is fixed to it). Also the offset
+       for anchor jumps here and for BookingForm's scroll to #book. */
+    --lp-header-h: 72px;
+    scroll-padding-top: var(--lp-header-h);
     -webkit-text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: no-preference) {
@@ -71,6 +74,9 @@ const { theme, ...seo } = Astro.props;
     --lp-section-gap: clamp(32px, 4vw, 48px);
     --lp-h2: clamp(30px, 3.8vw, 46px);
     --lp-form-shadow: 0 30px 60px -30px rgba(60, 0, 35, 0.55);
+    /* Focus rings. Dark sections override both to white. */
+    --lp-focus: var(--lp-pink);
+    --lp-focus-on-pink: var(--lp-dark);
   }
 
   /* Version A: warm neutrals, founder voice */
@@ -84,6 +90,7 @@ const { theme, ...seo } = Astro.props;
     --lp-header-border: #eee7e2;
     --lp-input-border: #8a8189;
     --lp-placeholder-border: #cfc7c1;
+    --lp-border-strong: #d6cec8;
     --lp-dark: #1b1720;
     --lp-dark-hover: #3a3340;
     --lp-on-dark-muted: #d9d3dc;
@@ -100,6 +107,7 @@ const { theme, ...seo } = Astro.props;
     --lp-radius-panel: 28px;
     --lp-radius-badge: 999px;
     --lp-radius-icon: 16px;
+    --lp-radius-inner: 14px;
     --lp-hero-shadow: 0 24px 48px -32px rgba(27, 23, 32, 0.35);
     --lp-sticky-shadow: 0 -10px 30px -12px rgba(27, 23, 32, 0.25);
   }
@@ -115,6 +123,7 @@ const { theme, ...seo } = Astro.props;
     --lp-header-border: #e3e7ed;
     --lp-input-border: #64748b;
     --lp-placeholder-border: #cbd5e1;
+    --lp-border-strong: #d5dbe3;
     --lp-slate: #1f2a37;
     --lp-slate-hover: #334155;
     --lp-dark: var(--lp-slate);
@@ -135,6 +144,8 @@ const { theme, ...seo } = Astro.props;
     --lp-radius-panel: 24px;
     --lp-radius-badge: 8px;
     --lp-radius-icon: 14px;
+    /* Panels nested inside cards (hero mock-up, audit panel, pricing). */
+    --lp-radius-inner: 12px;
     --lp-hero-shadow: 0 30px 60px -30px rgba(31, 42, 55, 0.6);
     --lp-sticky-shadow: 0 -10px 30px -12px rgba(31, 42, 55, 0.25);
   }
@@ -181,7 +192,7 @@ const { theme, ...seo } = Astro.props;
     color: var(--lp-dark);
   }
   .landing :where(:focus-visible) {
-    outline: 3px solid var(--lp-pink);
+    outline: 3px solid var(--lp-focus);
     outline-offset: 2px;
   }
   .landing .lp-sr-only {
@@ -286,15 +297,20 @@ const { theme, ...seo } = Astro.props;
     color: var(--lp-white);
   }
   .landing .lp-btn--pink:focus-visible {
-    outline: 3px solid var(--lp-focus-on-pink, var(--lp-dark));
+    outline: 3px solid var(--lp-focus-on-pink);
     outline-offset: 3px;
   }
   .landing .lp-btn--outline:focus-visible {
-    outline: 3px solid var(--lp-pink);
+    outline: 3px solid var(--lp-focus);
     outline-offset: 3px;
   }
   .landing .lp-btn--block {
     width: 100%;
+  }
+  /* Full-width buttons don't need side padding for looks; less of it keeps
+     the CTA label on one line in narrow cards. */
+  .landing .lp-btn.lp-btn--block {
+    padding-inline: 16px;
   }
   /* Phones: "Book a free 30-minute call" (about 220px at 17px) fits on one
      line in pricing cards and the booking band from 360px. */

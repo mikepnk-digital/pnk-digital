@@ -29,10 +29,16 @@ const { steps } = Astro.props;
 </ol>
 
 <style>
+  /* Stacked, then all three in a row from 860px (auto-fit gave 2+1). */
   .steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
+  }
+  @media (min-width: 860px) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   .step {
     background: var(--lp-white);

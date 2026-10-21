@@ -1,8 +1,8 @@
 ---
 // Sticky landing header: logo, in-page section links (≥760px), phone link
 // (icon only on phones) and the book-a-call button. Plain anchors, so it works without JS;
-// BookingForm.astro adds the 68px-offset scroll for the book button; section
-// links use CSS scroll-padding-top.
+// Height is the --lp-header-h token (LandingLayout), which section links use
+// via CSS scroll-padding-top and BookingForm uses for its scroll to #book.
 import logo from '@/assets/pnk-digital-logo.svg';
 import Icon from './Icon.astro';
 import { CALL_LABEL, PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
@@ -45,6 +45,8 @@ const {
     position: sticky;
     top: 0;
     z-index: 40;
+    box-sizing: border-box;
+    height: var(--lp-header-h);
     background: var(--lp-header-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -58,7 +60,7 @@ const {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    min-height: 68px;
+    height: 100%;
   }
   /* Mirrors the main site nav: mark + "PNK Digital", 12px gap. */
   .logo {

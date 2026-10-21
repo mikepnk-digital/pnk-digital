@@ -2,7 +2,8 @@
 // "How it compares": row labels down the side, one column per option, the
 // highlighted column tinted pink. ≥760px: a real <table>. <760px: one stacked
 // card per option instead (CSS swap, no JS; display:none keeps the hidden copy
-// out of the accessibility tree).
+// out of the accessibility tree). `stack={false}` keeps a small table as a
+// compact table at every width.
 import type { CompareColumn, CompareRow } from '@/data/ai-consulting';
 
 export interface Props {
@@ -11,10 +12,15 @@ export interface Props {
   rows: CompareRow[];
   /** Small source line under the table. */
   source?: string;
+  /** Level of the stacked card titles: 4 when the strip sits under an h3. */
+  headingLevel?: 3 | 4;
+  /** Swap to stacked cards under 760px. Turn off for tables that fit narrow. */
+  stack?: boolean;
 }
-const { caption, columns, rows, source } = Astro.props;
+const { caption, columns, rows, source, headingLevel = 3, stack = true } = Astro.props;
+const CardHeading = `h${headingLevel}`;
 ---
-<div class="compare">
+<div class:list={['compare', { 'no-stack': !stack }]}>
   <table>
     <caption class="lp-sr-only">{caption}</caption>
     <thead>
@@ -38,23 +44,25 @@ const { caption, columns, rows, source } = Astro.props;
   </table>
 
   <!-- Narrow screens: one card per option. -->
-  <ul class="cards">
-    {
-      columns.map((c, ci) => (
-        <li class:list={['card', { hl: c.highlight }]}>
-          <h3>{c.label}</h3>
-          <dl>
-            {rows.map((r) => (
-              <div class="pair">
-                <dt>{r.label}</dt>
-                <dd>{r.values[ci]}</dd>
-              </div>
-            ))}
-          </dl>
-        </li>
-      ))
-    }
-  </ul>
+  {stack && (
+    <ul class="cards">
+      {
+        columns.map((c, ci) => (
+          <li class:list={['card', { hl: c.highlight }]}>
+            <CardHeading class="card-title">{c.label}</CardHeading>
+            <dl>
+              {rows.map((r) => (
+                <div class="pair">
+                  <dt>{r.label}</dt>
+                  <dd>{r.values[ci]}</dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))
+      }
+    </ul>
+  )}
   {source && <p class="source">{source}</p>}
 </div>
 
@@ -133,12 +141,12 @@ const { caption, columns, rows, source } = Astro.props;
     font-weight: inherit;
     background: var(--lp-white);
   }
-  .card h3 {
+  .card-title {
     font-size: 20px;
     font-weight: 800;
     line-height: 1.3;
   }
-  .card.hl h3 {
+  .card.hl .card-title {
     color: var(--lp-pink-text);
   }
   dl {
@@ -170,11 +178,43 @@ const { caption, columns, rows, source } = Astro.props;
   }
 
   @media (max-width: 759.98px) {
-    table {
+    .compare:not(.no-stack) table {
       display: none;
     }
-    .cards {
+    .compare:not(.no-stack) .cards {
       display: flex;
+    }
+    /* Compact table: let the columns size to their content. */
+    .no-stack table {
+      table-layout: auto;
+    }
+    .no-stack .corner {
+      width: auto;
+    }
+    .no-stack th,
+    .no-stack td {
+      padding: 10px 6px;
+      font-size: 14px;
+    }
+    .no-stack thead th {
+      font-size: 15px;
+    }
+    .no-stack :is(th, td):first-child {
+      padding-left: 12px;
+    }
+  }
+  @media (max-width: 399.98px) {
+    .no-stack th,
+    .no-stack td,
+    .no-stack thead th {
+      font-size: 13px;
+    }
+    .no-stack th,
+    .no-stack td {
+      padding-inline: 4px;
+    }
+    .no-stack :is(th, td):first-child {
+      padding-left: 10px;
     }
   }
 
