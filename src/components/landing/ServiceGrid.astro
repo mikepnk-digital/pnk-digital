@@ -1,6 +1,8 @@
 ---
 // Four services with icons. 'tint' (A): pink-tint icon tiles, no card border.
 // 'solid' (B): bordered cards with solid slate icon tiles and white icons.
+// variant="compact": no icons or cards, just title and line under a ruled top
+// edge, so a second grid on the page doesn't repeat the first.
 import Icon from './Icon.astro';
 import type { IconName } from './Icon.astro';
 
@@ -11,17 +13,19 @@ export interface ServiceItem {
 }
 export interface Props {
   items: ServiceItem[];
-  iconStyle: 'tint' | 'solid';
+  iconStyle?: 'tint' | 'solid';
+  variant?: 'cards' | 'compact';
   /** Fixed 3-up on wide screens (e.g. six items) instead of auto-fit. */
   columns?: 3;
 }
-const { items, iconStyle, columns } = Astro.props;
+const { items, iconStyle = 'solid', variant = 'cards', columns } = Astro.props;
+const compact = variant === 'compact';
 ---
-<ul class:list={['grid', iconStyle, { three: columns === 3 }]} data-reveal-stagger>
+<ul class:list={['grid', compact ? 'compact' : iconStyle, { three: columns === 3 }]} data-reveal-stagger>
   {
     items.map((it) => (
       <li class="item">
-        <span class="icon"><Icon name={it.icon} size={iconStyle === 'tint' ? 28 : 26} /></span>
+        {!compact && <span class="icon"><Icon name={it.icon} size={iconStyle === 'tint' ? 28 : 26} /></span>}
         <h3>{it.title}</h3>
         <p>{it.body}</p>
       </li>
@@ -89,5 +93,40 @@ const { items, iconStyle, columns } = Astro.props;
     font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);
+  }
+
+  /* Compact: 1, 2, then 3 across (with columns={3}); a short pink bar on a
+     hairline marks each item instead of a card. */
+  .compact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px clamp(24px, 3vw, 40px);
+  }
+  @media (min-width: 600px) {
+    .compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 900px) {
+    .compact.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .compact .item {
+    position: relative;
+    gap: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--lp-border-strong);
+  }
+  .compact .item::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 32px;
+    height: 3px;
+    background: var(--lp-pink);
+  }
+  .compact h3 {
+    font-size: var(--lp-text-md);
   }
 </style>
