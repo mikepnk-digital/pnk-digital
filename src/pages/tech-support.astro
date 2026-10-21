@@ -27,7 +27,6 @@ import ProblemSplit from '@/components/landing/ProblemSplit.astro';
 import WhySection from '@/components/landing/WhySection.astro';
 import QuoteGrid from '@/components/landing/QuoteGrid.astro';
 import ListCard from '@/components/landing/ListCard.astro';
-import ExperienceGrid from '@/components/landing/ExperienceGrid.astro';
 import FinalCta from '@/components/landing/FinalCta.astro';
 import BookingCopy from '@/components/landing/BookingCopy.astro';
 import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
@@ -39,7 +38,6 @@ import {
   automationItems,
   booking,
   disciplines,
-  experience,
   faqs,
   plans,
   principles,
@@ -173,8 +171,25 @@ const navLinks = [
       </div>
     </section>
 
-    <!-- 5b. Client testimonials -->
-    <section id="clients" class="lp-section lp-section--flush-top" aria-labelledby="clients-title">
+    <!-- 6. Security -->
+    <section class="lp-section lp-section--surface" aria-labelledby="sec-title">
+      <div class="lp-container lp-split">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Security</span>
+          <h2 id="sec-title" class="lp-h2">Technology should make your business safer – not create another risk.</h2>
+          <p class="lp-lead">
+            Your business relies on email, cloud applications, websites and online accounts every day. We'll help make sure the
+            basics are properly looked after.
+          </p>
+          <p class="lp-lead">We don't believe in selling unnecessary technology.</p>
+          <p class="lp-statement">We'll focus on the things that genuinely reduce risk for your business.</p>
+        </div>
+        <ListCard icon="shield-check" title="That can include:" items={securityItems} />
+      </div>
+    </section>
+
+    <!-- 7. Client testimonials -->
+    <section id="clients" class="lp-section" aria-labelledby="clients-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
           <span class="lp-eyebrow">Client stories</span>
@@ -195,7 +210,7 @@ const navLinks = [
       </div>
     </section>
 
-    <!-- 6. Pricing -->
+    <!-- 8. Pricing -->
     <PricingSection
       eyebrow="Pricing"
       title="Simple monthly support. No surprise bills."
@@ -220,7 +235,7 @@ const navLinks = [
       </div>
     </PricingSection>
 
-    <!-- 7. How it works -->
+    <!-- 9. How it works -->
     <section id="how" class="lp-section" aria-labelledby="how-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
@@ -232,7 +247,7 @@ const navLinks = [
       </div>
     </section>
 
-    <!-- 8. Free technology review (booking form) -->
+    <!-- 10. Free technology review (booking form) -->
     <BookingBand
       variant={variant}
       calendar
@@ -254,44 +269,8 @@ const navLinks = [
       />
     </BookingBand>
 
-    <!-- 9. Experience -->
-    <section class="lp-section" aria-labelledby="exp-title">
-      <div class="lp-container lp-stack">
-        <div class="lp-intro">
-          <span class="lp-eyebrow">Experience</span>
-          <h2 id="exp-title" class="lp-h2">Technology expertise you can rely on.</h2>
-          <p class="lp-lead">
-            PNK Digital is built on years of experience designing and developing software and technology for businesses. Our
-            experience spans:
-          </p>
-        </div>
-        <ExperienceGrid
-          items={experience}
-          close="So when you contact PNK Digital, you're not simply getting someone who can reset a password."
-          closeStrong="You're getting access to someone who understands the technology underneath your business – and knows how to build with it."
-        />
-      </div>
-    </section>
-
-    <!-- 10. Security -->
-    <section class="lp-section lp-section--surface" aria-labelledby="sec-title">
-      <div class="lp-container lp-split">
-        <div class="lp-intro">
-          <span class="lp-eyebrow">Security</span>
-          <h2 id="sec-title" class="lp-h2">Technology should make your business safer – not create another risk.</h2>
-          <p class="lp-lead">
-            Your business relies on email, cloud applications, websites and online accounts every day. We'll help make sure the
-            basics are properly looked after.
-          </p>
-          <p class="lp-lead">We don't believe in selling unnecessary technology.</p>
-          <p class="lp-statement">We'll focus on the things that genuinely reduce risk for your business.</p>
-        </div>
-        <ListCard icon="shield-check" title="That can include:" items={securityItems} />
-      </div>
-    </section>
-
     <!-- 11. Automation & AI -->
-    <section class="lp-section" aria-labelledby="auto-title">
+    <section class="lp-section lp-section--surface" aria-labelledby="auto-title">
       <div class="lp-container lp-split">
         <div class="lp-intro">
           <span class="lp-eyebrow">Automation &amp; AI</span>
@@ -307,7 +286,7 @@ const navLinks = [
       </div>
     </section>
 
-    <!-- 11b. Local to you -->
+    <!-- 12. Local to you -->
     <section class="lp-section" aria-labelledby="local-title">
       <div class="lp-container lp-split">
         <div class="lp-intro">
@@ -322,7 +301,7 @@ const navLinks = [
       </div>
     </section>
 
-    <!-- 12. FAQ -->
+    <!-- 13. FAQ -->
     <FaqSection
       title="Frequently asked questions"
       lead="Anything else? Ask us on your free technology review."
@@ -330,7 +309,7 @@ const navLinks = [
       surface
     />
 
-    <!-- 13. Final CTA -->
+    <!-- 14. Final CTA -->
     <FinalCta title="Stop worrying about your technology." cta={PRIMARY_CTA}>
       <p class="final-lead">
         Your business is too important to leave your technology to whoever happens to have the password.
@@ -346,7 +325,7 @@ const navLinks = [
 </LandingLayout>
 
 <style>
-  /* 5b. Client testimonials: two-up on desktop, stacked on mobile. */
+  /* 7. Client testimonials: two-up on desktop, stacked on mobile. */
   .clients {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
@@ -359,7 +338,7 @@ const navLinks = [
     text-align: center;
   }
 
-  /* 6. Pricing: "What happens if you need more?" */
+  /* 8. Pricing: "What happens if you need more?" */
   .more {
     display: flex;
     flex-wrap: wrap;
@@ -399,7 +378,7 @@ const navLinks = [
     }
   }
 
-  /* 7. How it works */
+  /* 9. How it works */
   .how-close {
     font-size: clamp(19px, 2vw, 22px);
     font-weight: 800;

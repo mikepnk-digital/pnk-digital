@@ -160,14 +160,6 @@ export const reviewAreas = [
   'Areas where technology could save your team time',
 ];
 
-export const experience: IconItem[] = [
-  { icon: 'cloud', title: 'Cloud infrastructure', body: 'AWS and modern cloud architectures.' },
-  { icon: 'code', title: 'Web development', body: 'React, Node.js and modern web applications.' },
-  { icon: 'layers', title: 'Business systems', body: 'Building software that supports real-world business processes.' },
-  { icon: 'zap', title: 'Automation & AI', body: 'Finding practical ways to reduce repetitive work.' },
-  { icon: 'globe', title: 'Websites & email', body: 'Domains, hosting, websites and business email.' },
-];
-
 export const securityItems = [
   'Multi-factor authentication',
   'Email security',
