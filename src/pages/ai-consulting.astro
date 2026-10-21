@@ -23,7 +23,6 @@ import ProblemSplit from '@/components/landing/ProblemSplit.astro';
 import WhySection from '@/components/landing/WhySection.astro';
 import QuoteGrid from '@/components/landing/QuoteGrid.astro';
 import ListCard from '@/components/landing/ListCard.astro';
-import ExperienceGrid from '@/components/landing/ExperienceGrid.astro';
 import FinalCta from '@/components/landing/FinalCta.astro';
 import BookingCopy from '@/components/landing/BookingCopy.astro';
 import CaseStudyCard from '@/components/landing/CaseStudyCard.astro';
@@ -37,7 +36,6 @@ import {
   booking,
   compare,
   disciplines,
-  experience,
   faqs,
   hero,
   pilotExamples,
@@ -166,7 +164,23 @@ const jsonLd = [
       </Fragment>
     </WhySection>
 
-    <!-- 6. Who we help -->
+    <!-- 6. Safe by design -->
+    <section class="lp-section lp-section--surface" aria-labelledby="safe-title">
+      <div class="lp-container lp-split">
+        <div class="lp-intro">
+          <span class="lp-eyebrow">Safe by design</span>
+          <h2 id="safe-title" class="lp-h2">AI should reduce your risk, not add to it.</h2>
+          <p class="lp-lead">
+            Most of the businesses we work with handle client data they're responsible for. So every workflow we build starts
+            from what's safe, not from what's clever.
+          </p>
+          <p class="lp-statement">We don't believe in sending your data to tools nobody has checked.</p>
+        </div>
+        <ListCard icon="shield-check" title="What that looks like in practice:" items={safetyItems} />
+      </div>
+    </section>
+
+    <!-- 7. Who we help -->
     <section class="lp-section" aria-labelledby="who-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
@@ -186,7 +200,7 @@ const jsonLd = [
       </div>
     </section>
 
-    <!-- 6b. What a pilot can look like -->
+    <!-- 8. What a pilot can look like -->
     <section id="examples" class="lp-section lp-section--surface" aria-labelledby="examples-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
@@ -208,7 +222,7 @@ const jsonLd = [
       </div>
     </section>
 
-    <!-- 7. Client stories -->
+    <!-- 9. Client stories -->
     <section id="clients" class="lp-section" aria-labelledby="clients-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
@@ -230,7 +244,7 @@ const jsonLd = [
       </div>
     </section>
 
-    <!-- 8. Pricing -->
+    <!-- 10. Pricing -->
     <PricingSection
       id="pricing"
       eyebrow="Pricing"
@@ -260,7 +274,7 @@ const jsonLd = [
       </div>
     </PricingSection>
 
-    <!-- 9. How it works -->
+    <!-- 11. How it works -->
     <section id="how" class="lp-section" aria-labelledby="how-title">
       <div class="lp-container lp-stack">
         <div class="lp-intro">
@@ -272,7 +286,7 @@ const jsonLd = [
       </div>
     </section>
 
-    <!-- 10. Book (booking form) -->
+    <!-- 12. Book (booking form) -->
     <BookingBand
       variant={variant}
       calendar
@@ -295,41 +309,6 @@ const jsonLd = [
         pull={pull}
       />
     </BookingBand>
-
-    <!-- 11. Safe by design -->
-    <section class="lp-section lp-section--surface" aria-labelledby="safe-title">
-      <div class="lp-container lp-split">
-        <div class="lp-intro">
-          <span class="lp-eyebrow">Safe by design</span>
-          <h2 id="safe-title" class="lp-h2">AI should reduce your risk, not add to it.</h2>
-          <p class="lp-lead">
-            Most of the businesses we work with handle client data they're responsible for. So every workflow we build starts
-            from what's safe, not from what's clever.
-          </p>
-          <p class="lp-statement">We don't believe in sending your data to tools nobody has checked.</p>
-        </div>
-        <ListCard icon="shield-check" title="What that looks like in practice:" items={safetyItems} />
-      </div>
-    </section>
-
-    <!-- 12. Experience -->
-    <section class="lp-section" aria-labelledby="exp-title">
-      <div class="lp-container lp-stack">
-        <div class="lp-intro">
-          <span class="lp-eyebrow">Experience</span>
-          <h2 id="exp-title" class="lp-h2">Technology expertise you can rely on.</h2>
-          <p class="lp-lead">
-            PNK Digital is built on {YEARS_EXPERIENCE} years of designing and delivering software for businesses, most of it in financial
-            services. Our experience spans:
-          </p>
-        </div>
-        <ExperienceGrid
-          items={experience}
-          close="So when you talk to PNK Digital about AI, you're not talking to someone who read about it."
-          closeStrong="You're talking to someone who builds with it every day."
-        />
-      </div>
-    </section>
 
     <!-- 13. FAQ -->
     <FaqSection
@@ -393,7 +372,7 @@ const jsonLd = [
 </script>
 
 <style>
-  /* 6b. What a pilot can look like */
+  /* 8. What a pilot can look like */
   .roi {
     display: flex;
     flex-direction: column;
@@ -405,7 +384,7 @@ const jsonLd = [
     line-height: 1.3;
   }
 
-  /* 7. Client stories: two-up on desktop, stacked on mobile. */
+  /* 9. Client stories: two-up on desktop, stacked on mobile. */
   .clients {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
@@ -418,7 +397,7 @@ const jsonLd = [
     text-align: center;
   }
 
-  /* 8. Pricing: workshop + "What happens if you need more?" */
+  /* 10. Pricing: workshop + "What happens if you need more?" */
   .more {
     display: flex;
     flex-wrap: wrap;
@@ -462,7 +441,7 @@ const jsonLd = [
     }
   }
 
-  /* 9. How it works */
+  /* 11. How it works */
   .how-close {
     font-size: clamp(19px, 2vw, 22px);
     font-weight: 800;

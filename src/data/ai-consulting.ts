@@ -254,30 +254,6 @@ export const safetyItems = [
   'A plain-English AI use policy you can hand to staff, included',
 ];
 
-export const experience: IconItem[] = [
-  {
-    icon: 'shield',
-    title: 'Financial and professional services',
-    body: 'Insurance claims, pensions and life insurance systems where accuracy and compliance matter.',
-  },
-  {
-    icon: 'network',
-    title: 'AI engineering',
-    body: 'Agentic workflows, document retrieval, multi-agent systems and self-hosted models, in daily use.',
-  },
-  {
-    icon: 'zap',
-    title: 'Workflow automation',
-    body: 'Connecting the systems a business already runs and removing the manual steps between them.',
-  },
-  { icon: 'cloud', title: 'Cloud infrastructure', body: 'AWS and modern cloud architectures.' },
-  {
-    icon: 'code',
-    title: 'Web and business systems',
-    body: 'React, Node.js and software that supports real business processes.',
-  },
-];
-
 export const faqs: Faq[] = [
   {
     q: 'Do we need to buy new software?',
