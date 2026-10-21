@@ -1,0 +1,60 @@
+---
+// White card with an icon title and a ticked list; sits beside an intro in a
+// `.lp-split` section.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+export interface Props {
+  icon: IconName;
+  title: string;
+  items: string[];
+}
+const { icon, title, items } = Astro.props;
+---
+<div class="list-card">
+  <p class="list-card-title"><Icon name={icon} size={22} />{title}</p>
+  <ul class="ticks">
+    {items.map((s) => <li><Icon name="check" size={18} />{s}</li>)}
+  </ul>
+</div>
+
+<style>
+  .list-card {
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card-lg);
+    padding: clamp(22px, 3vw, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .list-card-title {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+  .list-card-title :global(svg) {
+    flex: none;
+    color: var(--lp-pink-text);
+  }
+  .ticks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ticks li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .ticks :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--lp-pink-text);
+  }
+</style>

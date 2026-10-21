@@ -18,7 +18,7 @@ export interface Props {
   stack?: boolean;
 }
 const { caption, columns, rows, source, headingLevel = 3, stack = true } = Astro.props;
-const CardHeading = `h${headingLevel}`;
+const CardHeading = headingLevel === 4 ? 'h4' : 'h3';
 ---
 <div class:list={['compare', { 'no-stack': !stack }]}>
   <table>

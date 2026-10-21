@@ -1,0 +1,67 @@
+---
+// "Who we help": the things prospects say, as speech-bubble cards between an
+// intro and an outro line.
+import Icon from './Icon.astro';
+
+export interface Props {
+  quotes: string[];
+  intro: string;
+  outro: string;
+}
+const { quotes, intro, outro } = Astro.props;
+---
+<div class="quotes-wrap">
+  <p class="quotes-intro">{intro}</p>
+  <ul class="quotes">
+    {quotes.map((q) => <li><Icon name="chat" size={20} /><q>{q}</q></li>)}
+  </ul>
+  <p class="quotes-outro">{outro}</p>
+</div>
+
+<style>
+  .quotes-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .quotes-intro,
+  .quotes-outro {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  /* 4 quotes: 1, then 2×2, then 4 across from 1120px (auto-fit gave 3+1). */
+  .quotes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 600px) {
+    .quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1120px) {
+    .quotes {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .quotes li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--lp-surface);
+    border-radius: var(--lp-radius-card) var(--lp-radius-card) var(--lp-radius-card) 4px;
+    padding: 24px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .quotes :global(svg) {
+    color: var(--lp-pink-text);
+  }
+  .quotes q {
+    quotes: '“' '”';
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+// "Sound familiar?": intro copy beside a card of pain points that ends in a
+// slate answer panel. Lead paragraphs go in the default slot.
+export interface Props {
+  title: string;
+  problems: string[];
+  /** Second line of the answer panel. */
+  answer: string;
+  eyebrow?: string;
+  answerLead?: string;
+}
+const {
+  title,
+  problems,
+  answer,
+  eyebrow = 'Sound familiar?',
+  answerLead = "That's where PNK Digital comes in.",
+} = Astro.props;
+---
+<section class="lp-section" aria-labelledby="problem-title">
+  <div class="lp-container lp-split">
+    <div class="lp-intro">
+      <span class="lp-eyebrow">{eyebrow}</span>
+      <h2 id="problem-title" class="lp-h2">{title}</h2>
+      <slot />
+    </div>
+    <div class="problem-card">
+      <ul class="problem-list">
+        {problems.map((p) => <li><span class="mark" aria-hidden="true"></span>{p}</li>)}
+      </ul>
+      <div class="problem-answer">
+        <p class="answer-lead">{answerLead}</p>
+        <p>{answer}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem-card {
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card-lg);
+    overflow: hidden;
+  }
+  .problem-list {
+    padding: clamp(20px, 3vw, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .problem-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .mark {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    margin-top: 8px;
+    border-radius: 2px;
+    background: var(--lp-pink);
+  }
+  .problem-answer {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
+    padding: clamp(20px, 3vw, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .answer-lead {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .problem-answer p:not(.answer-lead) {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--lp-on-slate-muted);
+  }
+</style>

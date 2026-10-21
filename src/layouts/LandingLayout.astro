@@ -258,6 +258,29 @@ const { theme, ...seo } = Astro.props;
     line-height: 1.6;
     color: var(--lp-muted);
   }
+  .landing .lp-ink {
+    color: var(--lp-ink);
+  }
+  .landing .lp-statement {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  /* Two-column intro + card, stacking below ~900px. */
+  .landing .lp-split {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: flex-start;
+  }
+  .landing .lp-split > .lp-intro {
+    flex: 1 1 420px;
+    min-width: 0;
+  }
+  .landing .lp-split > :not(.lp-intro) {
+    flex: 1 1 400px;
+    min-width: 0;
+  }
 
   /* Buttons. Pink CTAs keep 19px/700 white text: #ec008c only passes AA as large text. */
   .landing .lp-btn {

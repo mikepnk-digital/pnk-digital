@@ -1,0 +1,164 @@
+---
+// "Why PNK Digital": slate band with the founder copy, discipline chips and
+// photo beside a white panel of principles. Body paragraphs go in the default
+// slot; the `build` slot is the large closing line of the panel.
+import LandingPhoto from './LandingPhoto.astro';
+
+export interface Props {
+  title: string;
+  lead: string;
+  disciplines: string[];
+  principles: { lead: string; rest: string }[];
+  /** Small muted line under the build line. */
+  foot?: string;
+}
+const { title, lead, disciplines, principles, foot } = Astro.props;
+---
+<section class="lp-section diff" aria-labelledby="diff-title">
+  <div class="lp-container diff-inner">
+    <div class="diff-copy">
+      <span class="lp-eyebrow diff-eyebrow">Why PNK Digital</span>
+      <h2 id="diff-title" class="lp-h2">{title}</h2>
+      <p class="diff-lead">{lead}</p>
+      <slot />
+      <ul class="chips" aria-label="What we bring together">
+        {disciplines.map((d) => <li>{d}</li>)}
+      </ul>
+      <figure class="founder">
+        <div class="founder-photo">
+          <LandingPhoto photo="mike-founder" alt="Mike Pink" widths={[120, 240]} sizes="120px" />
+        </div>
+        <figcaption>Mike Pink, founder — the person who does the work.</figcaption>
+      </figure>
+    </div>
+    <div class="diff-panel">
+      <ul class="principles">
+        {principles.map((p) => <li>{p.lead} <strong>{p.rest}</strong></li>)}
+      </ul>
+      <p class="build"><slot name="build" /></p>
+      {foot && <p class="diff-foot">{foot}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .diff {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
+  }
+  .diff-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(36px, 5vw, 72px);
+    align-items: center;
+  }
+  .diff-copy {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  /* Light pink on slate (~5.3:1) passes AA for the small eyebrow text. */
+  .diff-eyebrow {
+    color: var(--lp-footer-logo);
+  }
+  .diff-lead {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .diff-copy > :global(p:not(.diff-lead)) {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--lp-on-slate-muted);
+  }
+  .diff-copy :global(strong) {
+    color: var(--lp-white);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .chips li {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: var(--lp-radius-badge);
+    border: 1px solid var(--lp-on-slate-rule);
+    color: var(--lp-white);
+  }
+  .founder {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  .founder-photo {
+    flex: none;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--lp-radius-card);
+    overflow: hidden;
+  }
+  .founder figcaption {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--lp-white);
+  }
+  @media (max-width: 379.98px) {
+    .founder-photo {
+      width: 96px;
+      height: 96px;
+    }
+  }
+  .diff-panel {
+    flex: 1 1 420px;
+    min-width: 0;
+    background: var(--lp-white);
+    color: var(--lp-ink);
+    border-radius: var(--lp-radius-panel);
+    padding: clamp(24px, 4vw, 44px);
+    box-shadow: var(--lp-hero-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .principles {
+    display: flex;
+    flex-direction: column;
+  }
+  .principles li {
+    font-size: clamp(19px, 2vw, 23px);
+    line-height: 1.35;
+    font-weight: 600;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--lp-border);
+  }
+  .principles li:first-child {
+    padding-top: 0;
+  }
+  .principles strong {
+    font-weight: 800;
+  }
+  .build {
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .build :global(strong) {
+    font-weight: 800;
+    color: var(--lp-pink-text);
+  }
+  .diff-foot {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+</style>

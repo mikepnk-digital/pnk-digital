@@ -1,0 +1,103 @@
+---
+// Copy column for BookingBand's `copy` slot: heading (#book-title), what the
+// call covers, a client pull-quote and a phone line. White text on the pink
+// band, so every size here is large or bold.
+import Icon from './Icon.astro';
+import Testimonial from './Testimonial.astro';
+import { PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
+import type { ClientTestimonial } from '@/data/tech-support-service';
+
+export interface Props {
+  title: string;
+  /** Smaller second line of the heading. */
+  accent?: string;
+  intro: string;
+  /** What the visitor leaves the call with. */
+  outro: string;
+  areas: string[];
+  pull: ClientTestimonial;
+}
+const { title, accent = "Let's take a look.", intro, outro, areas, pull } = Astro.props;
+---
+<h2 id="book-title" class="review-title">{title} <span>{accent}</span></h2>
+<p class="review-intro">{intro}</p>
+<div>
+  <p class="review-label">We'll look at things like:</p>
+  <ul class="review-list">
+    {areas.map((a) => <li><Icon name="check" size={20} />{a}</li>)}
+  </ul>
+</div>
+<div class="review-quote">
+  <Testimonial quote={pull.pullQuote!} name={pull.name} company={pull.company} variant="pull" />
+</div>
+<p class="review-intro">{outro}</p>
+<p class="review-strong">No obligation. No hard sell. Just straightforward advice.</p>
+<p class="review-call">
+  Prefer to talk? <a href={PHONE_HREF} data-phone>Call PNK Digital on {PHONE_DISPLAY}</a>
+</p>
+
+<style>
+  .review-title {
+    font-size: clamp(32px, 4.2vw, 50px);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .review-title span {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.62em;
+    letter-spacing: -0.02em;
+  }
+  .review-intro,
+  .review-label {
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+  .review-label {
+    margin-bottom: 12px;
+  }
+  .review-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 10px 20px;
+  }
+  .review-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .review-list :global(svg) {
+    flex: none;
+    margin-top: 2px;
+  }
+  /* Pull-quote on the pink band: a pink rule would be invisible here, so
+     the rule is white. */
+  .review-quote {
+    --quote-rule: var(--lp-white);
+  }
+  .review-strong {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+  .review-call {
+    font-size: 19px;
+    font-weight: 700;
+  }
+  .review-call a {
+    color: var(--lp-white);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+  .review-call a:hover {
+    color: var(--lp-slate);
+  }
+  .review-call a:focus-visible {
+    outline-color: var(--lp-white);
+  }
+</style>
