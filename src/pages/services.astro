@@ -1,10 +1,191 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { ServicesPage } from '../react-pages/ServicesPage';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageIntro from '../components/landing/PageIntro.astro';
+import SiteCta from '../components/landing/SiteCta.astro';
+import Icon from '../components/landing/Icon.astro';
+import { services } from '../data/services';
+
+// #run and #build are linked from the home page; each service card's id
+// (its slug) is linked from the footer.
+const groups = [
+  { id: 'run', title: 'Run your business', intro: 'Support and AI for the business you already have.' },
+  { id: 'build', title: 'Build something', intro: 'New software, built properly and handed over.' },
+] as const;
 ---
-<Layout
+<SiteLayout
   title="Services | PNK Digital"
   description="Tech support plans, AI consulting, web application development, cloud infrastructure, and AI-powered MVPs. Senior-level expertise, delivered fast."
 >
-  <ServicesPage client:load />
-</Layout>
+  <PageIntro title="Two ways we" accent="work with you.">
+    <p>
+      Run your business: support and AI for the business you already have. Build something: new
+      software, built properly and handed over.
+    </p>
+  </PageIntro>
+
+  {
+    groups.map((group, g) => (
+      <section id={group.id} class:list={['lp-section', { 'lp-section--surface': g % 2 === 1 }]} aria-labelledby={`${group.id}-title`}>
+        <div class="lp-container lp-stack">
+          <div class="lp-intro">
+            <h2 id={`${group.id}-title`} class="lp-h2">{group.title}</h2>
+            <p class="lp-lead">{group.intro}</p>
+          </div>
+          <div class="cards">
+            {services
+              .filter((service) => service.group === group.id)
+              .map((service, index) => (
+                <article id={service.slug} class:list={['card', { reversed: index % 2 === 1 }]} data-reveal>
+                  <div class="main">
+                    <div class="head">
+                      <span class="icon"><Icon name={service.icon} size={26} /></span>
+                      <h3>{service.title}</h3>
+                    </div>
+                    <p class="desc">{service.description}</p>
+                    <div>
+                      <h4>Who this is for</h4>
+                      <p class="small">{service.targetClient}</p>
+                    </div>
+                    <a class="lp-btn lp-btn--outline more" href={service.link || '/contact'}>
+                      {service.link ? 'Learn More' : 'Discuss a project'}
+                      <Icon name="arrow" size={18} />
+                    </a>
+                  </div>
+                  <div class="side">
+                    <div>
+                      <h4>Example deliverables</h4>
+                      <ul class="checks">
+                        {service.deliverables.map((item) => (
+                          <li><Icon name="check" size={16} />{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4>Technologies</h4>
+                      <ul class="tags">
+                        {service.tags.map((tag) => <li>{tag}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                </article>
+              ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <SiteCta
+    heading="Got a project in mind?"
+    subtext="Tell us what you're building. We'll let you know if we're the right fit - and if we're not, we'll point you to someone who is."
+  />
+</SiteLayout>
+
+<style>
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px clamp(32px, 5vw, 56px);
+    padding: clamp(24px, 4vw, 40px);
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card-lg);
+  }
+  @media (min-width: 1000px) {
+    .card {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .card.reversed .main {
+      order: 2;
+    }
+  }
+  .main,
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-width: 0;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--lp-radius-icon);
+    background: var(--lp-slate);
+    color: var(--lp-white);
+  }
+  h3 {
+    font-size: var(--lp-h3-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .desc {
+    font-size: var(--lp-text-base);
+    line-height: 1.65;
+    color: var(--lp-muted);
+  }
+  h4 {
+    margin: 0 0 10px;
+    font-size: var(--lp-eyebrow-size);
+    font-weight: var(--lp-eyebrow-weight);
+    letter-spacing: var(--lp-eyebrow-track);
+    text-transform: uppercase;
+    color: var(--lp-subtle);
+  }
+  .small {
+    font-size: var(--lp-text-sm);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .card .more {
+    align-self: flex-start;
+    gap: 8px;
+    min-height: 48px;
+    padding: 10px 18px;
+  }
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .checks li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: var(--lp-text-sm);
+    line-height: 1.5;
+    color: var(--lp-ink);
+  }
+  .checks :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--lp-pink-text);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags li {
+    padding: 4px 10px;
+    border-radius: var(--lp-radius-badge);
+    background: var(--lp-surface-2);
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+    color: var(--lp-muted);
+  }
+</style>

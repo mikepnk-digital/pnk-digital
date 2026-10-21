@@ -1,0 +1,43 @@
+---
+// Main-site shell: the landing design system (LandingLayout, theme B) with the
+// site header (main nav), the landing footer and one Cal.com modal, so every
+// [data-book] control on the page opens the calendar. Without JS or Cal those
+// controls stay links (to /contact in the header, or their own href).
+// /tech-support and /ai-consulting use LandingLayout directly: no site nav.
+import LandingLayout from './LandingLayout.astro';
+import type { Props as HeadMetaProps } from '../components/seo/HeadMeta.astro';
+import LandingHeader from '../components/landing/LandingHeader.astro';
+import LandingFooter from '../components/landing/LandingFooter.astro';
+import BookingEmbed from '../components/landing/BookingEmbed.astro';
+
+export type Props = HeadMetaProps;
+
+const currentPath = Astro.url.pathname.replace(/\.html$/, '');
+// cta_click's page param: "home", "about", "blog/my-post"…
+const page = currentPath.replace(/^\/|\/$/g, '') || 'home';
+---
+<LandingLayout theme="b" {...Astro.props}>
+  <LandingHeader site currentPath={currentPath} />
+  <main id="main" data-page={page}>
+    <slot />
+  </main>
+  <LandingFooter />
+  <BookingEmbed trigger={false} />
+</LandingLayout>
+
+<script>
+  // cta_click for every book-a-call control, tagged with the page and where
+  // the control sits (header, or the section's heading id). Phone clicks
+  // (phone_clicked) are sent site-wide from HeadMeta; bookings from BookingEmbed.
+  import { track } from '@/lib/analytics';
+
+  const page = document.querySelector<HTMLElement>('[data-page]')?.dataset.page ?? 'page';
+  const ctaLocation = (el: Element) => {
+    if (el.closest('header')) return 'header';
+    return el.closest('section')?.getAttribute('aria-labelledby')?.replace(/-title$/, '') ?? 'page';
+  };
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest<HTMLElement>('[data-book]');
+    if (link) track('cta_click', { page, cta_location: ctaLocation(link) });
+  });
+</script>

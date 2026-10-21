@@ -1,9 +1,9 @@
-// Case study types and labels, safe to import from React islands. The loader
+// Case study types and labels, safe to import from client scripts. The loader
 // (astro:content, server-only) is in case-studies-collection.ts.
 
 export type Service = 'support' | 'ai' | 'build';
 
-/** Plain, serialisable shape passed to React islands and landing components. */
+/** Plain, serialisable shape passed to the card and page components. */
 export interface CaseStudy {
   slug: string;
   title: string;

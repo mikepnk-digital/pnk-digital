@@ -1,0 +1,47 @@
+---
+// Page header for main-site pages: centred h1 (optional pink accent words and
+// eyebrow) with lead paragraphs in the default slot, on the surface tint.
+export interface Props {
+  title: string;
+  /** Words after the title, in pink (the old gradient emphasis). */
+  accent?: string;
+  eyebrow?: string;
+  id?: string;
+}
+const { title, accent, eyebrow, id = 'page-title' } = Astro.props;
+---
+<section class="intro-band" aria-labelledby={id}>
+  <div class="lp-container lp-intro intro">
+    {eyebrow && <span class="lp-eyebrow">{eyebrow}</span>}
+    <h1 id={id} class="title">{title}{accent && <> <span class="accent">{accent}</span></>}</h1>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .intro-band {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(48px, 8vw, 104px) var(--lp-section-x) clamp(48px, 7vw, 88px);
+  }
+  .intro-band .intro {
+    max-width: 800px;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .title {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .accent {
+    color: var(--lp-pink-text);
+  }
+  .intro :global(p) {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+</style>

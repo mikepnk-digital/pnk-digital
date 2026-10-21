@@ -1,8 +1,8 @@
 ---
 // Cal.com booking calendar for the free call (CAL_LINK in src/config/site.ts),
-// shown in a modal so a long list of times doesn't take over the page. Plain
-// Astro + inline JS so it works on the landing pages (no React) and inside the
-// React home and /contact pages as passed-in children.
+// shown in a modal so a long list of times doesn't take over the page.
+// SiteLayout mounts one on every main-site page (trigger={false}); the landing
+// pages have theirs in the booking band.
 // - Without JS: the button is a link to the Cal.com page.
 // - With JS: the button opens a <dialog>; Cal's embed script loads on the
 //   first open and fills it with the inline calendar. Every [data-book]
@@ -12,15 +12,15 @@
 import { CAL_LINK } from '@/config/site';
 
 export interface Props {
-  /** Cal.com colour scheme: light on landing pages, dark on the main site. */
-  theme?: 'light' | 'dark';
   /** Classes for the button, so it matches the page's buttons. */
   linkClass?: string;
   /** Button text. */
   label?: string;
+  /** False renders only the modal, for pages whose [data-book] links open it (SiteLayout). */
+  trigger?: boolean;
   class?: string;
 }
-const { theme = 'light', linkClass, label = 'See available times', class: className } = Astro.props;
+const { linkClass, label = 'See available times', trigger = true, class: className } = Astro.props;
 
 const url = CAL_LINK ? new URL(CAL_LINK) : null;
 const calLink = url?.pathname.replace(/^\/|\/$/g, '');
@@ -28,11 +28,13 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
 ---
 {
   url && (
-    <div class:list={['booking-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme={theme}>
-      <a class:list={['cal-open', linkClass]} href={CAL_LINK} target="_blank" rel="noopener" data-cal-open>
-        {label}
-      </a>
-      <dialog class:list={['cal-dialog', `cal-dialog--${theme}`]} aria-labelledby={titleId} data-cal-dialog>
+    <div class:list={['booking-embed', className]} data-cal-embed data-cal-link={calLink} data-cal-origin={url.origin} data-cal-theme="light">
+      {trigger && (
+        <a class:list={['cal-open', linkClass]} href={CAL_LINK} target="_blank" rel="noopener" data-cal-open>
+          {label}
+        </a>
+      )}
+      <dialog class="cal-dialog" aria-labelledby={titleId} data-cal-dialog>
         <div class="cal-head">
           <h2 id={titleId} class="cal-title">Pick a time</h2>
           <button type="button" class="cal-close" aria-label="Close" data-cal-close>
@@ -117,8 +119,7 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
     mount(el);
   }
 
-  // Delegated, so it still works after a React island around the calendar
-  // hydrates. Without <dialog> support the link opens Cal.com instead.
+  // Delegated, so one listener covers every control on the page. Without <dialog> support the link opens Cal.com instead.
   document.addEventListener('click', (e) => {
     const target = e.target as Element;
     const open = target.closest<HTMLElement>('[data-cal-open]');
@@ -151,7 +152,6 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
   }
   .cal-dialog {
     --cal-bg: #ffffff;
-    /* Landing tokens where present; theme-neutral fallbacks elsewhere. */
     --cal-ink: var(--lp-ink, #1b1720);
     --cal-muted: var(--lp-muted, #5f5a63);
     --cal-line: var(--lp-border, #e7e2de);
@@ -166,12 +166,6 @@ const titleId = `cal-title-${Math.random().toString(36).slice(2, 8)}`;
     color: var(--cal-ink);
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
     overflow: hidden;
-  }
-  .cal-dialog--dark {
-    --cal-bg: var(--color-midnight, #0f0f1a);
-    --cal-ink: var(--color-text-primary, #e4e4e7);
-    --cal-muted: var(--color-text-secondary, #a1a1aa);
-    --cal-line: rgba(255, 255, 255, 0.12);
   }
   .cal-dialog[open] {
     display: flex;

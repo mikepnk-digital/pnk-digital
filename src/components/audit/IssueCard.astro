@@ -1,0 +1,123 @@
+---
+// One audit finding: severity icon, title, severity and category labels,
+// description and the business impact.
+import Icon from '../landing/Icon.astro';
+import type { IconName } from '../landing/Icon.astro';
+import type { WebsiteIssue } from '@/data/prospects';
+
+export interface Props {
+  issue: WebsiteIssue;
+}
+const { issue } = Astro.props;
+
+const severities: Record<WebsiteIssue['severity'], { label: string; icon: IconName }> = {
+  critical: { label: 'Critical', icon: 'alert' },
+  major: { label: 'Major', icon: 'alert-circle' },
+  moderate: { label: 'Moderate', icon: 'info' },
+};
+const categories: Record<WebsiteIssue['category'], { label: string; icon: IconName }> = {
+  accessibility: { label: 'Accessibility', icon: 'eye' },
+  design: { label: 'Design', icon: 'palette' },
+  performance: { label: 'Performance', icon: 'gauge' },
+  seo: { label: 'SEO', icon: 'search' },
+  content: { label: 'Content', icon: 'file' },
+  security: { label: 'Security', icon: 'shield' },
+};
+const severity = severities[issue.severity];
+const category = categories[issue.category];
+---
+<article class:list={['issue', issue.severity]} data-reveal>
+  <span class="sev-icon"><Icon name={severity.icon} size={20} /></span>
+  <div class="body">
+    <div class="head">
+      <h3>{issue.title}</h3>
+      <span class="sev">{severity.label}</span>
+      <span class="cat"><Icon name={category.icon} size={14} />{category.label}</span>
+    </div>
+    <p class="desc">{issue.description}</p>
+    <p class="impact"><strong>Business Impact: </strong>{issue.impact}</p>
+  </div>
+</article>
+
+<style>
+  .issue {
+    --sev: #1d4ed8;
+    --sev-tint: #eff6ff;
+    --sev-line: #bfdbfe;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: clamp(18px, 3vw, 24px);
+    border: 1px solid var(--sev-line);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-white);
+  }
+  .critical {
+    --sev: #b91c1c;
+    --sev-tint: #fef2f2;
+    --sev-line: #fecaca;
+  }
+  .major {
+    --sev: #b45309;
+    --sev-tint: #fffbeb;
+    --sev-line: #fde68a;
+  }
+  .sev-icon {
+    flex: none;
+    display: flex;
+    padding: 8px;
+    border-radius: 10px;
+    background: var(--sev-tint);
+    color: var(--sev);
+  }
+  .body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+  }
+  h3 {
+    font-size: var(--lp-text-md);
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  .sev {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--sev-line);
+    background: var(--sev-tint);
+    color: var(--sev);
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+  }
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--lp-text-xs);
+    color: var(--lp-muted);
+  }
+  .desc {
+    font-size: var(--lp-text-sm);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .impact {
+    padding: 12px 14px;
+    border-radius: var(--lp-radius-inner);
+    background: var(--lp-surface);
+    font-size: var(--lp-text-sm);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .impact strong {
+    color: var(--lp-ink);
+  }
+</style>

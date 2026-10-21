@@ -1,16 +1,14 @@
-import { Code2, Cloud, Zap, LifeBuoy, Sparkles } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import type { IconName } from '../components/landing/icons';
 import { YEARS_EXPERIENCE } from '../config/site';
 
 export interface Service {
-  icon: LucideIcon;
+  icon: IconName;
   title: string;
   slug: string;
   description: string;
   targetClient: string;
   deliverables: string[];
   tags: string[];
-  color: string;
   link?: string;
   /** Which /services group it sits in: #run (recurring) or #build (projects). */
   group: 'run' | 'build';
@@ -19,7 +17,7 @@ export interface Service {
 export const services: Service[] = [
   // Copy from the /tech-support landing page (src/data/tech-support-service.ts).
   {
-    icon: LifeBuoy,
+    icon: 'wrench',
     title: 'Tech Support Plans',
     slug: 'tech-support',
     description:
@@ -32,13 +30,12 @@ export const services: Service[] = [
       'Technical problems investigated and resolved',
     ],
     tags: ['Websites', 'Email', 'Microsoft 365', 'Google Workspace', 'Domains & DNS', 'Security'],
-    color: 'neon-cyan',
     link: '/tech-support',
     group: 'run',
   },
   // Copy from the /ai-consulting landing page (src/data/ai-consulting.ts).
   {
-    icon: Sparkles,
+    icon: 'sparkles',
     title: 'AI Consulting',
     slug: 'ai-consulting',
     description:
@@ -51,12 +48,11 @@ export const services: Service[] = [
       'Written runbook so you can run it without us',
     ],
     tags: ['Workflow automation', 'AI agents', 'Financial services', 'Data protection', 'Cloud infrastructure'],
-    color: 'brand-pink',
     link: '/ai-consulting',
     group: 'run',
   },
   {
-    icon: Code2,
+    icon: 'code',
     title: 'Web Application Development',
     slug: 'web-application-development',
     description:
@@ -72,11 +68,10 @@ export const services: Service[] = [
       'Documentation and handover',
     ],
     tags: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Vite'],
-    color: 'neon-cyan',
     group: 'build',
   },
   {
-    icon: Cloud,
+    icon: 'cloud',
     title: 'AWS Integration & Infrastructure',
     slug: 'aws-infrastructure',
     description:
@@ -92,11 +87,10 @@ export const services: Service[] = [
       'Cost monitoring and optimisation',
     ],
     tags: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'S3', 'CloudFront', 'CDK', 'Cognito'],
-    color: 'neon-purple',
     group: 'build',
   },
   {
-    icon: Zap,
+    icon: 'zap',
     title: 'AI-Powered MVPs & Rapid Prototyping',
     slug: 'ai-mvps',
     description:
@@ -112,7 +106,6 @@ export const services: Service[] = [
       'Roadmap for iteration based on user feedback',
     ],
     tags: ['React', 'AWS', 'Rapid Prototyping', 'MVP', 'Full-Stack', 'AI Tooling'],
-    color: 'brand-pink',
     group: 'build',
   },
 ];

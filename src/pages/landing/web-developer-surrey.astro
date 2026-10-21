@@ -1,12 +1,549 @@
 ---
-import BareLayout from '../../layouts/BareLayout.astro';
-import { WebDeveloperSurreyPage } from '../../react-pages/landing/WebDeveloperSurreyPage';
-import { YEARS_EXPERIENCE } from '../../config/site';
+// Ad landing page (noindex): own header with logo and phone, no site nav.
+// Copy (including "£75/month" and the 15-minute call) is unchanged and flagged
+// for review: it differs from the rest of the site.
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import LandingFooter from '../../components/landing/LandingFooter.astro';
+import ContactForm from '../../components/landing/ContactForm.astro';
+import Icon from '../../components/landing/Icon.astro';
+import type { IconName } from '../../components/landing/Icon.astro';
+import logo from '../../assets/pnk-digital-logo.svg';
+import { RESPONSE_PROMISE, YEARS_EXPERIENCE } from '../../config/site';
+
+const usps: { icon: IconName; title: string; description: string }[] = [
+  {
+    icon: 'shield',
+    title: 'No Agency Markup',
+    description: 'You hire the developer directly. No account managers, no overhead - just senior expertise at a fair price.',
+  },
+  {
+    icon: 'zap',
+    title: 'AI-Accelerated Delivery',
+    description: 'Modern AI-powered workflows mean faster turnaround without cutting corners on quality.',
+  },
+  {
+    icon: 'code',
+    title: `${YEARS_EXPERIENCE}+ Years Experience`,
+    description: "Senior developer from day one. Your project won't be handed to a junior learning on the job.",
+  },
+  {
+    icon: 'layers',
+    title: 'Full Stack, One Person',
+    description: 'Front-end, back-end, infrastructure - React, Node.js, and AWS. One developer handles everything.',
+  },
+  {
+    icon: 'wrench',
+    title: 'Ongoing Support',
+    description: 'Hosting and maintenance retainers from £75/month. Your site stays fast, secure, and up to date.',
+  },
+];
+const pricingTiers = [
+  {
+    name: 'Quick Build',
+    price: '£2–5k',
+    description: 'Landing pages, brochure sites, and simple web apps',
+    features: ['Custom design', 'Mobile responsive', 'Fast turnaround', 'CMS if needed'],
+  },
+  {
+    name: 'Web Application',
+    price: '£5–15k',
+    description: 'Complex web apps, dashboards, and SaaS MVPs',
+    features: ['React + Node.js', 'User authentication', 'Database design', 'API integrations'],
+    highlighted: true,
+  },
+  {
+    name: 'Complex Project',
+    price: '£15k+',
+    description: 'Enterprise systems, multi-service architectures, and large-scale platforms',
+    features: ['AWS infrastructure', 'Scalable architecture', 'Ongoing development', 'Technical consulting'],
+  },
+];
+const stats = [
+  { stat: `${YEARS_EXPERIENCE}+`, label: 'Years Experience' },
+  { stat: '100%', label: 'UK-Based' },
+  { stat: '24hr', label: 'Response Time' },
+];
+const nextSteps = [
+  `I'll reply ${RESPONSE_PROMISE}`,
+  "We'll have a quick call to discuss your project",
+  "You'll get a clear proposal with fixed pricing",
+];
 ---
-<BareLayout
+<LandingLayout
+  theme="b"
   title="Senior Web Developer in Farnham, Surrey | PNK Digital"
   description={`Senior freelance web developer in Farnham, Surrey. ${YEARS_EXPERIENCE}+ years experience. Custom websites and web apps built with React, Node.js & AWS. No agency markup. Free consultation.`}
   noindex={true}
 >
-  <WebDeveloperSurreyPage client:load />
-</BareLayout>
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="/">
+        <img src={logo.src} width="33" height="40" alt="" />
+        <span>PNK Digital</span>
+      </a>
+      <a class="header-phone" href="tel:01252279059">
+        <Icon name="phone" size={18} />
+        <span class="wide">01252 279059</span>
+        <span class="narrow">Call Now</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="lp-container lp-intro hero-inner">
+        <span class="place"><Icon name="map-pin" size={16} />Based in Farnham, Surrey</span>
+        <h1 id="hero-title" class="title"><span class="accent">Senior Web Developer</span><br />in Farnham, Surrey</h1>
+        <p class="lp-lead">
+          Custom websites and web apps - direct from the developer, no agency markup.
+          React, Node.js &amp; AWS. {YEARS_EXPERIENCE}+ years experience.
+        </p>
+        <div class="ctas">
+          <a class="lp-btn lp-btn--pink" href="#contact">Book a Free 15-Minute Call</a>
+          <a class="lp-btn lp-btn--outline" href="#pricing">View Pricing</a>
+        </div>
+        <ul class="tech">
+          {['React', 'Node.js', 'AWS', 'TypeScript', 'Next.js'].map((t) => <li>{t}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="lp-section" aria-labelledby="why-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro centred">
+          <h2 id="why-title" class="lp-h2">Why Work With Me <span class="accent">Directly?</span></h2>
+          <p class="lp-lead">Skip the agency. Get senior expertise from day one, faster delivery, and transparent pricing.</p>
+        </div>
+        <ul class="usps" data-reveal-stagger>
+          {
+            usps.map((u) => (
+              <li class="usp">
+                <span class="usp-icon"><Icon name={u.icon} size={24} /></span>
+                <h3>{u.title}</h3>
+                <p>{u.description}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section id="pricing" class="lp-section lp-section--surface" aria-labelledby="pricing-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro centred">
+          <h2 id="pricing-title" class="lp-h2">Transparent Pricing</h2>
+          <p class="lp-lead">No hidden fees, no surprise invoices. Clear pricing bands so you know what to expect.</p>
+        </div>
+        <ul class="tiers" data-reveal-stagger>
+          {
+            pricingTiers.map((tier) => (
+              <li class:list={['tier', { highlighted: tier.highlighted }]}>
+                <h3>{tier.name}</h3>
+                <p class="price">{tier.price}</p>
+                <p class="tier-desc">{tier.description}</p>
+                <ul class="features">
+                  {tier.features.map((f) => <li><Icon name="check" size={16} />{f}</li>)}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="lp-section trust" aria-labelledby="trust-title">
+      <div class="lp-container trust-inner" data-reveal>
+        <h2 id="trust-title" class="lp-h2">Built for <span class="accent-on-slate">Businesses Like Yours</span></h2>
+        <ul class="stats">
+          {stats.map((s) => <li><span class="stat">{s.stat}</span><span class="stat-label">{s.label}</span></li>)}
+        </ul>
+        <p>
+          From local businesses in Surrey to startups across the UK - I build web applications
+          that are fast, scalable, and maintainable. Every project gets my direct attention.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="lp-section" aria-labelledby="contact-title">
+      <div class="lp-container lp-stack contact">
+        <div class="lp-intro centred">
+          <h2 id="contact-title" class="lp-h2">Get in Touch</h2>
+          <p class="lp-lead">
+            Tell me about your project and I'll get back to you {RESPONSE_PROMISE}. No obligation, no hard sell.
+          </p>
+        </div>
+        <div class="contact-grid">
+          <ContactForm primary />
+          <aside class="aside" data-reveal>
+            <div>
+              <h3>Prefer to Talk?</h3>
+              <a class="aside-phone" href="tel:01252279059"><Icon name="phone" size={20} />01252 279059</a>
+              <p class="small">Free 15-minute discovery call - no obligation.</p>
+            </div>
+            <div>
+              <h3>Location</h3>
+              <p class="loc">
+                <Icon name="map-pin" size={20} />
+                <span>Farnham, Surrey<span class="small">Serving Surrey, Hampshire, and the wider UK remotely</span></span>
+              </p>
+            </div>
+            <div>
+              <h3>What Happens Next?</h3>
+              <ol class="next">
+                {nextSteps.map((s, i) => <li><span class="n" aria-hidden="true">{i + 1}</span>{s}</li>)}
+              </ol>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <LandingFooter />
+</LandingLayout>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--lp-header-h);
+    background: var(--lp-header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--lp-header-border);
+  }
+  .header-inner {
+    max-width: var(--lp-header-max);
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 var(--lp-section-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--lp-dark);
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .logo img {
+    height: 40px;
+    width: auto;
+  }
+  .header-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--lp-pink-text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .header-phone:hover {
+    color: var(--lp-dark);
+  }
+  .narrow {
+    display: none;
+  }
+  @media (max-width: 639.98px) {
+    .wide {
+      display: none;
+    }
+    .narrow {
+      display: inline;
+    }
+  }
+
+  .hero {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(48px, 9vw, 120px) var(--lp-section-x);
+  }
+  .hero .hero-inner {
+    max-width: 900px;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+  .place {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid var(--lp-border-strong);
+    border-radius: 999px;
+    background: var(--lp-white);
+    font-size: var(--lp-text-sm);
+    font-weight: 600;
+    color: var(--lp-muted);
+  }
+  .place :global(svg) {
+    color: var(--lp-pink-text);
+  }
+  .title {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .accent {
+    color: var(--lp-pink-text);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .tech li {
+    padding: 5px 12px;
+    border: 1px solid var(--lp-border);
+    border-radius: 999px;
+    background: var(--lp-white);
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .lp-intro.centred {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .usps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 700px) {
+    .usps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .usps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .usp {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px;
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    transition: border-color 0.3s ease;
+  }
+  .usp:hover {
+    border-color: var(--lp-border-strong);
+  }
+  .usp-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--lp-radius-icon);
+    background: var(--lp-slate);
+    color: var(--lp-white);
+  }
+  .usp h3,
+  .tier h3 {
+    font-size: var(--lp-h3);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .usp p {
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+
+  .tiers {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    max-width: 1040px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  @media (min-width: 860px) {
+    .tiers {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .tier {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px 28px;
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-white);
+  }
+  .tier.highlighted {
+    border: 2px solid var(--lp-pink);
+  }
+  .price {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--lp-pink-text);
+  }
+  .tier-desc {
+    margin-bottom: 10px;
+    font-size: var(--lp-text-sm);
+    line-height: 1.55;
+    color: var(--lp-muted);
+  }
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-ink);
+  }
+  .features :global(svg) {
+    flex: none;
+    color: var(--lp-pink-text);
+  }
+
+  .trust {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+  }
+  .trust .trust-inner {
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    text-align: center;
+  }
+  .accent-on-slate {
+    color: var(--lp-footer-logo);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+  .stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    color: var(--lp-footer-logo);
+  }
+  .stat-label {
+    font-size: var(--lp-text-sm);
+    color: var(--lp-on-slate-muted);
+  }
+  .trust p {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-on-slate-muted);
+  }
+
+  .lp-container.contact {
+    max-width: 1000px;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 1000px) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+  .aside {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .aside h3 {
+    margin-bottom: 12px;
+    font-size: var(--lp-text-md);
+    font-weight: 800;
+  }
+  .aside-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: var(--lp-text-md);
+    font-weight: 700;
+    color: var(--lp-pink-text);
+    text-decoration: none;
+  }
+  .small {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .loc {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--lp-ink);
+  }
+  .loc :global(svg) {
+    flex: none;
+    margin-top: 2px;
+    color: var(--lp-pink-text);
+  }
+  .next {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .next li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: var(--lp-text-sm);
+    line-height: 1.5;
+    color: var(--lp-muted);
+  }
+  .next .n {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    font-size: var(--lp-text-xs);
+    font-weight: 800;
+  }
+</style>

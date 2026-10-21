@@ -1,0 +1,61 @@
+---
+// Footer for the /audit outreach pages: logo, copyright, Main Site and
+// Privacy Policy links.
+import logo from '@/assets/pnk-digital-logo.svg';
+
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="inner">
+    <div class="brand">
+      <img src={logo.src} width="20" height="24" alt="" />
+      <span>© {year} PNK Digital. All rights reserved.</span>
+    </div>
+    <ul class="links">
+      <li><a href="/">Main Site</a></li>
+      <li><a href="/privacy-policy">Privacy Policy</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--lp-slate);
+    color: var(--lp-on-slate-muted);
+    padding: 40px var(--lp-section-x);
+    --lp-focus: var(--lp-white);
+  }
+  .inner {
+    max-width: var(--lp-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    font-size: var(--lp-text-sm);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand img {
+    height: 24px;
+    width: auto;
+  }
+  .links {
+    display: flex;
+    gap: 24px;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--lp-on-slate-muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--lp-white);
+  }
+</style>

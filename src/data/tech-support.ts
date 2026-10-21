@@ -40,7 +40,14 @@ export type PlanFeature = string | { before: string; link: { href: string; label
 
 export type CompareValue = boolean | string;
 export type CompareGroup = { title: string; rows: { label: string; v: CompareValue[] }[] };
-export type Step = { title: string; when?: string; body: string; points?: string[] };
+export type Step = {
+  title: string;
+  when?: string;
+  body?: string;
+  points?: string[];
+  /** Parallel routes through the step, e.g. Support and AI on the home page. */
+  routes?: { label: string; body: string }[];
+};
 export type Faq = { q: string; a: string };
 export type Testimonial = { quote: string; name?: string; attribution: string };
 

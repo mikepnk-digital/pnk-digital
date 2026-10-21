@@ -1,0 +1,60 @@
+---
+// Header for the /audit outreach pages: logo (to /audit) and a "Free Website
+// Audit" badge. No site nav, like the landing pages.
+import logo from '@/assets/pnk-digital-logo.svg';
+---
+<header class="header">
+  <div class="inner">
+    <a class="logo" href="/audit">
+      <img src={logo.src} width="33" height="40" alt="" />
+      <span>PNK Digital</span>
+    </a>
+    <span class="badge">Free Website Audit</span>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--lp-header-h);
+    background: var(--lp-header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--lp-header-border);
+  }
+  .inner {
+    max-width: var(--lp-header-max);
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 var(--lp-section-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--lp-dark);
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .logo img {
+    height: 36px;
+    width: auto;
+  }
+  .badge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+</style>

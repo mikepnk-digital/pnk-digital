@@ -1,0 +1,337 @@
+---
+// Main-site message form (/contact, /audit, /landing/*): name, email,
+// company, message, posted as JSON to VITE_API_URL/api/contact (simulated
+// success when that's unset, as in dev). `withTopics` adds the Support / AI /
+// Build selector: each choice changes the message prompt and is prefixed to
+// the message, since the API only stores the message text.
+// Spam layers, as before: a honeypot field, a 3-second minimum before a send
+// counts, and a 60-second cooldown between sends (sessionStorage).
+// Analytics: form_submitted { form: 'contact', topic } plus the Google Ads
+// conversion, on a real send only.
+import { RESPONSE_PROMISE } from '@/config/site';
+
+export interface Props {
+  withTopics?: boolean;
+  /** Pink submit button (the page's main action); outline otherwise. */
+  primary?: boolean;
+}
+const { withTopics = false, primary = false } = Astro.props;
+
+const topics = {
+  support: {
+    label: 'Support',
+    prompt: "What's causing problems?",
+    placeholder: 'Website, email, Microsoft 365, security – what is not working, and who does it affect?',
+  },
+  ai: {
+    label: 'AI',
+    prompt: "What takes up your team's time?",
+    placeholder: 'Which tasks fill your week? Roughly how many people do them, and how often?',
+  },
+  build: {
+    label: 'Build',
+    prompt: 'Tell us about your project',
+    placeholder: 'What are you building? What problem are you trying to solve? Any timeline or budget in mind?',
+  },
+};
+const thanks = `Thanks for reaching out. We'll get back to you ${RESPONSE_PROMISE}.`;
+---
+<form class="cf" method="post" data-contact-form data-topics={JSON.stringify(topics)} data-thanks={thanks}>
+  <div class="hp" aria-hidden="true">
+    <label for="cf-website">Website</label>
+    <input id="cf-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  {
+    withTopics && (
+      <fieldset class="topics">
+        <legend>What can we help with?</legend>
+        <div class="topic-row">
+          {Object.entries(topics).map(([key, t]) => (
+            <label class="topic">
+              <input type="radio" name="topic" value={key} />
+              <span>{t.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+  <div class="row">
+    <div class="field">
+      <label for="cf-name">Your Name</label>
+      <input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Jane Smith" required />
+    </div>
+    <div class="field">
+      <label for="cf-email">Email</label>
+      <input id="cf-email" name="email" type="email" autocomplete="email" placeholder="jane@company.com" required />
+    </div>
+  </div>
+  <div class="field">
+    <label for="cf-company">Company (optional)</label>
+    <input id="cf-company" name="company" type="text" autocomplete="organization" placeholder="Acme Inc." />
+  </div>
+  <div class="field">
+    <label for="cf-message" data-prompt>{topics.build.prompt}</label>
+    <textarea id="cf-message" name="message" rows="6" placeholder={topics.build.placeholder} required></textarea>
+  </div>
+
+  <p class="status" role="status" data-status hidden></p>
+  <button type="submit" class:list={['lp-btn', primary ? 'lp-btn--pink' : 'lp-btn--outline', 'submit']} data-submit>
+    Send message
+  </button>
+</form>
+
+<script>
+  import { track } from '@/lib/analytics';
+  import { submitContactForm, ApiError } from '@/utils/api';
+
+  const COOLDOWN_SECONDS = 60;
+  const COOLDOWN_STORAGE_KEY = 'contactForm_lastSubmit';
+  const SUBMIT_LABEL = 'Send message';
+
+  type Topic = { label: string; prompt: string; placeholder: string };
+
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const topics = JSON.parse(form.dataset.topics!) as Record<string, Topic>;
+    const thanks = form.dataset.thanks!;
+    const prompt = form.querySelector<HTMLElement>('[data-prompt]')!;
+    const message = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]')!;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const honeypot = form.querySelector<HTMLInputElement>('input[name="website"]')!;
+    const loadedAt = Date.now();
+    let sending = false;
+
+    const topic = () => form.querySelector<HTMLInputElement>('input[name="topic"]:checked')?.value ?? null;
+    form.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).name !== 'topic') return;
+      const t = topics[topic() ?? 'build'];
+      prompt.textContent = t.prompt;
+      message.placeholder = t.placeholder;
+    });
+
+    const show = (kind: 'success' | 'error', text: string) => {
+      status.textContent = text;
+      status.dataset.kind = kind;
+      status.hidden = false;
+    };
+
+    // Cooldown: the button counts down and stays disabled until it ends.
+    const remaining = () => {
+      let last: string | null = null;
+      try {
+        last = sessionStorage.getItem(COOLDOWN_STORAGE_KEY);
+      } catch {}
+      if (!last) return 0;
+      return Math.max(0, COOLDOWN_SECONDS - Math.floor((Date.now() - Number(last)) / 1000));
+    };
+    const renderButton = () => {
+      const r = remaining();
+      submit.disabled = sending || r > 0;
+      submit.textContent = sending ? 'Sending...' : r > 0 ? `Message sent. You can send another in ${r}s` : SUBMIT_LABEL;
+      return r;
+    };
+    const tick = () => {
+      if (renderButton() > 0) window.setTimeout(tick, 1000);
+    };
+    tick();
+
+    // A fake success for bots, without calling the API.
+    const fakeSuccess = () => {
+      show('success', thanks);
+      form.reset();
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.hidden = true;
+      if (honeypot.value) return fakeSuccess();
+      const elapsed = Date.now() - loadedAt;
+      if (elapsed < 3000) return fakeSuccess();
+
+      const data = new FormData(form);
+      const chosen = topic();
+      const text = String(data.get('message') ?? '');
+      sending = true;
+      renderButton();
+      try {
+        const response: { message?: string } = await submitContactForm({
+          name: String(data.get('name') ?? ''),
+          email: String(data.get('email') ?? ''),
+          company: String(data.get('company') ?? ''),
+          message: chosen ? `Enquiry about: ${topics[chosen].label}\n\n${text}` : text,
+          _t: elapsed,
+        });
+        show('success', response.message || thanks);
+        form.reset();
+        prompt.textContent = topics.build.prompt;
+        message.placeholder = topics.build.placeholder;
+        try {
+          sessionStorage.setItem(COOLDOWN_STORAGE_KEY, String(Date.now()));
+        } catch {}
+
+        track('form_submitted', { form: 'contact', topic: chosen ?? undefined });
+        // Google Ads conversion tracking
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'conversion', { send_to: 'AW-17989609549/hzhOCO2094EcEM3QjoJD' });
+        }
+      } catch (error) {
+        if (error instanceof ApiError && error.errors?.length > 0) {
+          show('error', error.errors.map((x: { message: string }) => x.message).join('. '));
+        } else if (error instanceof Error) {
+          show('error', error.message || 'Something went wrong. Please try again.');
+        } else {
+          show('error', 'Something went wrong. Please try again.');
+        }
+      } finally {
+        sending = false;
+        tick();
+      }
+    });
+  });
+</script>
+
+<style>
+  .cf {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  label,
+  legend {
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-ink);
+  }
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    font-size: var(--lp-text-base);
+    padding: 13px 16px;
+    min-height: 52px;
+    border: 1.5px solid var(--lp-input-border);
+    border-radius: var(--lp-radius-inner);
+    background: var(--lp-white);
+    color: var(--lp-ink);
+  }
+  textarea {
+    line-height: 1.5;
+    resize: vertical;
+  }
+  ::placeholder {
+    color: var(--lp-subtle);
+    opacity: 1;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--lp-focus);
+    outline-offset: 1px;
+    border-color: var(--lp-ink);
+  }
+  .topics {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  legend {
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .topic-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .topic {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--lp-border-strong);
+    border-radius: var(--lp-radius-inner);
+    background: var(--lp-white);
+    font-size: var(--lp-text-base);
+    font-weight: 700;
+    color: var(--lp-muted);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+  .topic:hover {
+    border-color: var(--lp-input-border);
+  }
+  .topic input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .topic:has(input:checked) {
+    border-color: var(--lp-pink-text);
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .topic:has(input:focus-visible) {
+    outline: 3px solid var(--lp-focus);
+    outline-offset: 2px;
+  }
+  .status {
+    padding: 14px 16px;
+    border-radius: var(--lp-radius-inner);
+    font-size: var(--lp-text-sm);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .status[data-kind='success'] {
+    background: var(--lp-success-tint);
+    color: var(--lp-success-text);
+  }
+  .status[data-kind='error'] {
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .status[hidden] {
+    display: none;
+  }
+  .submit {
+    align-self: flex-start;
+  }
+  .submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+  @media (max-width: 639.98px) {
+    .submit {
+      align-self: stretch;
+    }
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

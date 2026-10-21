@@ -1,13 +1,17 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { CaseStudy, Service } from './case-studies';
 
+// Temporarily off: set to true to show draft case studies in dev again.
+const SHOW_DRAFTS_IN_DEV = false;
+
 /**
  * Case studies, newest first. Drafts are left out of the build; in dev they
- * are included (and badged) so the layouts can be checked before content lands.
+ * are included (and badged) when SHOW_DRAFTS_IN_DEV is on, so the layouts can
+ * be checked before content lands.
  */
 export async function getCaseStudies(): Promise<CaseStudy[]> {
   type Entry = CollectionEntry<'case-studies'>;
-  const entries: Entry[] = await getCollection('case-studies', ({ data }: Entry) => import.meta.env.DEV || !data.draft);
+  const entries: Entry[] = await getCollection('case-studies', ({ data }: Entry) => (SHOW_DRAFTS_IN_DEV && import.meta.env.DEV) || !data.draft);
   return entries
     .sort((a: Entry, b: Entry) => b.data.date.getTime() - a.data.date.getTime())
     .map(({ id, data, body }: Entry) => ({ ...data, slug: id, date: data.date.toISOString(), body: body?.trim() ?? '' }));

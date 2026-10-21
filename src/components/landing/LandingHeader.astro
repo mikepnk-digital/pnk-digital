@@ -1,17 +1,33 @@
 ---
-// Sticky landing header: logo, in-page section links (≥760px), phone link
-// (icon only on phones) and the book-a-call button. Plain anchors, so it works without JS;
+// Sticky header, in two modes, both plain anchors that work without JS.
+// - Landing (default): logo, in-page section links (≥900px), phone link (icon
+//   only on phones) and the book-a-call button. No main-site nav.
+// - Site (`site`): logo, the main-site nav (≥1080px; a menu below that),
+//   phone (number from 1320px) and the book-a-call button, which opens SiteLayout's Cal modal.
 // Height is the --lp-header-h token (LandingLayout), which section links use
 // via CSS scroll-padding-top and BookingForm uses for its scroll to #book.
 import logo from '@/assets/pnk-digital-logo.svg';
 import Icon from './Icon.astro';
 import { CALL_LABEL, PHONE_DISPLAY, PHONE_HREF } from '@/config/site';
 
+/** Main-site navigation (site mode). */
+export const SITE_NAV = [
+  { href: '/services', label: 'Services' },
+  { href: '/tech-support', label: 'Tech Support' },
+  { href: '/ai-consulting', label: 'AI Consulting' },
+  { href: '/about', label: 'About' },
+  { href: '/blog', label: 'Blog' },
+];
+
 export interface Props {
-  /** In-page section links (shown from 760px). */
+  /** In-page section links (landing mode, shown from 900px). */
   links?: { href: string; label: string }[];
   /** Book button label. */
   cta?: string;
+  /** Site mode: main-site nav instead of section links. */
+  site?: boolean;
+  /** Current path, for the nav's active link (site mode). */
+  currentPath?: string;
 }
 const {
   links = [
@@ -20,33 +36,92 @@ const {
     { href: '#faq', label: 'FAQ' },
   ],
   cta = CALL_LABEL,
+  site = false,
+  currentPath = '',
 } = Astro.props;
+
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(`${href}/`);
 ---
-<header class="header" data-lp-header>
+<header class:list={['header', { 'header--site': site }]} data-lp-header>
   <div class="inner">
     <a class="logo" href="/">
       <img src={logo.src} width="33" height="40" alt="" />
       <span>PNK Digital</span>
     </a>
-    <nav aria-label="Page sections" class="nav">
-      <ul class="links">
-        {links.map((l) => <li><a href={l.href} data-scroll>{l.label}</a></li>)}
-      </ul>
-      <a class="phone" href={PHONE_HREF} data-phone aria-label={`Call ${PHONE_DISPLAY}`}>
-        <Icon name="phone" size={18} /><span>{PHONE_DISPLAY}</span>
-      </a>
-      <a class="book" href="#book" data-book>{cta}</a>
-    </nav>
+    {
+      site ? (
+        <nav aria-label="Main" class="nav">
+          <ul class="links">
+            {SITE_NAV.map((l) => (
+              <li>
+                <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+          <a class="phone" href={PHONE_HREF} data-phone aria-label={`Call ${PHONE_DISPLAY}`}>
+            <Icon name="phone" size={18} /><span>{PHONE_DISPLAY}</span>
+          </a>
+          <a class="book" href="/contact" data-book>{cta}</a>
+          <details class="menu" data-site-menu>
+            <summary aria-label="Menu">
+              <Icon name="menu" size={24} class="menu-open" />
+              <Icon name="x" size={24} class="menu-close" />
+            </summary>
+            <div class="panel">
+              <ul>
+                {SITE_NAV.map((l) => (
+                  <li>
+                    <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+                  </li>
+                ))}
+                <li>
+                  <a href={PHONE_HREF} data-phone class="panel-phone">
+                    <Icon name="phone" size={18} />{PHONE_DISPLAY}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </details>
+        </nav>
+      ) : (
+        <nav aria-label="Page sections" class="nav">
+          <ul class="links">
+            {links.map((l) => <li><a href={l.href} data-scroll>{l.label}</a></li>)}
+          </ul>
+          <a class="phone" href={PHONE_HREF} data-phone aria-label={`Call ${PHONE_DISPLAY}`}>
+            <Icon name="phone" size={18} /><span>{PHONE_DISPLAY}</span>
+          </a>
+          <a class="book" href="#book" data-book>{cta}</a>
+        </nav>
+      )
+    }
   </div>
 </header>
 
 <script>
-  // A soft shadow once the page scrolls, as the home navbar does.
+  // A soft shadow once the page scrolls.
   const header = document.querySelector<HTMLElement>('[data-lp-header]');
   if (header) {
     const update = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
     window.addEventListener('scroll', update, { passive: true });
     update();
+  }
+
+  // Site menu: a <details> disclosure, so it opens without JS. With JS it also
+  // closes on Escape, an outside click, or when the full nav takes over.
+  const menu = document.querySelector<HTMLDetailsElement>('[data-site-menu]');
+  if (menu) {
+    const close = () => menu.removeAttribute('open');
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        close();
+        menu.querySelector('summary')?.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (menu.open && !menu.contains(e.target as Node)) close();
+    });
+    matchMedia('(min-width: 1080px)').addEventListener('change', (e) => e.matches && close());
   }
 </script>
 
@@ -211,5 +286,99 @@ const {
     .logo img {
       height: 24px;
     }
+  }
+  /* ---- Site mode ---------------------------------------------------- */
+  .header--site .links {
+    display: none;
+  }
+  @media (min-width: 1080px) {
+    .header--site .links {
+      display: flex;
+    }
+    .header--site .menu {
+      display: none;
+    }
+  }
+  .header--site .links a[aria-current='page'] {
+    color: var(--lp-pink-text);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  /* Five nav links leave room for the phone number only on wide screens. */
+  @media (max-width: 1319.98px) {
+    .header--site .phone span {
+      display: none;
+    }
+  }
+  /* The phone number moves into the menu on phones, so the book button fits. */
+  @media (max-width: 479.98px) {
+    .header--site .phone {
+      display: none;
+    }
+  }
+  .menu summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    color: var(--lp-dark);
+    cursor: pointer;
+    list-style: none;
+  }
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .menu summary:hover {
+    background: var(--lp-surface-2);
+  }
+  .menu summary:focus-visible {
+    outline: 3px solid var(--lp-pink);
+    outline-offset: 2px;
+  }
+  .menu :global(.menu-close),
+  .menu[open] :global(.menu-open) {
+    display: none;
+  }
+  .menu[open] :global(.menu-close) {
+    display: block;
+  }
+  .panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100dvh - var(--lp-header-h));
+    overflow-y: auto;
+    padding: 8px var(--lp-section-x) 16px;
+    background: var(--lp-white);
+    border-bottom: 1px solid var(--lp-header-border);
+    box-shadow: 0 18px 30px -18px rgba(31, 42, 55, 0.45);
+  }
+  .panel ul {
+    max-width: var(--lp-header-max);
+    margin: 0 auto;
+  }
+  .panel li + li {
+    border-top: 1px solid var(--lp-rule);
+  }
+  .panel a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    font-size: var(--lp-text-base);
+    font-weight: 600;
+    color: var(--lp-dark);
+    text-decoration: none;
+  }
+  .panel a:hover,
+  .panel a[aria-current='page'] {
+    color: var(--lp-pink-text);
+  }
+  .panel-phone {
+    font-weight: 700;
   }
 </style>

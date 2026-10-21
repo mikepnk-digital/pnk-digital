@@ -1,0 +1,56 @@
+---
+// Closing call to action on main-site pages (was CtaBanner): slate band with a
+// heading, one line and the book-a-call button, which opens SiteLayout's Cal
+// modal (/contact without JS).
+import { CALL_LABEL } from '@/config/site';
+
+export interface Props {
+  heading?: string;
+  subtext?: string;
+  buttonText?: string;
+}
+const {
+  heading = 'Got a project in mind?',
+  subtext = "Book a free discovery call. No obligation, no hard sell - just a conversation about what you're building and how we can help.",
+  buttonText = CALL_LABEL,
+} = Astro.props;
+---
+<section class="lp-section cta" aria-labelledby="cta-title">
+  <div class="lp-container cta-inner" data-reveal>
+    <h2 id="cta-title" class="cta-title">{heading}</h2>
+    <p>{subtext}</p>
+    <a class="lp-btn lp-btn--pink" href="/contact" data-book>{buttonText}</a>
+  </div>
+</section>
+
+<style>
+  .cta {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    /* Pink rings are 3.4:1 on slate and pink-button rings would be 1:1. */
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
+  }
+  .cta .cta-inner {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+  .cta-title {
+    font-size: var(--lp-h2);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  p {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-on-slate-muted);
+  }
+  .lp-btn {
+    margin-top: 8px;
+  }
+</style>

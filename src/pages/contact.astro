@@ -1,16 +1,204 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { ContactPage } from '../react-pages/ContactPage';
-import BookingEmbed from '../components/landing/BookingEmbed.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/landing/Icon.astro';
+import PageIntro from '../components/landing/PageIntro.astro';
+import ContactForm from '../components/landing/ContactForm.astro';
+import {
+  CAL_LINK,
+  EMAIL,
+  EMAIL_HREF,
+  GOOGLE_REVIEWS_URL,
+  LOCATION,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  RESPONSE_PROMISE,
+} from '../config/site';
+
+const responsePromise = RESPONSE_PROMISE.charAt(0).toUpperCase() + RESPONSE_PROMISE.slice(1);
 ---
-<Layout
+<SiteLayout
   title="Contact - PNK Digital"
   description="Get in touch to discuss your project. Book a free 30-minute call or send a message. No obligation, no hard sell."
 >
-  <ContactPage client:load>
-    <BookingEmbed
-      theme="dark"
-      linkClass="inline-flex items-center px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:bg-brand-pink/90 transition-colors"
-    />
-  </ContactPage>
-</Layout>
+  <PageIntro title="Let's Talk" id="contact-title">
+    <p>Book a free 30-minute call below, or send us a message. No obligation, no hard sell.</p>
+  </PageIntro>
+
+  {
+    CAL_LINK && (
+      <section class="lp-section" aria-labelledby="call-title">
+        <div class="lp-container call" data-reveal>
+          <div class="call-copy">
+            <h2 id="call-title" class="call-title"><Icon name="calendar" size={26} />Book a Free 30-Minute Call</h2>
+            <p>See the live calendar and book a slot that suits you.</p>
+          </div>
+          <a class="lp-btn lp-btn--pink" href={CAL_LINK} target="_blank" rel="noopener" data-book>See available times</a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="lp-section lp-section--surface" aria-labelledby="message-title">
+    <div class="lp-container message">
+      <div class="message-form" data-reveal>
+        <h2 id="message-title" class="lp-h2 lp-h2--sm">Send a Message</h2>
+        <p class="lp-lead">Tell us what you're working on and we'll get back to you {RESPONSE_PROMISE}.</p>
+        <ContactForm withTopics />
+      </div>
+
+      <aside class="details" aria-labelledby="details-title" data-reveal>
+        <h3 id="details-title">Contact Details</h3>
+        <ul>
+          <li>
+            <a class="item" href={PHONE_HREF} data-phone>
+              <span class="item-icon"><Icon name="phone" size={20} /></span>
+              <span><span class="item-label">Phone</span><span class="item-value">{PHONE_DISPLAY}</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="item" href={EMAIL_HREF}>
+              <span class="item-icon"><Icon name="mail" size={20} /></span>
+              <span><span class="item-label">Email</span><span class="item-value">{EMAIL}</span></span>
+            </a>
+          </li>
+          <li class="item">
+            <span class="item-icon"><Icon name="map-pin" size={20} /></span>
+            <span><span class="item-label">Location</span><span class="item-value">{LOCATION}</span></span>
+          </li>
+          <li class="item">
+            <span class="item-icon"><Icon name="clock" size={20} /></span>
+            <span>
+              <span class="item-label">Response Time</span><span class="item-value">{responsePromise}</span>
+              <span class="item-note">Usually much faster</span>
+            </span>
+          </li>
+          {/* Google Business Profile reviews: hidden until GOOGLE_REVIEWS_URL is set. */}
+          {
+            GOOGLE_REVIEWS_URL && (
+              <li>
+                <a class="item" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener">
+                  <span class="item-icon"><Icon name="star" size={20} /></span>
+                  <span><span class="item-label">Reviews</span><span class="item-value">Read our Google reviews</span></span>
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </aside>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  /* Book a call */
+  .call {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px 48px;
+    padding: clamp(24px, 4vw, 40px);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-panel);
+    background: var(--lp-white);
+  }
+  .call-copy {
+    flex: 1 1 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .call-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--lp-h3-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .call-title :global(svg) {
+    flex: none;
+    color: var(--lp-pink-text);
+  }
+  .call-copy p {
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+
+  /* Message form + details */
+  .message {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+  }
+  @media (min-width: 1000px) {
+    .message {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+  .message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .message-form .lp-lead {
+    margin-bottom: 14px;
+  }
+  .details {
+    padding: clamp(24px, 3vw, 32px);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-white);
+  }
+  .details h3 {
+    margin-bottom: 20px;
+    font-size: var(--lp-h3);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .details ul {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    color: var(--lp-ink);
+    text-decoration: none;
+  }
+  a.item:hover .item-value {
+    color: var(--lp-pink-text);
+  }
+  .item-icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--lp-radius-inner);
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .item-label {
+    display: block;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .item-value {
+    display: block;
+    font-size: var(--lp-text-base);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .item-note {
+    display: block;
+    font-size: var(--lp-text-xs);
+    color: var(--lp-muted);
+  }
+</style>

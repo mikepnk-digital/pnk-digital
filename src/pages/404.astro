@@ -1,26 +1,48 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
 ---
-<Layout
+<SiteLayout
   title="Page Not Found - PNK Digital"
   description="The page you're looking for doesn't exist."
   noindex={true}
 >
-  <section class="min-h-[70vh] flex items-center justify-center px-4">
-    <div class="text-center max-w-xl">
-      <p class="text-brand-pink font-semibold tracking-widest uppercase text-sm mb-4">404</p>
-      <h1 class="text-4xl md:text-5xl font-bold text-text-primary mb-6">Page not found</h1>
-      <p class="text-text-secondary mb-10 leading-relaxed">
+  <section class="lp-section notfound" aria-labelledby="notfound-title">
+    <div class="lp-container lp-intro">
+      <p class="lp-eyebrow">404</p>
+      <h1 id="notfound-title" class="title">Page not found</h1>
+      <p class="lp-lead">
         The page you're looking for doesn't exist or has moved. Let's get you back on track.
       </p>
-      <div class="flex flex-wrap items-center justify-center gap-4">
-        <a href="/" class="px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:opacity-90 transition-opacity">
-          Back to Home
-        </a>
-        <a href="/contact" class="px-6 py-3 rounded-lg border border-white/15 text-text-primary font-semibold hover:bg-white/5 transition-colors">
-          Get in Touch
-        </a>
+      <div class="actions">
+        <a class="lp-btn lp-btn--pink" href="/">Back to Home</a>
+        <a class="lp-btn lp-btn--outline" href="/contact">Get in Touch</a>
       </div>
     </div>
   </section>
-</Layout>
+</SiteLayout>
+
+<style>
+  .notfound {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .notfound .lp-intro {
+    align-items: center;
+  }
+  .title {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+</style>

@@ -15,13 +15,13 @@ export interface Props {
   items: ServiceItem[];
   iconStyle?: 'tint' | 'solid';
   variant?: 'cards' | 'compact';
-  /** Fixed 3-up on wide screens (e.g. six items) instead of auto-fit. */
-  columns?: 3;
+  /** Fixed 3-up on wide screens (e.g. six items), or 2-up from 600px (four items as 2×2), instead of auto-fit. */
+  columns?: 2 | 3;
 }
 const { items, iconStyle = 'solid', variant = 'cards', columns } = Astro.props;
 const compact = variant === 'compact';
 ---
-<ul class:list={['grid', compact ? 'compact' : iconStyle, { three: columns === 3 }]} data-reveal-stagger>
+<ul class:list={['grid', compact ? 'compact' : iconStyle, { three: columns === 3, two: columns === 2 }]} data-reveal-stagger>
   {
     items.map((it) => (
       <li class="item">
@@ -41,6 +41,14 @@ const compact = variant === 'compact';
   @media (min-width: 900px) {
     .three {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 600px) {
+    .two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   .tint {

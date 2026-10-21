@@ -4,7 +4,7 @@
 // certifications, years trading, customer numbers or statistics.
 
 import type { Faq, Plan, Step } from './tech-support';
-import type { IconName } from '@/components/landing/Icon.astro';
+import type { IconName } from '@/components/landing/icons';
 import { CALL_LABEL, RESPONSE_PROMISE } from '@/config/site';
 
 export { PHONE_DISPLAY, PHONE_HREF } from '@/config/site';

@@ -1,8 +1,9 @@
 ---
-// Landing twin of src/components/ui/CaseStudyCard.tsx (React + Tailwind, main
-// site): same content from the case-studies collection, rebuilt with landing
-// tokens so no Tailwind or React reaches the landing pages. Keep the two in step.
-// The whole card links to /work/<slug>; the headline number leads.
+// Case study card (landing pages, home, /work): content from the case-studies
+// collection, styled with landing tokens.
+// The whole card links to /work/<slug>; the headline number leads. The
+// metric sits beside the text only when the card itself is wide (a container
+// query), so it stacks in narrow grids such as the home page's 3-up row.
 import Icon from './Icon.astro';
 import { SERVICE_LABELS, type CaseStudy } from '@/lib/case-studies';
 
@@ -12,24 +13,25 @@ export interface Props {
 const { study } = Astro.props;
 ---
 <a class="study" href={`/work/${study.slug}`} data-reveal>
-  <span class="tags">
-    <span class="tag">{SERVICE_LABELS[study.service]} case study</span>
-    {study.draft && <span class="tag draft">Draft</span>}
+  <span class="layout">
+    <span class="tags">
+      <span class="tag">{SERVICE_LABELS[study.service]} case study</span>
+      {study.draft && <span class="tag draft">Draft</span>}
+    </span>
+    <span class="metric">{study.metric}</span>
+    <span class="body">
+      <span class="title">{study.title}</span>
+      <span class="client">{study.client}</span>
+      <span class="summary">{study.summary}</span>
+    </span>
+    <span class="more">Read case study <Icon name="arrow" size={18} /></span>
   </span>
-  <span class="metric">{study.metric}</span>
-  <span class="body">
-    <span class="title">{study.title}</span>
-    <span class="client">{study.client}</span>
-    <span class="summary">{study.summary}</span>
-  </span>
-  <span class="more">Read case study <Icon name="arrow" size={18} /></span>
 </a>
 
 <style>
   .study {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    display: block;
+    container-type: inline-size;
     padding: 28px;
     background: var(--lp-white);
     border: 1px solid var(--lp-border);
@@ -37,6 +39,11 @@ const { study } = Astro.props;
     color: var(--lp-ink);
     text-decoration: none;
     transition: border-color 0.15s ease;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
   .study:hover {
     color: var(--lp-ink);
@@ -94,8 +101,8 @@ const { study } = Astro.props;
     font-weight: 700;
     color: var(--lp-pink-text);
   }
-  @media (min-width: 900px) {
-    .study {
+  @container (min-width: 640px) {
+    .layout {
       grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr);
       column-gap: 40px;
       align-items: start;

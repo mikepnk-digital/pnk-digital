@@ -1,9 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { loadEnv } from 'vite';
-import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,7 +30,6 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [
-    react(),
     // Keep noindex pages out of the sitemap: outreach (/audit/*, /landing/*),
     // the tech-support / ai-consulting no-JS thanks pages, and /work while empty.
     sitemap({
@@ -46,11 +43,12 @@ export default defineConfig({
     // GFM is on by default. Replace the old (unthemed) rehype-highlight with
     // Astro's built-in Shiki: themed, build-time, no client-side JS.
     syntaxHighlight: 'shiki',
+    // Keep quotes and dashes as written (the old client-side markdown
+    // renderer didn't convert them to typographic ones).
+    smartypants: false,
     shikiConfig: { theme: 'github-dark', wrap: true },
   },
   vite: {
-    // Tailwind v4 runs through Vite, same as the current Vite build.
-    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

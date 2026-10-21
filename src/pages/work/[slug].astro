@@ -1,8 +1,12 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { CaseStudyPage } from '../../react-pages/CaseStudyPage';
+import { getEntry, render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Icon from '../../components/landing/Icon.astro';
+import Prose from '../../components/landing/Prose.astro';
+import SiteCta from '../../components/landing/SiteCta.astro';
 import { getCaseStudies } from '../../lib/case-studies-collection';
-import type { CaseStudy } from '../../lib/case-studies';
+import { SERVICE_LABELS, type CaseStudy } from '../../lib/case-studies';
+import { formatDate } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const studies = await getCaseStudies();
@@ -10,8 +14,16 @@ export async function getStaticPaths() {
 }
 
 const { study } = Astro.props as { study: CaseStudy };
+const entry = await getEntry('case-studies', study.slug);
+const { Content } = entry && study.body ? await render(entry) : { Content: null };
+const date = new Date(study.date);
+const sections = [
+  { id: 'problem', title: 'The problem', body: study.problem },
+  { id: 'what', title: 'What we did', body: study.whatWeDid },
+  { id: 'result', title: 'The result', body: study.result },
+];
 ---
-<Layout
+<SiteLayout
   title={`${study.title} | PNK Digital`}
   description={study.summary}
   ogType="article"
@@ -19,5 +31,179 @@ const { study } = Astro.props as { study: CaseStudy };
   twitterImage={`/og/work-${study.slug}.png`}
   robots={study.draft ? 'noindex, nofollow' : undefined}
 >
-  <CaseStudyPage study={study} client:load />
-</Layout>
+  <section class="study-head" aria-labelledby="study-title">
+    <div class="lp-container head-inner">
+      <a class="back" href="/work"><Icon name="arrow-left" size={18} />Back to Work</a>
+      <span class="tags">
+        <span class="tag">{SERVICE_LABELS[study.service]}</span>
+        {study.draft && <span class="tag draft">Draft</span>}
+      </span>
+      <h1 id="study-title" class="title">{study.title}</h1>
+      <p class="meta">
+        <span class="client">{study.client}</span>
+        <span><Icon name="calendar" size={16} /><time datetime={study.date.slice(0, 10)}>{formatDate(date)}</time></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="lp-section" aria-label="Case study">
+    <article class="lp-container article">
+      <div class="metric">
+        <p class="metric-label">Result</p>
+        <p class="metric-value">{study.metric}</p>
+      </div>
+      {
+        sections.map((s) => (
+          <section class="part" aria-labelledby={`${s.id}-title`}>
+            <h2 id={`${s.id}-title`}>{s.title}</h2>
+            <p>{s.body}</p>
+          </section>
+        ))
+      }
+      {
+        study.quote && (
+          <figure class="quote">
+            <blockquote>
+              <p>“{study.quote.text}”</p>
+            </blockquote>
+            <figcaption>
+              <strong>{study.quote.name}</strong>
+              {study.quote.role && <>, {study.quote.role}</>}
+            </figcaption>
+          </figure>
+        )
+      }
+      {Content && <Prose><Content /></Prose>}
+    </article>
+  </section>
+
+  <SiteCta heading="Working on something similar?" subtext="Book a free 30-minute call. No obligation, no hard sell." />
+</SiteLayout>
+
+<style>
+  .study-head {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(32px, 6vw, 72px) var(--lp-section-x) clamp(32px, 5vw, 56px);
+  }
+  .study-head .head-inner {
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--lp-pink-text);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    padding: 4px 10px;
+    border-radius: var(--lp-radius-badge);
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+  }
+  .tag.draft {
+    background: transparent;
+    border: 1px dashed var(--lp-input-border);
+    color: var(--lp-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .title {
+    font-size: clamp(32px, 4.4vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 20px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .client {
+    font-size: var(--lp-text-base);
+    color: var(--lp-ink);
+    font-weight: 600;
+  }
+  .lp-container.article {
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .metric {
+    padding: clamp(24px, 4vw, 32px);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-slate);
+    color: var(--lp-white);
+  }
+  .metric-label {
+    margin-bottom: 8px;
+    font-size: var(--lp-eyebrow-size);
+    font-weight: var(--lp-eyebrow-weight);
+    letter-spacing: var(--lp-eyebrow-track);
+    text-transform: uppercase;
+    color: var(--lp-footer-logo);
+  }
+  .metric-value {
+    font-size: clamp(28px, 3.6vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .part h2 {
+    margin-bottom: 12px;
+    font-size: clamp(24px, 2.6vw, 30px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .part p {
+    font-size: var(--lp-text-md);
+    line-height: 1.7;
+    color: var(--lp-muted);
+  }
+  .quote {
+    padding-left: 24px;
+    border-left: 3px solid var(--lp-pink);
+  }
+  .quote blockquote {
+    font-size: var(--lp-text-lg);
+    line-height: 1.55;
+    color: var(--lp-ink);
+  }
+  .quote figcaption {
+    margin-top: 12px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .quote strong {
+    color: var(--lp-ink);
+  }
+</style>

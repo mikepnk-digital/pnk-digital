@@ -38,7 +38,7 @@ export function organizationJsonLd() {
   };
 }
 
-/** The footer NAP block (Footer.jsx and LandingFooter.astro). */
+/** The footer NAP block (LandingFooter.astro). */
 export function localBusinessJsonLd() {
   return {
     '@context': 'https://schema.org',

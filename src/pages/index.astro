@@ -1,22 +1,585 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { HomePage } from '../react-pages/HomePage.jsx';
-import BookingEmbed from '../components/landing/BookingEmbed.astro';
-import { LOCATION, YEARS_EXPERIENCE } from '../config/site';
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/landing/Icon.astro';
+import type { IconName } from '../components/landing/Icon.astro';
+import Steps from '../components/landing/Steps.astro';
+import Testimonial from '../components/landing/Testimonial.astro';
+import CaseStudyCard from '../components/landing/CaseStudyCard.astro';
+import PostCard from '../components/landing/PostCard.astro';
+import mikePinkPhoto from '../assets/mike-pink.jpg';
+import { testimonials } from '../data/tech-support-service';
+import type { Step } from '../data/tech-support';
+import {
+  CALL_LABEL,
+  CAL_LINK,
+  LOCATION,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  RESPONSE_PROMISE,
+  YEARS_EXPERIENCE,
+} from '../config/site';
 import { getCaseStudies } from '../lib/case-studies-collection';
+import { getPublishedPosts } from '../lib/posts';
 
 const caseStudies = (await getCaseStudies()).slice(0, 3);
+
+// The homepage's "two doors": the recurring offers first, then build work.
+// Facts and prices are from the /tech-support, /ai-consulting and /services copy.
+type Bullet = { label?: string; href?: string; text: string };
+const doors: { icon: IconName; title: string; intro: string; bullets: Bullet[]; href: string }[] = [
+  {
+    icon: 'wrench',
+    title: 'Run your business',
+    intro: 'Support and AI for the business you already have.',
+    bullets: [
+      { label: 'Tech Support Plans', href: '/tech-support', text: 'website, email, Microsoft 365 and security, looked after from £125/month.' },
+      { label: 'AI Consulting', href: '/ai-consulting', text: 'we find the processes AI can take off your team and build the first one. Fixed prices from £1,950.' },
+      { text: 'One experienced technology partner instead of a collection of suppliers. No surprise bills.' },
+    ],
+    href: '/services#run',
+  },
+  {
+    icon: 'code',
+    title: 'Build something',
+    intro: 'New software, built properly and handed over.',
+    bullets: [
+      { label: 'Web applications', text: 'customer portals, internal dashboards, booking systems and more.' },
+      { label: 'AWS integration', text: 'scalable, secure cloud infrastructure, architected for reliability from day one.' },
+      { label: 'AI-powered MVPs', text: 'a working product to validate with real users in weeks, not months.' },
+    ],
+    href: '/services#build',
+  },
+];
+
+// Condensed from "PNK Digital is one person. That's the point." on /about.
+const points = [
+  { label: 'Low overhead', detail: 'No office, no middle management, no bloated margins.' },
+  { label: 'Direct communication', detail: 'You talk to the person doing the work. Questions answered in hours.' },
+  { label: 'Senior expertise', detail: `${YEARS_EXPERIENCE} years of experience on every project. No juniors, no bait-and-switch.` },
+  { label: 'Accountability', detail: "One person, full ownership. If something's wrong, we fix it fast." },
+];
+const stats = [`${YEARS_EXPERIENCE} years`, 'Financial services', 'One point of contact'];
+
+// The three steps shared by /tech-support and /ai-consulting (copy from their
+// "How it works" sections), with the support and AI routes side by side.
+const steps: Step[] = [
+  {
+    title: "Let's talk",
+    when: 'Free, 30 minutes',
+    body: "We'll talk about your business, what's currently working and what's causing problems.",
+  },
+  {
+    title: 'We take over, or find the opportunity',
+    routes: [
+      { label: 'Support', body: 'We identify what needs attention and bring your website, email, domains and other technology under control.' },
+      { label: 'AI', body: 'The two-week audit. We talk to your people, map the work, check the data risks and name the first pilot with a fixed price.' },
+    ],
+  },
+  {
+    title: 'We look after it, or build and hand over',
+    routes: [
+      { label: 'Support', body: "From then on, you've got someone you can call when something goes wrong." },
+      { label: 'AI', body: "The pilot goes live in your tools with a human check. After 30 days you'll know the hours it saves, and you'll be able to run it without us." },
+    ],
+  },
+];
+
+// "Latest Thinking" shows only while the newest post is under 90 days old
+// (checked at build time).
+const MAX_AGE_DAYS = 90;
+const recentPosts = (await getPublishedPosts()).slice(0, 3);
+const showPosts =
+  recentPosts.length > 0 && (Date.now() - recentPosts[0].data.date.getTime()) / 86_400_000 <= MAX_AGE_DAYS;
 ---
-<Layout
+<SiteLayout
   ogImage="/og/home.png"
   twitterImage="/og/home.png"
   title={`Technology Support, AI and Software for Small Businesses | PNK Digital, ${LOCATION.split(',')[0]}`}
   description={`One experienced technology partner for small and growing businesses: tech support plans from £125/month, AI consulting from £1,950, and web apps, AWS and MVPs. ${YEARS_EXPERIENCE} years in financial services. Based in ${LOCATION}.`}
 >
-  <HomePage caseStudies={caseStudies} client:load>
-    <BookingEmbed
-      theme="dark"
-      linkClass="inline-flex items-center px-6 py-3 rounded-lg bg-brand-pink text-white font-semibold hover:bg-brand-pink/90 transition-colors"
-    />
-  </HomePage>
-</Layout>
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="lp-container hero-inner lp-intro">
+      <span class="lp-eyebrow eyebrow"><span class="dot" aria-hidden="true"></span>Technology partner for small and growing businesses</span>
+      <h1 id="hero-title">One experienced partner for the technology your business runs on.</h1>
+      <p class="sub">
+        Support, AI and software, delivered by a senior engineer with {YEARS_EXPERIENCE} years in financial services —
+        fixed prices, plain English, no agency layers.
+      </p>
+      <div class="ctas">
+        <a class="lp-btn lp-btn--pink" href="#book" data-book>{CALL_LABEL}<Icon name="arrow" size={20} class="cta-arrow" /></a>
+        <a class="call" href={PHONE_HREF} data-phone><Icon name="phone" size={18} />{PHONE_DISPLAY}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two doors -->
+  <section class="lp-section" aria-labelledby="doors-title">
+    <div class="lp-container">
+      <h2 id="doors-title" class="lp-sr-only">How we can help</h2>
+      <div class="doors" data-reveal-stagger>
+        {
+          doors.map((door) => (
+            <div class="door">
+              <div class="door-head">
+                <span class="door-icon"><Icon name={door.icon} size={24} /></span>
+                <h3>{door.title}</h3>
+              </div>
+              <p class="door-intro">{door.intro}</p>
+              <ul class="checks">
+                {door.bullets.map((b) => (
+                  <li>
+                    <Icon name="check" size={18} />
+                    <span>
+                      {b.label && (b.href ? <a href={b.href}>{b.label}</a> : <strong>{b.label}</strong>)}
+                      {b.label && ': '}
+                      {b.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <a class="door-link" href={door.href}>See how it works <span aria-hidden="true">→</span></a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Why PNK Digital -->
+  <section class="lp-section why" aria-labelledby="why-title">
+    <div class="lp-container lp-stack">
+      <div class="lp-intro">
+        <h2 id="why-title" class="lp-h2">Why PNK Digital</h2>
+      </div>
+      <div class="why-grid">
+        <figure class="why-photo" data-reveal>
+          <Image
+            src={mikePinkPhoto}
+            alt="Mike Pink, founder of PNK Digital"
+            widths={[320, 480, 640, 800]}
+            sizes="(min-width: 900px) 384px, min(384px, 100vw)"
+            loading="lazy"
+          />
+          <figcaption>Mike Pink, founder — the person who does the work.</figcaption>
+        </figure>
+        <div class="why-copy" data-reveal>
+          <h3>PNK Digital is <span class="accent">one person.</span> That's the point.</h3>
+          <ul class="checks checks--on-slate">
+            {
+              points.map((p) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span><strong>{p.label}.</strong> {p.detail}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <ul class="stats">
+            {stats.map((s) => <li>{s}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client proof -->
+  {
+    (testimonials.length > 0 || caseStudies.length > 0) && (
+      <section id="proof" class="lp-section lp-section--surface" aria-labelledby="proof-title">
+        <div class="lp-container lp-stack">
+          <div class="lp-intro">
+            <h2 id="proof-title" class="lp-h2">What clients say</h2>
+          </div>
+          {caseStudies.length > 0 && (
+            <div class="studies">
+              {caseStudies.map((study) => <CaseStudyCard study={study} />)}
+            </div>
+          )}
+          <ul class="quotes" data-reveal-stagger>
+            {testimonials.map((t) => (
+              <li>
+                <Testimonial quote={t.quote} name={t.name} role={t.role} company={t.company} services={t.services} />
+              </li>
+            ))}
+          </ul>
+          {caseStudies.length > 0 && (
+            <p class="more-link" data-reveal><a href="/work">See all work <span aria-hidden="true">→</span></a></p>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- How it works -->
+  <section id="how-it-works" class="lp-section" aria-labelledby="how-title">
+    <div class="lp-container lp-stack">
+      <div class="lp-intro">
+        <h2 id="how-title" class="lp-h2">How it works</h2>
+      </div>
+      <Steps steps={steps} />
+    </div>
+  </section>
+
+  <!-- Latest thinking -->
+  {
+    showPosts && (
+      <section class="lp-section lp-section--surface" aria-labelledby="posts-title">
+        <div class="lp-container lp-stack">
+          <div class="lp-intro">
+            <h2 id="posts-title" class="lp-h2">Latest Thinking</h2>
+            <p class="lp-lead">Thoughts on AI-accelerated development, building products, and the future of software.</p>
+          </div>
+          <ul class="posts" data-reveal-stagger>
+            {recentPosts.map((post) => (
+              <li>
+                <PostCard post={post} />
+              </li>
+            ))}
+          </ul>
+          <p class="more-link" data-reveal><a href="/blog">Read all articles <span aria-hidden="true">→</span></a></p>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Book -->
+  <section id="book" class="lp-section bookband" aria-labelledby="book-title">
+    <div class="lp-container bookband-inner" data-reveal>
+      <div class="bookband-copy">
+        <h2 id="book-title" class="bookband-title"><Icon name="calendar" size={28} />{CALL_LABEL}</h2>
+        <p>Pick a time that suits you from the live calendar, or call us. Messages get a reply {RESPONSE_PROMISE}.</p>
+      </div>
+      <div class="bookband-actions">
+        <a class="lp-btn lp-btn--pink" href={CAL_LINK || '/contact'} target={CAL_LINK ? '_blank' : undefined} rel="noopener" data-book>See available times</a>
+        <a class="bookband-call" href={PHONE_HREF} data-phone><Icon name="phone" size={18} />{PHONE_DISPLAY}</a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  /* Hero: centred, on the surface tint like the landing heroes. */
+  .hero {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(48px, 9vw, 128px) var(--lp-section-x) clamp(56px, 9vw, 128px);
+  }
+  .hero .hero-inner {
+    max-width: 960px;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+  /* Centred, so the dot runs inline with the first word when the line wraps. */
+  .eyebrow {
+    line-height: 1.45;
+  }
+  .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 10px 0.12em 0;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: var(--lp-pink);
+  }
+  .hero h1 {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .sub {
+    max-width: 720px;
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 28px;
+    margin-top: 8px;
+  }
+  .ctas .lp-btn {
+    gap: 10px;
+  }
+  .ctas :global(.cta-arrow) {
+    flex: none;
+    transition: transform 0.15s ease;
+  }
+  .ctas .lp-btn:hover :global(.cta-arrow) {
+    transform: translateX(3px);
+  }
+  .call,
+  .bookband-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: var(--lp-text-base);
+    font-weight: 700;
+    color: var(--lp-dark);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .call:hover {
+    color: var(--lp-pink-text);
+  }
+  .call :global(svg) {
+    color: var(--lp-pink-text);
+  }
+
+  /* Two doors */
+  .doors {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  @media (min-width: 860px) {
+    .doors {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .door {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    padding: clamp(24px, 3.5vw, 36px);
+    background: var(--lp-white);
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card-lg);
+    transition: border-color 0.3s ease;
+  }
+  .door:hover {
+    border-color: var(--lp-border-strong);
+  }
+  .door-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .door-icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--lp-radius-icon);
+    background: var(--lp-slate);
+    color: var(--lp-white);
+  }
+  .door h3 {
+    font-size: var(--lp-h3-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .door-intro {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .checks {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .checks li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .checks :global(svg) {
+    flex: none;
+    margin-top: 4px;
+    color: var(--lp-pink-text);
+  }
+  .checks strong,
+  .checks a {
+    font-weight: 700;
+    color: var(--lp-ink);
+  }
+  .checks a:hover {
+    color: var(--lp-pink-text);
+  }
+  .door-link {
+    align-self: flex-start;
+    font-size: var(--lp-text-base);
+    font-weight: 700;
+    color: var(--lp-pink-text);
+    text-decoration: none;
+  }
+  .door-link:hover {
+    color: var(--lp-dark);
+  }
+
+  /* Why PNK Digital: slate band */
+  .why {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
+  }
+  .why .lp-h2 {
+    color: var(--lp-white);
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .why-grid {
+      grid-template-columns: 384px minmax(0, 1fr);
+    }
+  }
+  .why-photo {
+    width: 100%;
+    max-width: 384px;
+  }
+  .why-photo :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--lp-radius-card);
+  }
+  .why-photo figcaption {
+    margin-top: 12px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-on-slate-muted);
+  }
+  .why-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .why-copy h3 {
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+  .accent {
+    color: var(--lp-footer-logo);
+  }
+  .checks--on-slate li {
+    color: var(--lp-on-slate-muted);
+  }
+  .checks--on-slate strong {
+    color: var(--lp-white);
+  }
+  .checks--on-slate :global(svg) {
+    color: var(--lp-footer-logo);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .stats li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 10px;
+    border: 1px solid var(--lp-on-slate-rule);
+    border-radius: var(--lp-radius-inner);
+    text-align: center;
+    font-size: var(--lp-text-sm);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  /* Client proof */
+  .studies,
+  .quotes,
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+  .posts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 860px) {
+    .posts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .more-link {
+    text-align: center;
+    font-size: var(--lp-text-base);
+    font-weight: 700;
+  }
+  .more-link a {
+    text-decoration: none;
+  }
+
+  /* Book: slate band, the calendar opens in the site-wide modal. */
+  .bookband {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    --lp-focus: var(--lp-white);
+    --lp-focus-on-pink: var(--lp-white);
+  }
+  .bookband-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px 48px;
+  }
+  .bookband-copy {
+    flex: 1 1 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bookband-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: var(--lp-h2);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .bookband-title :global(svg) {
+    flex: none;
+    /* Centred on the first line of the heading. */
+    margin-top: calc(0.54em - 14px);
+    color: var(--lp-footer-logo);
+  }
+  .bookband-copy p {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-on-slate-muted);
+  }
+  .bookband-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+  }
+  .bookband-call {
+    color: var(--lp-white);
+  }
+  .bookband-call:hover {
+    color: var(--lp-footer-logo);
+  }
+  .bookband-call :global(svg) {
+    color: var(--lp-footer-logo);
+  }
+</style>

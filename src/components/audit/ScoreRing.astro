@@ -1,0 +1,104 @@
+---
+// Website score as a ring with the number inside; the large size adds the
+// grade and label. Colours are darkened from the old palette so the number
+// and grade pass AA on white.
+export interface Props {
+  score: number;
+  size?: 'sm' | 'lg';
+}
+const { score, size = 'lg' } = Astro.props;
+
+function grade(score: number) {
+  if (score <= 20) return { grade: 'F', color: '#b91c1c', label: 'Critical Issues' };
+  if (score <= 35) return { grade: 'D', color: '#c2410c', label: 'Major Issues' };
+  if (score <= 50) return { grade: 'C', color: '#a16207', label: 'Needs Work' };
+  if (score <= 70) return { grade: 'B', color: '#15803d', label: 'Good' };
+  return { grade: 'A', color: '#047857', label: 'Excellent' };
+}
+const config = grade(score);
+const large = size === 'lg';
+const radius = large ? 70 : 28;
+const stroke = large ? 8 : 4;
+const box = large ? 180 : 72;
+const c = box / 2;
+const circumference = 2 * Math.PI * radius;
+const offset = circumference - (score / 100) * circumference;
+---
+<div class:list={['score', { large }]} style={`--score: ${config.color}`}>
+  <div class="ring">
+    <svg width={box} height={box} viewBox={`0 0 ${box} ${box}`} aria-hidden="true">
+      <circle cx={c} cy={c} r={radius} fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width={stroke} />
+      <circle
+        cx={c}
+        cy={c}
+        r={radius}
+        fill="none"
+        stroke="currentColor"
+        stroke-width={stroke}
+        stroke-linecap="round"
+        stroke-dasharray={circumference}
+        stroke-dashoffset={offset}
+        transform={`rotate(-90 ${c} ${c})`}
+      />
+    </svg>
+    <span class="value">
+      <span class="num">{score}</span>{large ? <span class="of">/100</span> : <span class="lp-sr-only">/100</span>}
+    </span>
+  </div>
+  {
+    large && (
+      <div class="grade">
+        <span class="grade-letter">Grade: {config.grade}</span>
+        <span class="grade-label">{config.label}</span>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .score {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--score);
+  }
+  .ring {
+    position: relative;
+  }
+  .value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .num {
+    font-size: var(--lp-text-md);
+    font-weight: 800;
+    line-height: 1;
+  }
+  .large .num {
+    font-size: 40px;
+  }
+  .of {
+    margin-top: 4px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .grade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .grade-letter {
+    font-size: var(--lp-text-md);
+    font-weight: 800;
+  }
+  .grade-label {
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+</style>

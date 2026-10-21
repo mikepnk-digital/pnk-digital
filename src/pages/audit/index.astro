@@ -1,11 +1,226 @@
 ---
-import BareLayout from '../../layouts/BareLayout.astro';
-import { AuditLandingPage } from '../../react-pages/audit/AuditLandingPage';
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import AuditHeader from '../../components/audit/AuditHeader.astro';
+import AuditFooter from '../../components/audit/AuditFooter.astro';
+import ProspectCard from '../../components/audit/ProspectCard.astro';
+import Icon from '../../components/landing/Icon.astro';
+import type { IconName } from '../../components/landing/Icon.astro';
+import ContactForm from '../../components/landing/ContactForm.astro';
+import { prospects } from '../../data/prospects';
+import { YEARS_EXPERIENCE } from '../../config/site';
+
+const steps: { icon: IconName; title: string; description: string }[] = [
+  {
+    icon: 'search',
+    title: 'We Audit Your Site',
+    description: "We analyse your current website across design, content, SEO, performance, accessibility, and security — identifying what's holding you back.",
+  },
+  {
+    icon: 'lightbulb',
+    title: "We Show What's Possible",
+    description: 'We design a custom homepage concept showing what your website could look like with a modern, professional rebuild.',
+  },
+  {
+    icon: 'message',
+    title: 'No Obligation Chat',
+    description: "If you like what you see, we'll have a relaxed conversation about how to make it happen. No pressure, no hard sell.",
+  },
+];
+const credentials: { icon: IconName; label: string }[] = [
+  { icon: 'code', label: `${YEARS_EXPERIENCE}+ Years Experience` },
+  { icon: 'clock', label: 'Fast Delivery with AI-Powered Workflows' },
+  { icon: 'map-pin', label: 'Local Surrey Developer' },
+];
 ---
-<BareLayout
+<LandingLayout
+  theme="b"
   title="Website Audits — PNK Digital"
   description="Free website audits for local businesses by PNK Digital."
   noindex={true}
 >
-  <AuditLandingPage client:load />
-</BareLayout>
+  <AuditHeader />
+  <main>
+    <section class="hero" aria-labelledby="audit-title">
+      <div class="lp-container lp-intro hero-inner">
+        <h1 id="audit-title" class="title">Your Website Could Be <span class="accent">Costing You Customers</span></h1>
+        <p class="lp-lead">
+          We've audited 10 local business websites and found critical issues that are driving customers away. Is yours one of them?
+        </p>
+        <a class="lp-btn lp-btn--pink" href="#audits">See the Audits</a>
+      </div>
+    </section>
+
+    <section class="lp-section" aria-labelledby="how-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro centred">
+          <h2 id="how-title" class="lp-h2">How It Works</h2>
+          <p class="lp-lead">A completely free, no-obligation website health check for your business.</p>
+        </div>
+        <ol class="steps" data-reveal-stagger>
+          {
+            steps.map((step, i) => (
+              <li class="step">
+                <span class="step-icon"><Icon name={step.icon} size={26} /></span>
+                <span class="step-n">Step {i + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section id="audits" class="lp-section lp-section--surface" aria-labelledby="audits-title">
+      <div class="lp-container lp-stack">
+        <div class="lp-intro centred">
+          <h2 id="audits-title" class="lp-h2">10 Local Businesses Audited</h2>
+          <p class="lp-lead">
+            We've reviewed the websites of 10 businesses across Surrey and designed custom mockups showing what their online presence could look like.
+          </p>
+        </div>
+        <ul class="prospects" data-reveal-stagger>
+          {prospects.map((p) => <li><ProspectCard prospect={p} /></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="creds" aria-label="Why PNK Digital">
+      <ul class="lp-container creds-list">
+        {credentials.map((c) => <li><Icon name={c.icon} size={20} />{c.label}</li>)}
+      </ul>
+    </section>
+
+    <section class="lp-section" aria-labelledby="contact-title">
+      <div class="lp-container lp-stack contact">
+        <div class="lp-intro centred">
+          <h2 id="contact-title" class="lp-h2">Not on the List? <span class="accent">Get Your Free Audit</span></h2>
+          <p class="lp-lead">
+            If your business isn't listed above but you'd like a free website audit and mockup, get in touch. We'd love to help.
+          </p>
+        </div>
+        <ContactForm primary />
+        <p class="fine">No obligation • Free consultation • Local Surrey developer</p>
+      </div>
+    </section>
+  </main>
+  <AuditFooter />
+</LandingLayout>
+
+<style>
+  .hero {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(56px, 10vw, 128px) var(--lp-section-x);
+  }
+  .hero .hero-inner {
+    max-width: 860px;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+  .title {
+    font-size: var(--lp-h1);
+    line-height: var(--lp-h1-lh);
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .accent {
+    color: var(--lp-pink-text);
+  }
+  .lp-intro.centred {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 860px) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 32px 28px;
+    border: 1px solid var(--lp-border);
+    border-radius: var(--lp-radius-card);
+    text-align: center;
+  }
+  .step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .step-n {
+    font-size: var(--lp-text-sm);
+    font-weight: 800;
+    color: var(--lp-pink-text);
+  }
+  .step h3 {
+    font-size: var(--lp-h3);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .step p {
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .prospects {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 640px) {
+    .prospects {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .prospects {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .creds {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    padding: 32px var(--lp-section-x);
+  }
+  .creds-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px clamp(24px, 5vw, 64px);
+  }
+  .creds-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+  }
+  .creds-list :global(svg) {
+    color: var(--lp-footer-logo);
+  }
+  .lp-container.contact {
+    max-width: 720px;
+  }
+  .fine {
+    text-align: center;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+</style>

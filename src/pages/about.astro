@@ -1,7 +1,13 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { AboutPage } from '../react-pages/AboutPage';
-import { LINKEDIN_URL } from '../config/site';
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ServiceGrid from '../components/landing/ServiceGrid.astro';
+import Steps from '../components/landing/Steps.astro';
+import SiteCta from '../components/landing/SiteCta.astro';
+import mikePinkPhoto from '../assets/mike-pink.jpg';
+import type { ServiceItem } from '../components/landing/ServiceGrid.astro';
+import type { Step } from '../data/tech-support';
+import { CALL_LABEL, LINKEDIN_URL, LOCATION, YEARS_EXPERIENCE } from '../config/site';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -13,11 +19,220 @@ const jsonLd = {
   worksFor: { '@type': 'Organization', name: 'PNK Digital', url: 'https://pnk-digital.com' },
   knowsAbout: ['React', 'AWS', 'TypeScript', 'AI Integration', 'Software Development'],
 };
+
+const onePerson = [
+  { title: 'Low overhead', body: 'No office, no middle management, no bloated margins. You pay for development, not infrastructure.' },
+  { title: 'Direct communication', body: 'You talk to the developer. Questions answered in hours, not routed through three people over three days.' },
+  { title: 'Senior expertise on every project', body: `Every line of code is written by someone with ${YEARS_EXPERIENCE} years of experience. No juniors, no interns, no bait-and-switch.` },
+  { title: 'Accountability', body: "One person, one project, full ownership. If something's wrong, there's nobody to blame but us - and we fix it fast." },
+].map((p) => ({ ...p, icon: 'check' as const }));
+
+const processSteps: Step[] = [
+  {
+    title: 'Free 30-Minute Call',
+    body: "A 30-minute conversation to understand your project, goals, and constraints. We'll ask the right questions to scope things properly - no sales pitch.",
+  },
+  {
+    title: 'Proposal & Scope',
+    body: 'You get a clear proposal with defined deliverables, timeline, and fixed pricing. No surprises, no scope creep without your say-so.',
+  },
+  {
+    title: 'AI-Accelerated Build',
+    body: 'We use AI tooling to handle repetitive work while we focus on architecture, quality, and the decisions that count. You get faster delivery without cutting corners.',
+  },
+  {
+    title: 'Iterative Delivery',
+    body: "You see working software early and often. Regular check-ins, deployed previews, and the ability to course-correct before it's too late.",
+  },
+];
+
+const values: ServiceItem[] = [
+  {
+    icon: 'zap',
+    title: 'Speed Without Shortcuts',
+    body: 'You get production-quality software in weeks because we use better tools, not because we skip testing or cut corners.',
+  },
+  {
+    icon: 'shield',
+    title: 'Radical Transparency',
+    body: 'You always know where your project stands. No status meetings to schedule - you can see the work as it happens.',
+  },
+  {
+    icon: 'users',
+    title: 'Direct Access',
+    body: "You talk to the person writing your code. Questions get answered in hours, not days. Decisions don't get lost in translation.",
+  },
+  {
+    icon: 'lightbulb',
+    title: 'Honest Advice',
+    body: "We'll tell you if something is a bad idea, suggest simpler alternatives, or recommend you don't need what you think you need. Our job is to solve your problem, not maximise our invoice.",
+  },
+];
 ---
-<Layout
+<SiteLayout
   title="About - PNK Digital"
   description="Meet Mike Pink, the founder of PNK Digital. Senior React and AWS developer building AI-accelerated software for ambitious businesses."
   jsonLd={jsonLd}
 >
-  <AboutPage client:load />
-</Layout>
+  <!-- Intro / story -->
+  <section class="story" aria-labelledby="about-title">
+    <div class="lp-container story-inner">
+      <figure class="photo" data-reveal>
+        <Image
+          src={mikePinkPhoto}
+          alt="Mike Pink - Senior Full-Stack Developer"
+          widths={[360, 480, 720, 960]}
+          sizes="(min-width: 900px) 448px, min(448px, 100vw)"
+          loading="eager"
+        />
+        <figcaption>
+          <p>Based in {LOCATION}; working with businesses across the UK.</p>
+          {LINKEDIN_URL && <p><a href={LINKEDIN_URL} rel="me noopener" target="_blank">Mike Pink on LinkedIn</a></p>}
+        </figcaption>
+      </figure>
+      <div class="lp-intro story-copy">
+        <span class="lp-eyebrow">The Person Behind PNK Digital</span>
+        <h1 id="about-title" class="title">
+          PNK Digital is run by Mike Pink. We build software <span class="accent">that ships.</span>
+        </h1>
+        <p class="lp-lead">
+          For {YEARS_EXPERIENCE} years, Mike has been building production web applications for startups, scale-ups,
+          and enterprise clients across the UK. Mike has seen
+          how software gets built inside agencies and consultancies: layers of management,
+          junior developers learning on client budgets, and timelines that balloon because
+          nobody wants to make a decision.
+        </p>
+        <p class="lp-lead">
+          Much of that work has been in financial services: insurance claims, pensions and life
+          insurance. That's where you learn to treat data with care: knowing where it lives, who
+          can see it and what the regulator expects, and building software that stands up to an
+          audit. We bring the same habits to every client, whatever their size.
+        </p>
+        <p class="lp-lead">
+          Mike started PNK Digital in the belief that there was a better way. AI tooling has
+          changed what a single experienced developer can ship. The productivity gains
+          are real - not because AI writes perfect code, but because it handles the tedious
+          parts and frees us up for the things that actually matter: architecture, user
+          experience, and getting your product to market.
+        </p>
+        <p class="lp-lead">
+          Tech support and AI consulting came later, for a simple reason: the businesses we built
+          software for kept asking who looks after the rest. Their website, email, domains and
+          accounts, and now the AI tools their teams are already using. So we do that too, with
+          the same person answering the phone.
+        </p>
+        <p class="closing">
+          You get senior-level expertise on every line of code, at a speed and price
+          that traditional agencies can't touch.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- One person -->
+  <section class="lp-section" aria-labelledby="one-title">
+    <div class="lp-container lp-stack narrow">
+      <div class="lp-intro centred">
+        <h2 id="one-title" class="lp-h2">PNK Digital is <span class="accent">one person.</span> That's the point.</h2>
+        <p class="lp-lead">
+          Most agencies sell you a team. What you actually get is a project manager relaying
+          messages to a junior developer who's Googling how to do what you need. We cut all of
+          that out.
+        </p>
+      </div>
+      <ServiceGrid items={onePerson} variant="compact" columns={2} />
+    </div>
+  </section>
+
+  <!-- How we work -->
+  <section class="lp-section lp-section--surface" aria-labelledby="how-title">
+    <div class="lp-container lp-stack">
+      <div class="lp-intro centred">
+        <h2 id="how-title" class="lp-h2">How We Work</h2>
+        <p class="lp-lead">From first conversation to working software, with as little friction as possible.</p>
+      </div>
+      <Steps steps={processSteps} columns={4} />
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="lp-section" aria-labelledby="values-title">
+    <div class="lp-container lp-stack narrow">
+      <div class="lp-intro centred">
+        <h2 id="values-title" class="lp-h2">What We Stand For</h2>
+        <p class="lp-lead">Not platitudes on a wall - principles that directly affect how your project gets built.</p>
+      </div>
+      <ServiceGrid items={values} columns={2} />
+    </div>
+  </section>
+
+  <SiteCta
+    heading="Want to know more?"
+    subtext="Book a free 30-minute call and let's talk about your project. No obligation, no hard sell."
+    buttonText={CALL_LABEL}
+  />
+</SiteLayout>
+
+<style>
+  .story {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(40px, 7vw, 96px) var(--lp-section-x) clamp(48px, 7vw, 104px);
+  }
+  .story-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .story-inner {
+      grid-template-columns: minmax(0, 448px) minmax(0, 1fr);
+    }
+  }
+  .photo {
+    width: 100%;
+    max-width: 448px;
+  }
+  .photo :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--lp-radius-card);
+  }
+  .photo figcaption {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .story .story-copy {
+    max-width: none;
+    gap: 18px;
+  }
+  .title {
+    font-size: clamp(34px, 4.4vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .accent {
+    color: var(--lp-pink-text);
+  }
+  .closing {
+    font-size: var(--lp-text-md);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .lp-container.narrow {
+    max-width: 920px;
+  }
+  .lp-intro.centred {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+</style>

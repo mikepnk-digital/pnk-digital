@@ -1,13 +1,138 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { BlogPage } from '../../react-pages/BlogPage';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PageIntro from '../../components/landing/PageIntro.astro';
+import PostCard from '../../components/landing/PostCard.astro';
 import { getCaseStudies } from '../../lib/case-studies-collection';
+import { categories, getPublishedPosts } from '../../lib/posts';
 
 const hasWork = (await getCaseStudies()).some((s) => !s.draft);
+const posts = await getPublishedPosts();
+// Only categories that have posts.
+const liveCategories = categories.filter((cat) => posts.some((post) => post.data.category === cat));
 ---
-<Layout
+<SiteLayout
   title="Blog - PNK Digital"
   description="Thoughts on AI-accelerated development, React, AWS, and building modern software. By Mike Pink."
 >
-  <BlogPage hasWork={hasWork} client:load />
-</Layout>
+  <PageIntro title="Blog" id="blog-title">
+    <p>
+      Thoughts on AI-accelerated development, building products, and the
+      reality of running a one-person software business.
+    </p>
+  </PageIntro>
+
+  <section class="lp-section" aria-label="Articles">
+    <div class="lp-container lp-stack">
+      <!-- Category filter: shown once its script runs; without JS every post is listed. -->
+      <div class="filters" data-filters hidden>
+        <button type="button" class="pill" aria-pressed="true" data-category="">All</button>
+        {liveCategories.map((cat) => <button type="button" class="pill" aria-pressed="false" data-category={cat}>{cat}</button>)}
+        {hasWork && <a class="pill" href="/work">Work →</a>}
+      </div>
+      {
+        hasWork && (
+          <noscript>
+            <div class="filters"><a class="pill" href="/work">Work →</a></div>
+          </noscript>
+        )
+      }
+
+      <ul class="posts" data-posts>
+        {
+          posts.map((post) => (
+            <li data-post-category={post.data.category}>
+              <PostCard post={post} headingLevel={2} />
+            </li>
+          ))
+        }
+      </ul>
+      <p class="empty" data-empty hidden>No articles in this category yet. Check back soon.</p>
+    </div>
+  </section>
+</SiteLayout>
+
+<script>
+  const filters = document.querySelector<HTMLElement>('[data-filters]');
+  if (filters) {
+    const items = [...document.querySelectorAll<HTMLElement>('[data-post-category]')];
+    const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('[data-category]')];
+    filters.hidden = false;
+    filters.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('[data-category]');
+      if (!btn) return;
+      const cat = btn.dataset.category;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      let shown = 0;
+      for (const item of items) {
+        item.hidden = !!cat && item.dataset.postCategory !== cat;
+        if (!item.hidden) shown++;
+      }
+      empty.hidden = shown > 0;
+    });
+  }
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .filters[hidden] {
+    display: none;
+  }
+  .pill {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 18px;
+    border: 1.5px solid var(--lp-border-strong);
+    border-radius: 999px;
+    background: var(--lp-white);
+    font-family: inherit;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-muted);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+  .pill:hover {
+    border-color: var(--lp-input-border);
+    color: var(--lp-ink);
+  }
+  .pill[aria-pressed='true'] {
+    border-color: var(--lp-pink-text);
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+  }
+  .posts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 700px) {
+    .posts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1000px) {
+    .posts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .posts li[hidden] {
+    display: none;
+  }
+  .empty {
+    padding: 48px 0;
+    text-align: center;
+    color: var(--lp-muted);
+  }
+  .empty[hidden] {
+    display: none;
+  }
+</style>

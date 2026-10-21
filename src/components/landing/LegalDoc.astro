@@ -1,0 +1,170 @@
+---
+// Privacy policy and terms: "Back to Home", icon + h1, last-updated line,
+// then the numbered sections (slot) styled as a reading column. Sections with
+// class "box" sit in a tinted panel.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+export interface Props {
+  title: string;
+  icon: IconName;
+  lastUpdated: string;
+}
+const { title, icon, lastUpdated } = Astro.props;
+---
+<section class="legal-head" aria-labelledby="legal-title">
+  <div class="lp-container head-inner">
+    <a class="back" href="/"><Icon name="arrow-left" size={18} />Back to Home</a>
+    <div class="title-row">
+      <span class="title-icon"><Icon name={icon} size={24} /></span>
+      <h1 id="legal-title" class="title">{title}</h1>
+    </div>
+    <p class="updated">Last updated: {lastUpdated}</p>
+  </div>
+</section>
+
+<div class="lp-section">
+  <div class="lp-container legal">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .legal-head {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(32px, 6vw, 72px) var(--lp-section-x) clamp(32px, 5vw, 56px);
+  }
+  .legal-head .head-inner {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--lp-pink-text);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .title-icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--lp-radius-icon);
+    background: var(--lp-slate);
+    color: var(--lp-white);
+  }
+  .title {
+    font-size: clamp(34px, 4.6vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .updated {
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+
+  .lp-container.legal {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    font-size: var(--lp-text-base);
+    line-height: 1.7;
+    color: var(--lp-muted);
+  }
+  .legal :global(h2) {
+    margin-bottom: 14px;
+    font-size: clamp(22px, 2.4vw, 26px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--lp-ink);
+  }
+  .legal :global(h3) {
+    margin: 24px 0 10px;
+    font-size: var(--lp-text-md);
+    font-weight: 800;
+    color: var(--lp-ink);
+  }
+  .legal :global(p + p),
+  .legal :global(p + ul),
+  .legal :global(ul + p),
+  .legal :global(p + div),
+  .legal :global(p + .table) {
+    margin-top: 14px;
+  }
+  .legal :global(ul) {
+    list-style: disc;
+    padding-left: 1.4em;
+  }
+  .legal :global(li + li) {
+    margin-top: 8px;
+  }
+  .legal :global(li::marker) {
+    color: var(--lp-pink-text);
+  }
+  .legal :global(strong) {
+    color: var(--lp-ink);
+  }
+  .legal :global(a) {
+    color: var(--lp-pink-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal :global(a:hover) {
+    color: var(--lp-dark);
+  }
+  .legal :global(.box) {
+    padding: clamp(20px, 3vw, 28px);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-surface);
+  }
+  .legal :global(.box div:has(> svg)) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .legal :global(.box div:has(> svg) + div:has(> svg)) {
+    margin-top: 10px;
+  }
+  .legal :global(.box svg) {
+    flex: none;
+    color: var(--lp-pink-text);
+  }
+  .legal :global(.table) {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: var(--lp-text-sm);
+  }
+  .legal :global(:where(th, td)) {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--lp-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .legal :global(th) {
+    color: var(--lp-ink);
+    font-weight: 700;
+  }
+</style>

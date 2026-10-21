@@ -1,18 +1,236 @@
 ---
-import BareLayout from '../../layouts/BareLayout.astro';
-import { AuditReportPage } from '../../react-pages/audit/AuditReportPage';
-import { prospects } from '../../data/prospects';
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import AuditHeader from '../../components/audit/AuditHeader.astro';
+import AuditFooter from '../../components/audit/AuditFooter.astro';
+import IssueCard from '../../components/audit/IssueCard.astro';
+import ScoreRing from '../../components/audit/ScoreRing.astro';
+import Icon from '../../components/landing/Icon.astro';
+import ContactForm from '../../components/landing/ContactForm.astro';
+import { prospects, type Prospect } from '../../data/prospects';
+import { YEARS_EXPERIENCE } from '../../config/site';
 
 export function getStaticPaths() {
-  return prospects.map((p) => ({
-    params: { slug: p.slug },
-    props: { name: p.name },
-  }));
+  return prospects.map((p) => ({ params: { slug: p.slug }, props: { prospect: p } }));
 }
 
-const { slug } = Astro.params;
-const { name } = Astro.props;
+const { prospect } = Astro.props as { prospect: Prospect };
+const count = (s: string) => prospect.issues.filter((i) => i.severity === s).length;
+const criticalCount = count('critical');
+const stats = [
+  { n: criticalCount, label: 'Critical Issues', kind: 'critical' },
+  { n: count('major'), label: 'Major Issues', kind: 'major' },
+  { n: count('moderate'), label: 'Moderate Issues', kind: 'moderate' },
+  { n: prospect.issues.length, label: 'Total Issues', kind: 'total' },
+];
 ---
-<BareLayout title={`Website Audit: ${name} — PNK Digital`} description={`A website audit for ${name} by PNK Digital.`} noindex={true}>
-  <AuditReportPage slug={slug} client:load />
-</BareLayout>
+<LandingLayout
+  theme="b"
+  title={`Website Audit: ${prospect.name} — PNK Digital`}
+  description={`A website audit for ${prospect.name} by PNK Digital.`}
+  noindex={true}
+>
+  <AuditHeader />
+  <main>
+    <section class="head" aria-labelledby="report-title">
+      <div class="lp-container">
+        <a class="back" href="/audit"><Icon name="arrow-left" size={16} />Back to All Audits</a>
+        <div class="head-row">
+          <div class="head-copy">
+            <p class="kind">{prospect.type} • {prospect.location}</p>
+            <h1 id="report-title" class="title">Website Audit: <span class="accent">{prospect.name}</span></h1>
+            <a class="site" href={prospect.currentUrl} target="_blank" rel="noopener noreferrer">
+              {prospect.currentUrl} <Icon name="external" size={14} />
+            </a>
+          </div>
+          <ScoreRing score={prospect.overallScore} size="lg" />
+        </div>
+        <p class="scroll">Scroll down to view results <Icon name="chevron-down" size={22} /></p>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Summary">
+      <ul class="lp-container stats-list">
+        {stats.map((s) => <li class={s.kind}><span class="n">{s.n}</span><span class="label">{s.label}</span></li>)}
+      </ul>
+    </section>
+
+    <section class="lp-section" aria-labelledby="issues-title">
+      <div class="lp-container lp-stack narrow">
+        <div class="lp-intro">
+          <h2 id="issues-title" class="lp-h2 lp-h2--sm">Issues Found</h2>
+          <p class="lp-lead">
+            We identified {prospect.issues.length} issues across your website that are affecting your online presence and potential customer acquisition.
+          </p>
+        </div>
+        <div class="issues">
+          {prospect.issues.map((issue) => <IssueCard issue={issue} />)}
+        </div>
+        <div class="means" data-reveal>
+          <h3>What This Means for {prospect.name}</h3>
+          <p>
+            With a score of {prospect.overallScore}/100, your current website is significantly underperforming.
+            The {criticalCount} critical issue{criticalCount !== 1 ? 's' : ''} identified mean{criticalCount === 1 ? 's' : ''} potential
+            customers are likely leaving your website immediately and choosing competitors instead.
+            A modern, well-built website would transform your online presence and help you attract
+            the customers you're currently missing.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-section lp-section--surface" aria-labelledby="contact-title">
+      <div class="lp-container lp-stack narrow">
+        <div class="lp-intro centred">
+          <h2 id="contact-title" class="lp-h2 lp-h2--sm">Ready to Discuss Your <span class="accent">New Website</span>?</h2>
+          <p class="lp-lead">
+            PNK Digital is run by Mike Pink, a freelance web developer based in Surrey with over {YEARS_EXPERIENCE} years
+            of experience building websites and web applications with React, Node.js, and AWS. We'd love to chat about
+            how we can transform your online presence.
+          </p>
+        </div>
+        <ContactForm primary />
+        <p class="fine">No obligation • Free consultation • Local Surrey developer</p>
+      </div>
+    </section>
+  </main>
+  <AuditFooter />
+</LandingLayout>
+
+<style>
+  .head {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(32px, 6vw, 72px) var(--lp-section-x) clamp(32px, 4vw, 48px);
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 16px;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--lp-pink-text);
+  }
+  .head-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 32px;
+  }
+  .head-copy {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .kind {
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-pink-text);
+  }
+  .title {
+    font-size: clamp(32px, 4.6vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .accent {
+    color: var(--lp-pink-text);
+  }
+  .site {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+    overflow-wrap: anywhere;
+  }
+  .scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 32px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .stats {
+    background: var(--lp-slate);
+    color: var(--lp-white);
+    padding: 28px var(--lp-section-x);
+  }
+  .stats-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px clamp(28px, 6vw, 64px);
+  }
+  .stats-list li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .n {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .critical .n {
+    color: #fca5a5;
+  }
+  .major .n {
+    color: #fcd34d;
+  }
+  .moderate .n {
+    color: #93c5fd;
+  }
+  .label {
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--lp-on-slate-muted);
+  }
+  .lp-container.narrow {
+    max-width: 880px;
+  }
+  .lp-intro.centred {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+  .issues {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .means {
+    padding: clamp(20px, 3vw, 28px);
+    border-radius: var(--lp-radius-card);
+    background: var(--lp-surface);
+  }
+  .means h3 {
+    margin-bottom: 8px;
+    font-size: var(--lp-h3);
+    font-weight: 800;
+  }
+  .means p {
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .fine {
+    text-align: center;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+</style>

@@ -1,19 +1,24 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { BlogPostPage } from '../../react-pages/BlogPostPage';
-import { getPublishedPosts } from '../../lib/posts';
+import { render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Icon from '../../components/landing/Icon.astro';
+import Prose from '../../components/landing/Prose.astro';
+import PostCard from '../../components/landing/PostCard.astro';
+import ShareLinks from '../../components/landing/ShareLinks.astro';
+import SiteCta from '../../components/landing/SiteCta.astro';
+import { calculateReadingTime, formatDate, getPublishedPosts, getRelatedPosts, type Post } from '../../lib/posts';
 import { ORG_ID, SITE_URL } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { title: post.data.title, excerpt: post.data.excerpt, date: post.data.date, author: post.data.author },
-  }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
+const { post } = Astro.props as { post: Post };
 const { slug } = Astro.params;
-const { title, excerpt, date, author } = Astro.props;
+const { title, excerpt, date, author, category, tags } = post.data;
+const { Content } = await render(post);
+const related = await getRelatedPosts(post, 3);
 const url = `${SITE_URL}/blog/${slug}`;
 
 const jsonLd = {
@@ -29,6 +34,140 @@ const jsonLd = {
   image: `${SITE_URL}/og-image.png`,
 };
 ---
-<Layout title={`${title} - PNK Digital`} description={excerpt} ogType="article" jsonLd={jsonLd}>
-  <BlogPostPage slug={slug} client:load />
-</Layout>
+<SiteLayout title={`${title} - PNK Digital`} description={excerpt} ogType="article" jsonLd={jsonLd}>
+  <section class="post-head" aria-labelledby="post-title">
+    <div class="lp-container head-inner">
+      <a class="back" href="/blog"><Icon name="arrow-left" size={18} />Back to Blog</a>
+      <span class="category">{category}</span>
+      <h1 id="post-title" class="title">{title}</h1>
+      <p class="meta">
+        <span><Icon name="calendar" size={16} /><time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time></span>
+        <span><Icon name="clock" size={16} />{calculateReadingTime(post.body ?? '')}</span>
+        <span>By {author}</span>
+      </p>
+      {tags.length > 0 && <ul class="tags">{tags.map((tag: string) => <li>{tag}</li>)}</ul>}
+      <ShareLinks title={title} slug={slug!} />
+    </div>
+  </section>
+
+  <section class="lp-section" aria-label="Article">
+    <article class="lp-container article">
+      <Prose>
+        <Content />
+      </Prose>
+      <div class="share-end">
+        <ShareLinks title={title} slug={slug!} />
+      </div>
+    </article>
+  </section>
+
+  <SiteCta
+    heading="Working on something similar?"
+    subtext="I'd love to hear about your project. Book a discovery call - no obligation, no hard sell."
+  />
+
+  {
+    related.length > 0 && (
+      <section class="lp-section lp-section--surface" aria-labelledby="related-title">
+        <div class="lp-container lp-stack">
+          <div class="lp-intro">
+            <h2 id="related-title" class="lp-h2 lp-h2--sm">Related Articles</h2>
+          </div>
+          <ul class="related" data-reveal-stagger>
+            {related.map((p) => (
+              <li>
+                <PostCard post={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</SiteLayout>
+
+<style>
+  .post-head {
+    background: var(--lp-surface);
+    border-bottom: 1px solid var(--lp-border);
+    padding: clamp(32px, 6vw, 72px) var(--lp-section-x) clamp(32px, 5vw, 56px);
+  }
+  .post-head .head-inner {
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    font-size: var(--lp-text-sm);
+    font-weight: 700;
+    color: var(--lp-muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--lp-pink-text);
+  }
+  .category {
+    padding: 4px 10px;
+    border-radius: var(--lp-radius-badge);
+    background: var(--lp-pink-tint);
+    color: var(--lp-pink-text);
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+  }
+  .title {
+    font-size: clamp(32px, 4.4vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-size: var(--lp-text-sm);
+    color: var(--lp-muted);
+  }
+  .meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags li {
+    padding: 4px 10px;
+    border-radius: var(--lp-radius-badge);
+    background: var(--lp-surface-2);
+    font-size: var(--lp-text-xs);
+    font-weight: 700;
+    color: var(--lp-muted);
+  }
+  .lp-container.article {
+    max-width: 720px;
+  }
+  .share-end {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--lp-border);
+  }
+  .related {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 860px) {
+    .related {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

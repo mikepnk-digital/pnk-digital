@@ -1,14 +1,17 @@
 ---
-// "How it works" step cards. Optional sub-points (version B).
+// "How it works" step cards. Optional sub-points (version B) and labelled
+// routes (home: Support and AI side by side in one step).
 import Icon from './Icon.astro';
 import type { Step } from '@/data/tech-support';
 
 export interface Props {
   steps: Step[];
+  /** Four steps: 1, then 2, then 4 across (default three: 1, then 3). */
+  columns?: 3 | 4;
 }
-const { steps } = Astro.props;
+const { steps, columns = 3 } = Astro.props;
 ---
-<ol class="steps" data-reveal-stagger>
+<ol class:list={['steps', { four: columns === 4 }]} data-reveal-stagger>
   {
     steps.map((s, i) => (
       <li class="step">
@@ -17,7 +20,17 @@ const { steps } = Astro.props;
           {s.when && <span class="when">{s.when}</span>}
         </div>
         <h3><span class="lp-sr-only">Step {i + 1}: </span>{s.title}</h3>
-        <p>{s.body}</p>
+        {s.body && <p>{s.body}</p>}
+        {s.routes && s.routes.length > 0 && (
+          <dl class="routes">
+            {s.routes.map((r) => (
+              <div>
+                <dt>{r.label}</dt>
+                <dd>{r.body}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         {s.points && s.points.length > 0 && (
           <ul class="points">
             {s.points.map((pt) => <li><Icon name="check" size={16} />{pt}</li>)}
@@ -38,6 +51,16 @@ const { steps } = Astro.props;
   @media (min-width: 860px) {
     .steps {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 640px) {
+    .steps.four {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .steps.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .step {
@@ -89,6 +112,25 @@ const { steps } = Astro.props;
     line-height: 1.3;
   }
   p {
+    font-size: var(--lp-text-base);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+  .routes {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  dt {
+    font-size: var(--lp-eyebrow-size);
+    font-weight: var(--lp-eyebrow-weight);
+    letter-spacing: var(--lp-eyebrow-track);
+    text-transform: uppercase;
+    color: var(--lp-pink-text);
+    margin-bottom: 4px;
+  }
+  dd {
+    margin: 0;
     font-size: var(--lp-text-base);
     line-height: 1.6;
     color: var(--lp-muted);

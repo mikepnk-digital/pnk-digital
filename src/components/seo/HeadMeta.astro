@@ -1,7 +1,6 @@
 ---
 // Theme-free <head> essentials: favicons, manifest, gtag + per-page SEO meta.
-// No CSS or fonts, so isolated layouts (LandingLayout) can reuse it without
-// pulling in the main site theme. BaseHead wraps it with the site theme.
+// No CSS or fonts: LandingLayout adds those.
 import { organizationJsonLd } from '@/lib/structured-data';
 
 export interface Props {

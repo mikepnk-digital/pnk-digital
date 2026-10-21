@@ -1,18 +1,74 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { WorkPage } from '../react-pages/WorkPage';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageIntro from '../components/landing/PageIntro.astro';
+import CaseStudyCard from '../components/landing/CaseStudyCard.astro';
 import { getCaseStudies } from '../lib/case-studies-collection';
+import { CALL_LABEL } from '../config/site';
 
 const studies = await getCaseStudies();
 // Nothing published yet: keep the empty page out of search until it has content.
 const published = studies.filter((s) => !s.draft);
 ---
-<Layout
+<SiteLayout
   title="Work | PNK Digital"
   description="Case studies from PNK Digital: tech support, AI consulting and software we've built for small and growing businesses, each with the result it delivered."
   ogImage="/og/work.png"
   twitterImage="/og/work.png"
   robots={published.length === 0 ? 'noindex, follow' : undefined}
 >
-  <WorkPage studies={studies} client:load />
-</Layout>
+  <PageIntro title="Work" id="work-title">
+    <p>
+      Results from businesses we support, build for and bring AI into: what wasn't working, what we did, and what
+      changed.
+    </p>
+  </PageIntro>
+
+  <section class="lp-section" aria-label="Case studies">
+    <div class="lp-container">
+      {
+        studies.length > 0 ? (
+          <div class="studies">
+            {studies.map((study) => <CaseStudyCard study={study} />)}
+          </div>
+        ) : (
+          <div class="empty" data-reveal>
+            <p>Case studies are being written up. In the meantime, ask us about current clients on a free 30-minute call.</p>
+            <a class="lp-btn lp-btn--pink" href="/contact" data-book>{CALL_LABEL}</a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .studies {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  @media (min-width: 760px) {
+    .studies {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .studies {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .empty {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+  .empty p {
+    font-size: var(--lp-text-md);
+    line-height: 1.6;
+    color: var(--lp-muted);
+  }
+</style>

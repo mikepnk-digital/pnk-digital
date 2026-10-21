@@ -1,5 +1,4 @@
-// Scroll reveals for the landing pages: the home page's Framer Motion
-// treatment (fade up, staggered children, once) without React.
+// Scroll reveals for every page: fade up, staggered children, once.
 //
 // The hidden state is CSS-only and applies only under html.lp-motion, which
 // the inline head script in LandingLayout sets when IntersectionObserver
